@@ -17,7 +17,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post("http://localhost:4000/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
+      const response = await axios.post("/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
         .then((response) => {
           setIsLoading(false);
           if (response && response.status == 201) {
@@ -43,7 +43,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
           setIsLoading(true);
           setShowManufacturer(false);
           setRejectDesc("")
-          const response = await axios.post("http://localhost:4000/api/rejectRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc })
+          const response = await axios.post("/api/rejectRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc })
             .then((response) => {
               setIsLoading(false);
               if (response && response.status == 201) {

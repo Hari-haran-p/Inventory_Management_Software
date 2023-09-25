@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, Suspense, useEffect, useState } from "react";
 import Areachart from "./Graphs/Areachart";
 import Barchart from "./Graphs/Barchart";
 import Piechart from "./Graphs/Piechart";
@@ -22,7 +22,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchInventory = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/getInventory'); // Replace '/api/data' with your API endpoint    
+      const response = await axios.get('/api/getInventory'); // Replace '/api/data' with your API endpoint    
       setInventory(response.data);
     } catch (error) {
       console.error(error);
@@ -31,7 +31,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/getCategories'); // Replace '/api/data' with your API endpoint
+      const response = await axios.get('/api/getCategories'); // Replace '/api/data' with your API endpoint
       setCategories(response.data);
     } catch (error) {
       console.error(error);
@@ -40,7 +40,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabitem = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/getLabItem'); // Replace '/api/data' with your API endpoint
+      const response = await axios.get('/api/getLabItem'); // Replace '/api/data' with your API endpoint
       setLabitem(response.data);
     } catch (error) {
       console.error(error);
@@ -49,7 +49,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabname = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/getLabDetails'); // Replace '/api/data' with your API endpoint
+      const response = await axios.get('/api/getLabDetails'); // Replace '/api/data' with your API endpoint
       setLabname(response.data);
     } catch (error) {
       console.error(error);
@@ -58,7 +58,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabsStock = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/getLabsStock'); // Replace '/api/data' with your API endpoint
+      const response = await axios.get('/api/getLabsStock'); // Replace '/api/data' with your API endpoint
       setLabsStock(response.data);
     } catch (error) {
       console.error(error);
@@ -78,8 +78,12 @@ function Dashboard({ open, setOpen }) {
       setTimeout(() => setIsLoading(), 1000)
 
     }
-  }, [categories, inventory, labitem])
+  }, [categories, inventory, labitem, labname])
 
+  console.log("categories : ", categories);
+  console.log("inventory : ", inventory);
+  console.log("labitem : ", labitem);
+  console.log("labname : ", labname);
 
   return (
     <>
@@ -90,18 +94,18 @@ function Dashboard({ open, setOpen }) {
         </div >
       ) : (
         <>
-          <div style={{ backgroundColor: "#F4F4F4" }}>
+          <div className="" style={{ backgroundColor: "#F4F4F4" }}>
             <h1 style={{ fontWeight: "bolder", fontSize: "30px", paddingLeft: "7%" }} class={`text-start pt-4`}>Dashboard</h1>
-            <div style={{ paddingBottom: "2%" }}>
+            <div style={{ height:"30vh" }} className="d-card flex items-center justify-center">
               <Cards />
             </div>
 
-            <div className="w-11/12 pl-24 area animate1">
+            <div className="w-11/12   area animate1" style={{height:"70vh",  paddingBottom: "4%", paddingLeft:"4%"}}>
               <Areachart inventory={inventory} />
             </div>
             <br /><br />
             <div className="twochart" style={{ display: "flex", width: "100%", gap: "2%", justifyContent: "center" }}>
-              <Barchart categories={categories} open={open} setOpen={setOpen} labname={labname} labsStock={labsStock}/>
+              <Barchart categories={categories} open={open} setOpen={setOpen} labname={labname} labsStock={labsStock} />
               <Piechart labitem={labitem} />
             </div>
           </div>

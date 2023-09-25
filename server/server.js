@@ -58,6 +58,7 @@ app.get("/api/getManufacturer", (req, res) => {
 
 app.get("/api/getCategories", (req, res) => {
     db.query("SELECT * FROM categories_view", (error, result) => {
+        console.log(result);
         res.send(result);
     });
 });

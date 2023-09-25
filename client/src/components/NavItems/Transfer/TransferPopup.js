@@ -19,12 +19,12 @@ const TransferPopup = ({ isVisible, onClose, user, setMessage, setError }) => {
   const [stock, setStock] = useState([]);
 
   async function fetchItems() {
-    const response = await axios.get("http://localhost:4000/api/getItems");
+    const response = await axios.get("/api/getItems");
     setItem(response.data);
   }
 
   async function fetchStock() {
-    const response = await axios.get("http://localhost:4000/api/getStock");
+    const response = await axios.get("/api/getStock");
     setStock(response.data);
   }
 
@@ -95,7 +95,7 @@ const TransferPopup = ({ isVisible, onClose, user, setMessage, setError }) => {
       e.preventDefault();
       const sendItem = item.find((f) => f.item_code == data.itemcode);
       const response = await axios.post(
-        "http://localhost:4000/api/transferRequest",
+        "/api/transferRequest",
         {
           resData: {
             ...data,

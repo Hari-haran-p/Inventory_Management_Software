@@ -42,23 +42,23 @@ function Areachart({ inventory }) {
     };
 
     return (
-        <><div className="3"></div>
+        <>
 
-            <div className="flex justify-center">
+            <div className="flex items-center justify-center h-full" style={{paddingLeft:"5%"}}>
                 <div
-                    className={` shadow-2xl p-14  flex-col bg-white rounded-2xl shadow ${isCostFullScreen ? 'fixed top-0 left-0 max-w z-50 full-screen' : ''
+                    className={` shadow-2xl p-8  flex-col bg-white rounded-2xl ${isCostFullScreen ? 'fixed top-0 left-0 z-50 full-screen' : ''
                         }`}
-                    style={{ width: '100%', height: isCostFullScreen ? '100%' : '490px' }}
+                    style={{ width: '100%', height: isCostFullScreen ? '100%' : '100%' }}
                 >
                     <h4 style={{ fontFamily: 'Iceland', fontWeight: "bold", borderBottom: "1px solid gray", display: "flex", justifyContent: "space-between" }} className=" text-start text-3xl pb-2">Cost Overview <button className="spin icon" onClick={toggleCostFullScreen}><i class={`bi bi-arrows-${isCostFullScreen ? 'collapse' : 'fullscreen'}`}></i></button></h4>
                     <br />
-                    <div className="flex justify-center gap-5 font-bold" >
-                    <div className="text-red-600">
-                        <span>X-Axis : Duration<span className="text-sm">(months)</span></span>
-                    </div>
-                    <div className="text-blue-700">
-                        <span>Y-Axis : Cost<span className="text-sm">(Rs)</span></span>
-                    </div>
+                    <div className=" justify-center gap-5 font-bold hidden md:flex" >
+                        <div className="text-red-600 ">
+                            <span>X-Axis : Duration<span className="text-sm">(months)</span></span>
+                        </div>
+                        <div className="text-blue-700">
+                            <span>Y-Axis : Cost<span className="text-sm">(Rs)</span></span>
+                        </div>
                     </div>
                     <ResponsiveContainer width="100%" height="80%">
                         <AreaChart
@@ -74,14 +74,14 @@ function Areachart({ inventory }) {
                             }}
                         >
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" tick={{ fill: '#00000' , fontWeight: '500' }}/>
-                            <YAxis tick={{ fill: '#00000' , fontWeight: '500' }}/>
+                            <XAxis dataKey="name" tick={{ fill: '#00000', fontWeight: '500' }} />
+                            <YAxis tick={{ fill: '#00000', fontWeight: '500' }} />
                             <Tooltip content={<CustomTooltip />} />
                             <Area type="monotone" dataKey="Cost" stroke="#220129" fill="#9a07b8" isAnimationActive={true} animationDuration={2000} />
                             <Brush startIndex={0} endIndex={10} dataKey={null} height={10} stroke="#8884d8" />
                         </AreaChart>
                     </ResponsiveContainer>
-                    
+
 
                 </div>
             </div>

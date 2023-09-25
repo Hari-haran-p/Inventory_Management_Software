@@ -33,7 +33,7 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
           data.supplierId = result[0].supplier_id;
           data.inventoryValue = result[0].cost_per_item * data.stock_qty;
           data.userId = user.user_id;
-          const response = await axios.post("http://localhost:4000/api/stockAdd", { ...data, user_dept_id: user.dept_code });
+          const response = await axios.post("/api/stockAdd", { ...data, user_dept_id: user.dept_code });
           if (response && response.status == 201) {
             setMessage(response.data.Data);
             setData({

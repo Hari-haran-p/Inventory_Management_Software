@@ -111,7 +111,7 @@ function Table({ stockData }) {
   };
 
   return (
-    <div className=" w-9/12 h-full">
+    <div className=" w-10/12" style={{height:"60vh"}}>
       <div className="flex  w-full mb-5 h-auto  justify-between font-semibold">
         <div className="sub-titles2 animate1 text-center text-2xl font-semibold">
           Master Table
@@ -142,7 +142,7 @@ function Table({ stockData }) {
       <div class="sm:-mx-6 lg:-mx-8 overflow-y-auto overflow-x-auto animate2 border-gray-700 rounded-lg">
         <div class=" align-middle inline-block min-w-full ">
           <div
-            style={{ width: "90%", height: "50%", maxHeight: "360px" }}
+            style={{ width: "90%", height: "50%", maxHeight: "50vh" }}
             class="shadow sm:rounded-lg  h-96"
           >
             <table class="min-w-full text-sm">

@@ -12,7 +12,7 @@ import Vendors from "./components/NavItems/Vendors";
 import Entries from "./components/NavItems/Entries/Entries";
 import Master from "./components/NavItems/Master";
 import Supplier from "./components/NavItems/Supplier";
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, Suspense } from "react";
 
 import Dashboard from "./components/NavItems/Dashboard/Dashboard";
 import Error404 from "./components/ErrorPages/Error404";
@@ -56,22 +56,22 @@ function App() {
 
   const navItems = [
 
-    { id:1, Name: "Dashboard", iconName: "bi-speedometer",      src: "/dashboard" },
-    { id:2, Name: "Master",    iconName: "bi-file-person-fill", src: "/master" },
-    { id:3, Name: "Vendors",   iconName: "bi-building",         src: "/vendors" },
-    { id:4, Name: "Entries",   iconName: "bi-list-check",       src: "/entries" },
-    { id:5, Name: "Stores",    iconName: "bi-shop",             src: "/stores", role: "slsincharge" },
-    { id:6, Name: "Transfer",  iconName: "bi-arrow-left-right", src: "/transfer" },
-    { id:7, Name: "Scrap",     iconName: "bi-folder-x",         src:"/scrap"},
-    { id:8, Name: "Logout",    iconName: "bi-box-arrow-right" },
-    
+    { id: 1, Name: "Dashboard", iconName: "bi-speedometer", src: "/dashboard" },
+    { id: 2, Name: "Master", iconName: "bi-file-person-fill", src: "/master" },
+    { id: 3, Name: "Vendors", iconName: "bi-building", src: "/vendors" },
+    { id: 4, Name: "Entries", iconName: "bi-list-check", src: "/entries" },
+    { id: 5, Name: "Stores", iconName: "bi-shop", src: "/stores", role: "slsincharge" },
+    { id: 6, Name: "Transfer", iconName: "bi-arrow-left-right", src: "/transfer" },
+    { id: 7, Name: "Scrap", iconName: "bi-folder-x", src: "/scrap" },
+    { id: 8, Name: "Logout", iconName: "bi-box-arrow-right" },
+
   ];
 
   function navUsed() {
     return navItems.some((item) => item.src === location.pathname);
   }
 
-  function CheckRole({element, userRole, allowedRole, redirecTo }) {
+  function CheckRole({ element, userRole, allowedRole, redirecTo }) {
     const navigate = useNavigate();
     console.log(userRole, "   ", allowedRole);
     useEffect(() => {
@@ -82,7 +82,7 @@ function App() {
 
     return element;
   }
-
+  console.log(user);
   return (
     <>
       {isLoading ? (
@@ -106,67 +106,67 @@ function App() {
         duration-300`}
           >
             <GoogleOAuthProvider clientId="494572126295-g8ok8a5g0kvr3ceodj12h5orod5oe38v.apps.googleusercontent.com">
+              <Suspense fallback={<div>Loading...</div>}>
+                <Routes>
+                  <Route
+                    path="/*"
+                    element={<Error404 />}
+                  />
+                  <Route
+                    path="/"
+                    element={<LoginPage />}
+                  />
+                  <Route
+                    path="/dashboard"
+                    element={<Dashboard open={open}
+                      setOpen={setOpen} />}
+                  />
 
-              <Routes>
-                <Route
-                  path="/*"
-                  element={<Error404 />}
-                />
-                <Route
-                  path="/"
-                  element={<LoginPage />}
-                />
-                <Route
-                  path="/dashboard"
-                  element={<Dashboard open={open}
-                    setOpen={setOpen} />}
-                />
-                {/* <Route path="/registerpage" element={<RegisterPage />} /> */}
-                <Route
-                  path="/master"
-                  element={<Master />}
-                />
-                <Route
-                  path="/supplier"
-                  element={<Supplier />}
-                />
-                <Route
-                  path="/vendors"
-                  element={<Vendors />}
-                />
-                <Route
-                  path="/transfer"
-                  element={<Transfer />}
-                />
-                <Route
-                  path="/stores"
-                  element={
-                    <CheckRole 
-                      element={<Stores />} 
-                      userRole={user.role} 
-                      allowedRole={"slsincharge"}
-                      redirectTo={"/unauthorized"}
-                    />
-                  }
-                />
-                <Route
-                  path="/scrap"
-                  element={<Scrap />}
-                />
-                <Route
-                  path="/entries"
-                  element={<Entries />}
-                />
-                <Route
-                  path="/unauthorized"
-                  element={<Unauthorized />}
-                />
-                <Route 
-                  path="/excel"
-                  element={<Excel />}
-                />
-              </Routes>
-
+                  <Route
+                    path="/master"
+                    element={<Master />}
+                  />
+                  <Route
+                    path="/supplier"
+                    element={<Supplier />}
+                  />
+                  <Route
+                    path="/vendors"
+                    element={<Vendors />}
+                  />
+                  <Route
+                    path="/transfer"
+                    element={<Transfer />}
+                  />
+                  <Route
+                    path="/stores"
+                    element={
+                      <CheckRole
+                        element={<Stores />}
+                        userRole={user.role}
+                        allowedRole={"slsincharge"}
+                        redirectTo={"/unauthorized"}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/scrap"
+                    element={<Scrap />}
+                  />
+                  <Route
+                    path="/entries"
+                    element={<Entries />}
+                  />
+                  <Route
+                    path="/unauthorized"
+                    element={<Unauthorized />}
+                  />
+                  <Route
+                    path="/excel"
+                    element={<Excel />}
+                  />
+                </Routes>
+              </Suspense>
             </GoogleOAuthProvider>
           </div>
         </>
