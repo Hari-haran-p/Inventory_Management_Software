@@ -166,10 +166,10 @@ function App() {
                   path="/excel"
                   element={<Excel />}
                 />
-                {/* <Route 
+                <Route 
                   path="/date"
                   element={<DateRangeFilter />}
-                /> */}
+                />
               </Routes>
 
             </GoogleOAuthProvider>

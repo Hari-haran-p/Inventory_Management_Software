@@ -58,14 +58,12 @@ app.get("/api/getManufacturer", (req, res) => {
 
 app.get("/api/getCategories", (req, res) => {
     db.query("SELECT * FROM categories_view", (error, result) => {
-        console.log(result);
         res.send(result);
     });
 });
 
 app.get("/api/getInventory", (req, res) => {
     db.query("SELECT * FROM inventory_view", (error, result) => {
-        console.log(result);
 
         res.send(result);
     });

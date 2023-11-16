@@ -15,6 +15,7 @@
     "chart.js": "^4.4.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "faker": "^6.6.6",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.261.0",
     "pondjs": "^0.8.10",
