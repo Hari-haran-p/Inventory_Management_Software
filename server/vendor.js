@@ -66,7 +66,7 @@ const itemAdd = async function (req, res, next) {
     const selectResult4 = await new Promise((resolve, reject) => {
         db.query("SELECT * FROM itemtable").catch((error) => {
             res.status(400).json({ Data: "Some internal Error" });
-            reject(error);
+            reject(error)
             return;
         }).then((response) => resolve(response))
     })
@@ -74,11 +74,11 @@ const itemAdd = async function (req, res, next) {
     let match1 = selectResult1.some((s) => s.id == manufacturerId);
     let match2 = selectResult2.some((s) => s.id == supplierId);
     let match3 = selectResult3.some((s) => s.name == unit);
-    let match4 = selectResult4.some((s) => s.item_name == itemName);
+    let match4 = selectResult4.some((s) => s.item_name == itemName &&  s.item_subname == subName);
 
     if (match1 && match2 && match3 && cost > 0) {
         if (match4) {
-            res.status(400).json({ Data: "Item name already exists" });
+            res.status(400).json({ Data: "Item already exists" });
         } else {
             db.query(
                 `INSERT INTO itemtable 
@@ -109,6 +109,7 @@ const stockAdd = async function (req, res, next) {
     const labCode = req.body.labCode.toUpperCase();
     const currDate = new Date();
     const apex_no = req.body.apex_no.toUpperCase();
+    const userDept = req.body.user_dept_id.toLowerCase();
 
     const selectResult = await new Promise((resolve, reject) => {
         db.query("SELECT * FROM itemtable").catch((error) => {
@@ -122,7 +123,6 @@ const stockAdd = async function (req, res, next) {
 
     const selectResult2 = await new Promise((resolve, reject) => {
         db.query("SELECT * FROM stocktable").catch((error) => {
-
             res.status(400).json({ Data: "Some internal Error" });
             reject(error);
             return;
@@ -131,12 +131,10 @@ const stockAdd = async function (req, res, next) {
         })
     })
 
-    const findResult = selectResult2.find((f) => f.item_code.toUpperCase() == item_code.toUpperCase() && f.dept_id.toUpperCase() == labCode);
-
+    const findResult = selectResult2.find((f) => f.apex_no.toUpperCase() == apex_no.toUpperCase() && f.item_code.toUpperCase() == item_code.toUpperCase() && f.dept_id.toUpperCase() == labCode);
 
     if (selectResult.some((s) => s.item_code == item_code) && stockQty > 0) {
-
-        if (labCode.toLowerCase() == req.body.user_dept_id.toLowerCase()) {
+        if (userDept != 'slbs' && labCode.toLowerCase() == userDept) {
             if (findResult) {
                 const stockAdd = parseInt(findResult.stock_qty, 10) + parseInt(stockQty, 10);
                 const inventoryAdd = parseInt(findResult.inventory_value, 10) + parseInt(inventoryValue, 10)
@@ -150,7 +148,7 @@ const stockAdd = async function (req, res, next) {
                     })
                     .catch((error) => res.status(400).json({ Data: "Some internal error" }));
                 return;
-            } else {
+            }else {
                 db.query(
                     `INSERT INTO stocktable (apex_no, item_code, manufacturer_id, supplier_id, stock_qty, inventory_value, user_id, created_at, dept_id) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,

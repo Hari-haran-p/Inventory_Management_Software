@@ -82,6 +82,7 @@ function Entries() {
     setTimeout(clearMessage, 4000);
   }, [message, error]);
 
+  console.log(item);
   return (
     <>
       {isLoading ? (

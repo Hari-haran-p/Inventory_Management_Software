@@ -40,7 +40,7 @@ function App() {
 
   useEffect(() => {
     if (!Cookies.get('token')) {
-      // navigate("/");
+      navigate("/");
     } else {
       getUser().then(() => setIsLoading(false));
     }
