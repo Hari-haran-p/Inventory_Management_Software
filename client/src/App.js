@@ -12,7 +12,7 @@ import Vendors from "./components/NavItems/Vendors";
 import Entries from "./components/NavItems/Entries/Entries";
 import Master from "./components/NavItems/Master";
 import Supplier from "./components/NavItems/Supplier";
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, Suspense } from "react";
 
 import Dashboard from "./components/NavItems/Dashboard/Dashboard";
 import Error404 from "./components/ErrorPages/Error404";
@@ -27,6 +27,7 @@ import Stores from "./components/NavItems/Stores/Stores";
 import Unauthorized from "./components/ErrorPages/Unauthorized";
 import Transfer from "./components/NavItems/Transfer/Transfer.js";
 import { useAuth } from "./AuthContext";
+import Report from "./components/ReportGeneration/Report";
 import Excel from "./components/CommonPages/Excel";
 import Scrap from "./components/NavItems/Scrap/Scrap";
 import DateRangeFilter from "./components/Hover";
@@ -63,8 +64,9 @@ function App() {
     { id:4, Name: "Entries",   iconName: "bi-list-check",       src: "/entries" },
     { id:5, Name: "Stores",    iconName: "bi-shop",             src: "/stores", role: "slsincharge" },
     { id:6, Name: "Transfer",  iconName: "bi-arrow-left-right", src: "/transfer" },
-    { id:7, Name: "Scrap",     iconName: "bi-folder-x",         src:"/scrap"},
-    { id:8, Name: "Logout",    iconName: "bi-box-arrow-right" },
+    { id:7, Name: "Report",    iconName: "bi-printer-fill",     src: "/report" },
+    { id:8, Name: "Scrap",     iconName: "bi-folder-x",         src:"/scrap"},
+    { id:9, Name: "Logout",    iconName: "bi-box-arrow-right" },
     
   ];
 
@@ -72,7 +74,7 @@ function App() {
     return navItems.some((item) => item.src === location.pathname);
   }
 
-  function CheckRole({element, userRole, allowedRole, redirecTo }) {
+  function CheckRole({ element, userRole, allowedRole, redirecTo }) {
     const navigate = useNavigate();
     console.log(userRole, "   ", allowedRole);
     useEffect(() => {
@@ -83,7 +85,7 @@ function App() {
 
     return element;
   }
-
+  console.log(user);
   return (
     <>
       {isLoading ? (
@@ -126,6 +128,10 @@ function App() {
                 <Route
                   path="/master"
                   element={<Master />}
+                />
+                 <Route
+                  path="/report"
+                  element={<Report />}
                 />
                 <Route
                   path="/supplier"

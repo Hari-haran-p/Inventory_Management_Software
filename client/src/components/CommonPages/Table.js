@@ -3,7 +3,6 @@ import MasterTablePopup from "./MasterTablePopup";
 
 function Table({ stockData }) {
   //For open popup
-  // console.log(stockData);
   // console.log(itemData);
   const [openPopup, setOpenPopup] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
@@ -17,7 +16,6 @@ function Table({ stockData }) {
     setOpenPopup(false);
     setSelectedData(null);
   };
-
 
   // Search functionality
 
@@ -44,6 +42,7 @@ function Table({ stockData }) {
           "inventory_value",
           "user_id",
           "dept_id",
+          "stock_date"
         ];
         return propertiesToSearch.some((property) =>
           typeof item[property] === "string"
@@ -75,6 +74,7 @@ function Table({ stockData }) {
     inventory_value: "asc",
     user_id: "asc",
     dept_id: "asc",
+    stock_date: "asc",
   });
   const [sortedColumn, setSortedColumn] = useState("");
 
@@ -111,7 +111,7 @@ function Table({ stockData }) {
   };
 
   return (
-    <div className=" w-9/12 h-full">
+    <div className=" w-10/12" style={{height:"60vh"}}>
       <div className="flex  w-full mb-5 h-auto  justify-between font-semibold">
         <div className="sub-titles2 animate1 text-center text-2xl font-semibold">
           Master Table
@@ -142,7 +142,7 @@ function Table({ stockData }) {
       <div class="sm:-mx-6 lg:-mx-8 overflow-y-auto overflow-x-auto animate2 border-gray-700 rounded-lg">
         <div class=" align-middle inline-block min-w-full ">
           <div
-            style={{ width: "90%", height: "50%", maxHeight: "360px" }}
+            style={{ width: "90%", height: "50%", maxHeight: "50vh" }}
             class="shadow sm:rounded-lg  h-96"
           >
             <table class="min-w-full text-sm">
@@ -296,7 +296,7 @@ function Table({ stockData }) {
                   >
                     <div className="flex">
                       <div onClick={() => sortData("supplier_name")}>
-                        Supplier Name
+                        supplier_name
                       </div>
                       {sortedColumn === "supplier_name" && (
                         <i
@@ -378,8 +378,24 @@ function Table({ stockData }) {
                       </div>
                       {sortedColumn === "dept_id" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.dept_id === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.dept_id === "asc" ? "up" : "down"
+                          } ml-2`}
+                        ></i>
+                      )}
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
+                  >
+                    <div className="flex">
+                      <div onClick={() => sortData("stock_date")}>Date</div>
+                      {sortedColumn === "stock_date" && (
+                        <i
+                          className={`bi bi-arrow-${
+                            sortOrder.stock_date === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -441,6 +457,9 @@ function Table({ stockData }) {
                       </td>
                       <td class=" px-6 py-4 whitespace-nowrap">
                         {data.dept_id}
+                      </td>
+                      <td class=" px-6 py-4 whitespace-nowrap">
+                        {data.stock_date}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <i

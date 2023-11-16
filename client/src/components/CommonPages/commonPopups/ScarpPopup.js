@@ -28,7 +28,7 @@ function ScarpPopup({ isVisible, onClose, data }) {
             <div className="flex flex-col justify-center items-center">
               <div className="py-1 flex pb-8">
                 <span className="px-1 text-black font-medium text-2xl whitespace-nowrap">
-                  Scrap Values
+                  Scrap Value
                 </span>
               </div>
               <div

@@ -1,6 +1,5 @@
-
 const mysql = require("mysql");
-const dotenv = require('dotenv').config();
+const dotenv = require("dotenv").config();
 
 // Create a connection pool
 const pool = mysql.createPool({
@@ -10,17 +9,6 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   port: process.env.DB_PORT_PUBLIC
 });
-
-pool.getConnection((err, connection)=>{
-  if(err){
-    console.log(err);
-    return;
-  }else{
-    console.log("connected");
-  }
-
-  connection.release();
-})
 
 module.exports = {
   query: (sql, values) => {
@@ -45,5 +33,5 @@ module.exports = {
         resolve(connection);
       });
     });
-  }
+  },
 };

@@ -38,7 +38,7 @@ const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fe
                 setIsLoading(true);
                 e.preventDefault();
                 const response = await axios.post(
-                    "http://localhost:4000/api/deleteScrapRequest",
+                    "/api/deleteScrapRequest",
                     {
                         scrap_id: data.id,
                         dept_id: user.dept_code,

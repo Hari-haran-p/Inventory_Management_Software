@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoading, manufacturer, supplier, quantityUnits }) => {
+const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoading, manufacturer, supplier, quantityUnits,noDataOpenManufacturer ,noDataOpenSupplier }) => {
 
 
   //<-------------Assigning state requird state variables --------->
@@ -238,7 +238,7 @@ const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoadin
                               </div>
                             );
                           })) : (
-                            <div>No Match</div>
+                            <div className="cursor-pointer" onClick={noDataOpenManufacturer}>click here to add manufacturer</div>
                           )}
                       </div>
                     )}
@@ -279,7 +279,7 @@ const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoadin
                               </div>
                             );
                           })) : (
-                          <div>No Match</div>
+                          <div className="cursor-pointer" onClick={noDataOpenSupplier}>Click here to add Supplier</div>
                         )}
                       </div>
                     )}

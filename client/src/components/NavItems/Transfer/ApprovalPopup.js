@@ -57,12 +57,7 @@ function ApprovalPopup({ isVisible, transferData, onClose, setError, setMessage,
                     </div>
                 </div>
             </div>
-
-
-
-        </>
-
-        
+        </>  
     )
 }
 
