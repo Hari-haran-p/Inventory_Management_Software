@@ -13,12 +13,14 @@ function ItemPopup({ data, onClose }) {
           </button>
         </div>
         <div className=" text-lg gap-6">
-          <div className="w-full flex">
+
+          <div className="box-shadow w-full flex">
             <div className="w-36 flex justify-end font-bold mr-5 whitespace-nowrap ">
-              Item Code
+              Item Code :
             </div>
-            :<div className="pl-5 whitespace-nowrap"> {data.item_code}</div>
+            <div className="pl-5 whitespace-nowrap"> {data.item_code}</div>
           </div>
+
           <div className="w-full flex">
             <div className="w-36 flex justify-end font-bold mr-5 whitespace-nowrap ">
               Item Type

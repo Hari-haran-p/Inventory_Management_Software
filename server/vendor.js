@@ -71,7 +71,8 @@ const itemAdd = async function (req, res, next) {
         }).then((response) => resolve(response))
     })
 
-    let match1 = selectResult1.some((s) => s.id == manufacturerId);
+    let match1 = selectResult1.some((s) => s.id == manufacturerId); 
+    
     let match2 = selectResult2.some((s) => s.id == supplierId);
     let match3 = selectResult3.some((s) => s.name == unit);
     let match4 = selectResult4.some((s) => s.item_name == itemName &&  s.item_subname == subName);
@@ -120,6 +121,8 @@ const stockAdd = async function (req, res, next) {
             resolve(response);
         })
     })
+
+    
 
     const selectResult2 = await new Promise((resolve, reject) => {
         db.query("SELECT * FROM stocktable").catch((error) => {

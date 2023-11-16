@@ -18,12 +18,12 @@ const ScrapRequest = ({ onClose, isVisible, user, setMessage, setError, fetchScr
   const { getUser} = useAuth();
 
   async function fetchItems() {
-    const response = await axios.get("http://localhost:4000/api/getItems");
+    const response = await axios.get("/api/getItems");
     setItem(response.data);
   }
 
   async function fetchStock() {
-    const response = await axios.get(`http://localhost:4000/api/getStock/${user.dept_code}`);
+    const response = await axios.get(`/api/getStock/${user.dept_code}`);
     setStock(response.data);
   }
 
@@ -81,7 +81,7 @@ const ScrapRequest = ({ onClose, isVisible, user, setMessage, setError, fetchScr
       if (stockResult.length > 0) {
         // const sendItem = item.find((f) => f.item_code == data.itemcode);
         const response = await axios.post(
-          "http://localhost:4000/api/scrapRequest",
+          "/api/scrapRequest",
           {
             formData: { ...data },
             resultData: { ...result },

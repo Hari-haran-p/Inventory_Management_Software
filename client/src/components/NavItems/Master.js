@@ -19,7 +19,7 @@ function Master() {
 
   const fetchStockData = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/getAdminStockData"); 
+      const response = await axios.get("https://8a73-121-200-55-49.ngrok-free.app/api/getAdminStockData"); 
       setStockData(response.data);
     } catch (error) {
       console.error(error);
@@ -50,11 +50,12 @@ function Master() {
           Loading
         </div >
       ) : (
-        <div className='h-full' style={{ backgroundColor: "#F4F4F4"  }}>
-          <h1 className="text-2xl font-semibold animate1 pt-12 pl-20">Master Page</h1>
-          <div className="flex flex-col justify-center items-center gap-10 ">
-            <center> <Cards /></center>
+        <div  style={{ backgroundColor: "#F4F4F4", height:"100vh"  }}>
+          <h1 className="text-2xl font-semibold animate1 pt-10 pl-20">Master Page</h1>
+          <div className="flex flex-col justify-center items-center ">
+            <div style={{height:"30vh"}} className="d-card flex items-center justify-center"> <Cards /></div>
             <Table stockData={stockData} fetchStockData={fetchStockData} />
+            
           </div>  
         </div>
       )}

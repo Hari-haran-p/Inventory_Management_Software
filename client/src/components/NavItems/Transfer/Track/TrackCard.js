@@ -8,7 +8,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
     try {
       setIsLoading(true);
       e.preventDefault();
-      const response = await axios.post("http://localhost:4000/api/cancelTransferRequest",
+      const response = await axios.post("/api/cancelTransferRequest",
         {
           transfer_id: data.id,
           dept_id: user.dept_code
@@ -35,7 +35,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "http://localhost:4000/api/deleteTransferRequest",
+        "/api/deleteTransferRequest",
         {
           transfer_id: data.id,
           dept_id: user.dept_code,

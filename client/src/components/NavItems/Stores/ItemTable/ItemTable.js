@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import ItemEdit from "./ItemEdit";
 
 function ItemTable({itemData , fetchItemData, setMessage, setError}) {
-  //For open popup
+  //<---------------------For view open popup window------------------------->
 
   // console.log(itemData);
   const [openPopup, setOpenPopup] = useState(false);
@@ -19,7 +19,7 @@ function ItemTable({itemData , fetchItemData, setMessage, setError}) {
     setOpenPopup(false);
     setSelectedData(null);
   };
-  //For edit popup
+   //<---------------------For edit popup window------------------------->
 
   const [openEdit, setOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -40,7 +40,7 @@ function ItemTable({itemData , fetchItemData, setMessage, setError}) {
     handleCloseEdit();
   };
 
-  // Search functionality
+  //<---------------------search functionality------------------------->
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -74,46 +74,46 @@ function ItemTable({itemData , fetchItemData, setMessage, setError}) {
     }
   }, [click, itemData, searchQuery]);
 
-  //sort by functionality
-  const [sortOrders, setSortOrders] = useState({
-    item_code: "asc",
-    item_type: "asc",
-    item_name: "asc",
-    item_subname: "asc",
-    item_description: "asc",
-    manufacturer_id: "asc",
-    quantity_units: "asc",
-    supplier_id: "asc",
-    cost_per_item: "asc",
-  });
-  
-  const [sortedColumn, setSortedColumn] = useState("");
-
-  const handleSort = (column) => {
-    setSortOrders((prevSortOrders) => ({
-      ...prevSortOrders,
-      [column]: prevSortOrders[column] === "asc" ? "desc" : "asc",
-    }));
-
-    setSortedColumn(column);
-
-    filteredData.sort((a, b) => {
-      const valueA =
-        typeof a[column] === "string" ? a[column].toLowerCase() : a[column];
-      const valueB =
-        typeof b[column] === "string" ? b[column].toLowerCase() : b[column];
-
-      if (valueA < valueB) {
-        return sortOrders[column] === "asc" ? -1 : 1;
-      }
-      if (valueA > valueB) {
-        return sortOrders[column] === "asc" ? 1 : -1;
-      }
-      return 0;
+    //<---------------------For sort functionality------------------------->
+    const [sortOrders, setSortOrders] = useState({
+      item_code: "asc",
+      item_type: "asc",
+      item_name: "asc",
+      item_subname: "asc",
+      item_description: "asc",
+      manufacturer_id: "asc",
+      quantity_units: "asc",
+      supplier_id: "asc",
+      cost_per_item: "asc",
     });
+    
+    const [sortedColumn, setSortedColumn] = useState("");
 
-    setFilteredData(filteredData);
-  };
+    const handleSort = (column) => {
+      setSortOrders((prevSortOrders) => ({
+        ...prevSortOrders,
+        [column]: prevSortOrders[column] === "asc" ? "desc" : "asc",
+      }));
+
+      setSortedColumn(column);
+
+      filteredData.sort((a, b) => {
+        const valueA =
+          typeof a[column] === "string" ? a[column].toLowerCase() : a[column];
+        const valueB =
+          typeof b[column] === "string" ? b[column].toLowerCase() : b[column];
+
+        if (valueA < valueB) {
+          return sortOrders[column] === "asc" ? -1 : 1;
+        }
+        if (valueA > valueB) {
+          return sortOrders[column] === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+
+      setFilteredData(filteredData);
+    };
 
   // <-------------------------------search bar enter function---------------------------->
 
