@@ -33,24 +33,32 @@ function Entries() {
 
 
   async function fetchItems() {
-    const response = await axios.get("http://10.30.10.12/api/getItems");
+    const response = await axios.get("/api/getItems");
     setItem(response.data);
   }
 
   async function fetchManufacturer() {
-    const response = await axios.get("http://10.30.10.12/api/getManufacturer");
+    const response = await axios.get("/api/getManufacturer");
     setManufacturer(response.data);
   }
   async function fetchSupplier() {
-    const response = await axios.get("http://10.30.10.12/api/getSupplier");
+    const response = await axios.get("/api/getSupplier");
     setSupplier(response.data);
   }
   async function fetchQuantityUnits() {
-    const response = await axios.get("http://10.30.10.12/api/getQuantityUnits");
+    const response = await axios.get("/api/getQuantityUnits");
     setQuantityUnits(response.data);
   }
 
 
+  const noDataOpenManufacturer = () => {
+    setShowItem(false)
+    setShowManufacturer(true)
+  }
+  const noDataOpenSupplier = () => {
+    setShowItem(false)
+    setShowSupplier(true)
+  }
 
   useEffect(() => {
     if (!Cookies.get("token")) {

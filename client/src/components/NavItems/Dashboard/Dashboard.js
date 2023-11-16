@@ -73,6 +73,7 @@ function Dashboard({ open, setOpen }) {
     fetchLabsStock();
   }, []);
 
+  console.log(categories);
   useEffect(() => {
     if (categories.length > 0 && inventory.length > 0 && labitem.length > 0 && labname.length > 0) {
       setTimeout(() => setIsLoading(), 1000)
@@ -83,7 +84,7 @@ function Dashboard({ open, setOpen }) {
   console.log("categories : ", categories);
   console.log("inventory : ", inventory);
   console.log("labitem : ", labitem);
-  console.log("labname : ", labname);
+  console.log("labname : ", labname);  
 
   return (
     <>
@@ -109,7 +110,6 @@ function Dashboard({ open, setOpen }) {
               <Piechart labitem={labitem} />
             </div>
           </div>
-
         </>
       )
       }

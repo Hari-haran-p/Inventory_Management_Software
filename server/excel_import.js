@@ -63,8 +63,9 @@ const importItems = async function (req, res, next) {
 
         const itemTableSet = new Set();
         for (const item of itemTableData) {
-            itemTableSet.add(item.item_name);
+            itemTableSet.add(item.item_name.toUpperCase());
         }
+        // console.log(itemTableSet.has('clear varnish'));
         const itemTypeSet = new Set();
         for (const type of itemTypeData) {
             itemTypeSet.add(type.name);
@@ -84,7 +85,7 @@ const importItems = async function (req, res, next) {
 
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
-            if (itemTableSet.has(item.item_name)) {
+            if (itemTableSet.has(item.item_name.toUpperCase())) {
                 res.status(401).json({ Data: `Item name is not unique in row ${i + 1}` });
                 return;
             }
@@ -157,6 +158,16 @@ const importStocks = async function (req, res, next) {
 
         const itemData = await new Promise((resolve, reject) => {
             connection.query("SELECT * FROM itemtable", (error, result) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+
+        const stockData = await new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM stocktable", (error, result) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -264,36 +275,87 @@ const importStocks = async function (req, res, next) {
             itemDataMap[m.item_code] = m;
         });
 
-        data.forEach((d, index) => {
+        data.forEach(async (d, index) => {
             const m = itemDataMap[d.item_code];
             if (m) {
-                console.log(m.cost_per_item, "   ", d.stock_qty, "    ", d.inventory_value);
+                // console.log(m.cost_per_item, "   ", d.stock_qty, "    ", d.inventory_value);
                 if (m.cost_per_item * d.stock_qty !== d.inventory_value) {
-                    console.log("hiii");
+                    await connection.rollback();
                     res.status(401).json({ Data: `Inventory value is not equivalent to cost of item at row ${index + 1}` });
                     return;
                 }
             }
         });
 
+
         const date = new Date();
         const curr_date = date.toISOString().split("T")[0];
-        
-        const values = data.map((d)=> [d.item_code, d.manufacturer_id, d.supplier_id, d.stock_qty, d.inventory_value, d.user_id, curr_date, d.dept_id]);
 
-        const insert = await new Promise((resolve, reject)=>{
-            connection.query("INSERT INTO stocktable (item_code, manufacturer_id, supplier_id, stock_qty, inventory_value, user_id, created_at, dept_id) VALUES ?", [values],
-            (error, result)=>{
-                if(error){
-                    reject(error);
-                }else{
-                    resolve(result);
-                }
-            })
-        })   
+        let errorOccured = false;
+        const result = data.map(async (d, index) => {
 
-        await connection.commit();
-        res.status(200).json({Data:"Accepted Sucessfully"})
+            if (Object.values(d).length < 9) {
+                await connection.rollback();
+                res.status(401).json({ Data: `Some values are missing at row ${index + 1}` });
+                return
+            };
+
+            const result = stockData.find((s) => s.item_code.toUpperCase() == d.item_code.toUpperCase() && s.dept_id.toUpperCase() == d.dept_id.toUpperCase())
+
+
+
+            if (result) {
+                console.log("update");
+                const stockAdd = result.stock_qty + d.stock_qty;
+                const inventoryValue = result.inventory_value + d.inventory_value;
+                console.log(stockAdd, "   ", inventoryValue);
+                const update = await new Promise((resolve, reject) => {
+                    connection.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ? WHERE stock_id = ?", [stockAdd, inventoryValue, result.stock_id],
+                        async (error, result) => {
+                            if (error) {
+                                errorOccured = true;
+                                reject(error);
+                                return;
+                            } else {
+                                resolve(result);
+                            }
+                        })
+                })
+            } else {
+
+                console.log("insert");
+                // console.log(d, curr_date)
+                const insert = await new Promise((resolve, reject) => {
+                    connection.query("INSERT INTO stocktable (apex_no, item_code, manufacturer_id, supplier_id, stock_qty, inventory_value, user_id, created_at, dept_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [d.apex_no, d.item_code, d.manufacturer_id, d.supplier_id, d.stock_qty, d.inventory_value, d.user_id, curr_date, d.dept_id],
+                        async (error, result) => {
+                            if (error) {
+                                console.log(error);
+                                errorOccured = true;
+                                reject(error);
+                                return;
+                            } else {
+                                resolve(result);
+                            }
+                        })
+                })
+            }
+        })
+
+        await Promise.all(result).catch(async (error) => {
+            await connection.rollback();
+            return;
+        });
+
+        if (!errorOccured) {
+            await connection.commit();
+            res.status(200).json({ Data: "Accepted Sucessfully" })
+            return;
+        } else {
+            res.status(401).json({ Data: `Some Internal Error` });
+            return;
+        }
+
         console.log("imported");
 
     } catch (error) {
@@ -301,6 +363,8 @@ const importStocks = async function (req, res, next) {
         if (connection) {
             await connection.rollback();
         }
+        res.status(401).json({ Data: `Some Internal Error` });
+        return;
     } finally {
         if (connection) {
             await connection.release();

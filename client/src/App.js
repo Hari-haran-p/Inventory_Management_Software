@@ -27,8 +27,10 @@ import Stores from "./components/NavItems/Stores/Stores";
 import Unauthorized from "./components/ErrorPages/Unauthorized";
 import Transfer from "./components/NavItems/Transfer/Transfer.js";
 import { useAuth } from "./AuthContext";
+import Report from "./components/ReportGeneration/Report";
 import Excel from "./components/CommonPages/Excel";
 import Scrap from "./components/NavItems/Scrap/Scrap";
+import DateRangeFilter from "./components/Hover";
 
 
 function App() {
@@ -56,15 +58,16 @@ function App() {
 
   const navItems = [
 
-    { id: 1, Name: "Dashboard", iconName: "bi-speedometer", src: "/dashboard" },
-    { id: 2, Name: "Master", iconName: "bi-file-person-fill", src: "/master" },
-    { id: 3, Name: "Vendors", iconName: "bi-building", src: "/vendors" },
-    { id: 4, Name: "Entries", iconName: "bi-list-check", src: "/entries" },
-    { id: 5, Name: "Stores", iconName: "bi-shop", src: "/stores", role: "slsincharge" },
-    { id: 6, Name: "Transfer", iconName: "bi-arrow-left-right", src: "/transfer" },
-    { id: 7, Name: "Scrap", iconName: "bi-folder-x", src: "/scrap" },
-    { id: 8, Name: "Logout", iconName: "bi-box-arrow-right" },
-
+    { id:1, Name: "Dashboard", iconName: "bi-speedometer",      src: "/dashboard" },
+    { id:2, Name: "Master",    iconName: "bi-file-person-fill", src: "/master" },
+    { id:3, Name: "Vendors",   iconName: "bi-building",         src: "/vendors" },
+    { id:4, Name: "Entries",   iconName: "bi-list-check",       src: "/entries" },
+    { id:5, Name: "Stores",    iconName: "bi-shop",             src: "/stores", role: "slsincharge" },
+    { id:6, Name: "Transfer",  iconName: "bi-arrow-left-right", src: "/transfer" },
+    { id:7, Name: "Report",    iconName: "bi-printer-fill",     src: "/report" },
+    { id:8, Name: "Scrap",     iconName: "bi-folder-x",         src:"/scrap"},
+    { id:9, Name: "Logout",    iconName: "bi-box-arrow-right" },
+    
   ];
 
   function navUsed() {
@@ -106,67 +109,75 @@ function App() {
         duration-300`}
           >
             <GoogleOAuthProvider clientId="494572126295-g8ok8a5g0kvr3ceodj12h5orod5oe38v.apps.googleusercontent.com">
-              <Suspense fallback={<div>Loading...</div>}>
-                <Routes>
-                  <Route
-                    path="/*"
-                    element={<Error404 />}
-                  />
-                  <Route
-                    path="/"
-                    element={<LoginPage />}
-                  />
-                  <Route
-                    path="/dashboard"
-                    element={<Dashboard open={open}
-                      setOpen={setOpen} />}
-                  />
 
-                  <Route
-                    path="/master"
-                    element={<Master />}
-                  />
-                  <Route
-                    path="/supplier"
-                    element={<Supplier />}
-                  />
-                  <Route
-                    path="/vendors"
-                    element={<Vendors />}
-                  />
-                  <Route
-                    path="/transfer"
-                    element={<Transfer />}
-                  />
-                  <Route
-                    path="/stores"
-                    element={
-                      <CheckRole
-                        element={<Stores />}
-                        userRole={user.role}
-                        allowedRole={"slsincharge"}
-                        redirectTo={"/unauthorized"}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/scrap"
-                    element={<Scrap />}
-                  />
-                  <Route
-                    path="/entries"
-                    element={<Entries />}
-                  />
-                  <Route
-                    path="/unauthorized"
-                    element={<Unauthorized />}
-                  />
-                  <Route
-                    path="/excel"
-                    element={<Excel />}
-                  />
-                </Routes>
-              </Suspense>
+              <Routes>
+                <Route
+                  path="/*"
+                  element={<Error404 />}
+                />
+                <Route
+                  path="/"
+                  element={<LoginPage />}
+                />
+                <Route
+                  path="/dashboard"
+                  element={<Dashboard open={open}
+                    setOpen={setOpen} />}
+                />
+                {/* <Route path="/registerpage" element={<RegisterPage />} /> */}
+                <Route
+                  path="/master"
+                  element={<Master />}
+                />
+                 <Route
+                  path="/report"
+                  element={<Report />}
+                />
+                <Route
+                  path="/supplier"
+                  element={<Supplier />}
+                />
+                <Route
+                  path="/vendors"
+                  element={<Vendors />}
+                />
+                <Route
+                  path="/transfer"
+                  element={<Transfer />}
+                />
+                <Route
+                  path="/stores"
+                  element={
+                    <CheckRole 
+                      element={<Stores />} 
+                      userRole={user.role} 
+                      allowedRole={"slsincharge"}
+                      redirectTo={"/unauthorized"}
+                    />
+                  }
+                />
+                <Route
+                  path="/scrap"
+                  element={<Scrap />}
+                />
+                <Route
+                  path="/entries"
+                  element={<Entries />}
+                />
+                <Route
+                  path="/unauthorized"
+                  element={<Unauthorized />}
+                />
+                <Route 
+                  path="/excel"
+                  element={<Excel />}
+                />
+                {/* <Route 
+                  path="/date"
+                  element={<DateRangeFilter />}
+                /> */}
+              </Routes>
+
             </GoogleOAuthProvider>
           </div>
         </>

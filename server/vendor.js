@@ -71,7 +71,8 @@ const itemAdd = async function (req, res, next) {
         }).then((response) => resolve(response))
     })
 
-    let match1 = selectResult1.some((s) => s.id == manufacturerId);
+    let match1 = selectResult1.some((s) => s.id == manufacturerId); 
+    
     let match2 = selectResult2.some((s) => s.id == supplierId);
     let match3 = selectResult3.some((s) => s.name == unit);
     let match4 = selectResult4.some((s) => s.item_name == itemName);
@@ -99,7 +100,7 @@ const itemAdd = async function (req, res, next) {
 
 const stockAdd = async function (req, res, next) {
 
-    
+
     const item_code = req.body.itemcode;
     const manufacturerId = req.body.manufacturerId;
     const supplierId = req.body.supplierId;
@@ -120,6 +121,8 @@ const stockAdd = async function (req, res, next) {
         })
     })
 
+    
+
     const selectResult2 = await new Promise((resolve, reject) => {
         db.query("SELECT * FROM stocktable").catch((error) => {
 
@@ -138,7 +141,9 @@ const stockAdd = async function (req, res, next) {
 
         if (labCode.toLowerCase() == req.body.user_dept_id.toLowerCase()) {
             if (findResult) {
-                db.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ?, user_id = ? WHERE stock_id = ?", [findResult.stock_qty + stockQty, findResult.inventory_value + inventoryValue, userId, findResult.stock_id])
+                const stockAdd = parseInt(findResult.stock_qty, 10) + parseInt(stockQty, 10);
+                const inventoryAdd = parseInt(findResult.inventory_value, 10) + parseInt(inventoryValue, 10)
+                db.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ?, user_id = ? WHERE stock_id = ?", [stockAdd, inventoryAdd, userId, findResult.stock_id])
                     .then((response) => {
                         if (response.affectedRows > 0) {
                             res.status(201).json({ Data: "Stock value updated in existing data" });
@@ -173,12 +178,10 @@ const stockAdd = async function (req, res, next) {
             return;
         }
 
-
     } else {
         res.status(400).json({ Data: "Check for Itemname and stock quantity" });
         return;
     }
-
 }
 
 module.exports = {

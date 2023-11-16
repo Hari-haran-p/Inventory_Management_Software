@@ -1,6 +1,5 @@
-
 const mysql = require("mysql");
-const dotenv = require('dotenv').config();
+const dotenv = require("dotenv").config();
 
 // Create a connection pool
 const pool = mysql.createPool({
@@ -34,5 +33,5 @@ module.exports = {
         resolve(connection);
       });
     });
-  }
+  },
 };

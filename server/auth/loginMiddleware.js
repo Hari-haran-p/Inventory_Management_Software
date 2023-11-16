@@ -50,26 +50,19 @@ const createToken = (result) => {
 const createSession = function (req, res, next) {
   // console.log(res.locals.payload);
   const email = res.locals.payload.email;
-  console.log(email);
   db.query("SELECT * FROM faculty WHERE email_id = ? ", [email])
     .then((response) => {
-      console.log(response)
       if(response.length <= 0) {
         res.status(401).json({ error: "Unauthorised Access" });
       }else if(response.statusCode == 400) {
-        console.log(response.statusCode);
         res.status(400).json({ error: "Unauthorised Access" });
       }else{
-        console.log("Else:",response.statusCode);
         const token = createToken(response);
-        // console.log("Token call")
         res.locals.token = token;
         next();
-        
       }
     })
     .catch((error) => {
-      console.log(error)
       res.status(400).json({ error: "There was some error" })
     });
 };
