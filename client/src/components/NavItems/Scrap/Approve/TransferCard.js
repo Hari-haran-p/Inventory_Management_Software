@@ -16,7 +16,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
 
     try {
       setIsLoading(true);
-      const response = await axios.post("/api/acceptScrapRequest", { ...data, user_id: user.user_id, role: user.role })
+      const response = await axios.post("http://localhost:4000/api/acceptScrapRequest", { ...data, user_id: user.user_id, role: user.role })
         .then((response) => {
           setIsLoading(false);
           if (response && response.status == 201) {
@@ -44,7 +44,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
           setIsLoading(true);
           setShowManufacturer(false);
           setRejectDesc("")
-          const response = await axios.post("/api/rejectScrapRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc });
+          const response = await axios.post("http://localhost:4000/api/rejectScrapRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc });
           if (response && response.status == 201) {
             setIsLoading(false);
             setMessage(response.data.Data);

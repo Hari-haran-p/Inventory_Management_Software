@@ -17,7 +17,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post("/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
+      const response = await axios.post("http://localhost:4000/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
         .then((response) => {
           setIsLoading(false);
           if (response && response.status == 201) {
@@ -32,6 +32,8 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
     }
   }
 
+  console.log(data);
+
   const handleReject = async (e) => {
     e.preventDefault();
     if (rejectDesc == "") {
@@ -43,7 +45,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
           setIsLoading(true);
           setShowManufacturer(false);
           setRejectDesc("")
-          const response = await axios.post("/api/rejectRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc })
+          const response = await axios.post("http://localhost:4000/api/rejectRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc })
             .then((response) => {
               setIsLoading(false);
               if (response && response.status == 201) {
@@ -114,8 +116,8 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
           </center>
           <div className="flex card-sub" style={{ gap: "13%" }}>
             <div className="lg:text-sm p-6">
-              <div className="">Item Name : {data.item_name}</div>
-              <div className="pt-4">Item code : {data.item_code}</div>
+              <div className="">Item code(Apex No) :{data.item_code}({data.apex_no})</div>
+              <div className="pt-4">Item Name : {data.item_name}</div>
             </div>
             <div className="text-sm p-6   ">
               <div>Item Subame : {data.item_subname}</div>

@@ -19,7 +19,7 @@ function Master() {
 
   const fetchStockData = async () => {
     try {
-      const response = await axios.get("https://8a73-121-200-55-49.ngrok-free.app/api/getAdminStockData"); 
+      const response = await axios.get("http://localhost:4000/api/getAdminStockData"); 
       setStockData(response.data);
     } catch (error) {
       console.error(error);
@@ -55,7 +55,6 @@ function Master() {
           <div className="flex flex-col justify-center items-center ">
             <div style={{height:"30vh"}} className="d-card flex items-center justify-center"> <Cards /></div>
             <Table stockData={stockData} fetchStockData={fetchStockData} />
-            
           </div>  
         </div>
       )}

@@ -7,7 +7,7 @@ import TransferPopup from "./TransferPopup";
 import TransferCard from "./TransferCard";
 import TrackTransfer from "./Track/TrackTransfer.js";
 import ApprovalPopup from "./ApprovalPopup";
-import Table from "./Table";
+import TransferTable from "./TransferTable.js";
 
 
 const Transfer = () => {
@@ -15,7 +15,7 @@ const Transfer = () => {
   const [showTransferPopup, setTransferPopup] = useState(false);
   const [showTrackTransfer, setTrackTransfer] = useState(false);
   const [showApprovalRequest, setApprovalRequest] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [trackTransferData, setTrackTransferData] = useState([]);
   const [transferData, setTransferData] = useState([]);
   const [noData, setNoData] = useState(false);
@@ -57,7 +57,7 @@ const Transfer = () => {
 
   async function fetchTransferData(data) {
     try {
-      const result = await axios.post("/api/getTransferData", data)
+      const result = await axios.post("http://localhost:4000/api/getTransferData", data)
       if (result.status == 200) {
         if (result.data.data == "No Data") {
           setNoData(true);
@@ -83,7 +83,7 @@ const Transfer = () => {
   async function fetchTrackTransferData(data) {
     try {
       const response = await axios.post(
-        "/api/getTrackTransfer", data
+        "http://localhost:4000/api/getTrackTransfer", data
       );
       if (response.status == 200) {
         setTrackTransferData(response.data.data)
@@ -97,7 +97,7 @@ const Transfer = () => {
 
   const fetchOverallTranferedData = async () => {
     try {
-      const response = await axios.get("/api/getOverallTransferedData");
+      const response = await axios.get("http://localhost:4000/api/getOverallTransferedData");
       setOverallTranferedData(response.data);
     } catch (error) {
       console.error(error);
@@ -108,12 +108,14 @@ const Transfer = () => {
 
   const fetchStockData = async () => {
     try {
-      const response = await axios.get("/api/getAdminStockData");
+      const response = await axios.get("http://localhost:4000/api/getAdminStockData");
       setStockData(response.data);
     } catch (error) {
       console.error(error);
     }
   };
+
+  const [showTable, setShowTable] = useState(true);
 
   useEffect(() => {
     fetchOverallTranferedData();
@@ -146,32 +148,46 @@ const Transfer = () => {
               <div className="flex flex-wrap gap-5">
                 <div
                   className="bg-blue-500 animate1 cursor-pointer whitespace-nowrap hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
-                  onClick={() => setTrackTransfer(true)}
+                  onClick={() => {
+                    setApprovalRequest(false);
+                    setTransferPopup(false)
+                    setTrackTransfer(true);
+                    setShowTable(false);
+                  }}
                 >
                   Track Your Request
                 </div>
 
                 <div
                   className="bg-blue-500 animate1 whitespace-nowrap cursor-pointer hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
-                  onClick={() => setApprovalRequest(true)}
+                  onClick={() => {
+                    setApprovalRequest(true);
+                    setTransferPopup(false)
+                    setTrackTransfer(false);
+                    setShowTable(false);
+                  }}
                 >
                   Approval Request
                 </div>
                 <div
                   className="bg-blue-500 animate1  whitespace-nowrap cursor-pointer hover:bg-blue-700 text-white h-10 text-sm  py-2 px-6 rounded w-42"
-                  onClick={() => setTransferPopup(true)}
+                  onClick={() => {
+                    setTransferPopup(true)
+                    setShowTable(false)
+                    setTrackTransfer(false);
+                    setApprovalRequest(false);
+                  }}
                 >
                   Request Transfer
                 </div>
               </div>
             </div>
           </div>
-          <div className="pl-8">Transfer History</div>
-          <br /><br />
-          <div className="flex items-center flex-col">
-
-            <Table stockData={OverallTranferedData} />
-          </div>
+          <TransferTable 
+            OverallTranferedData={OverallTranferedData}
+            isVisible = {showTable}
+            onClose = {onClose}
+          />
           <TransferPopup
             user={user}
             isVisible={showTransferPopup}
@@ -188,7 +204,7 @@ const Transfer = () => {
             setError={setError}
             setMessage={setMessage}
           />
-          
+
           <ApprovalPopup
             user={user}
             transferData={transferData}

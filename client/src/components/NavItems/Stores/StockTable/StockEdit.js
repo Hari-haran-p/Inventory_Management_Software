@@ -32,7 +32,7 @@ function StockEdit({ data, onClose, onSubmit, setMessage, setError, setIsLoading
       e.preventDefault();
       try {
         const response = await axios.post(
-          "/api/stockEdit",
+          "http://localhost:4000/api/stockEdit",
           formData
         );
 

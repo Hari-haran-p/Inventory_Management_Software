@@ -20,7 +20,7 @@ function Cards() {
 
   const fetchTotalStockValueData = async () => {
     try {
-      const response = await axios.get('/api/getTotalStockValueData');
+      const response = await axios.get('http://localhost:4000/api/getTotalStockValueData');
       setTotalStockValueData(response.data[0].stock);
     } catch (error) {
       console.log(error)
@@ -30,7 +30,7 @@ function Cards() {
 
   const fetchscrapValueData = async () => {
     try {
-      const response = await axios.get('/api/getTotalScrapValueData');
+      const response = await axios.get('http://localhost:4000/api/getTotalScrapValueData');
       setTotalScrapValueData(response.data[0].name);
     } catch (error) {
       console.log(error)
@@ -39,7 +39,7 @@ function Cards() {
 
   const fetchTotalInventoryValueData = async () => {
     try {
-      const response = await axios.get('/api/getTotalInventoryValueData');
+      const response = await axios.get('http://localhost:4000/api/getTotalInventoryValueData');
       setTotalInventoryValueData(response.data[0].cost);
     } catch (error) {
       console.log(error)
@@ -48,7 +48,7 @@ function Cards() {
 
   const fetchgetStockDatas = async () => {
     try {
-      const response = await axios.get('/api/getOverallLabsStock');
+      const response = await axios.get('http://localhost:4000/api/getOverallLabsStock');
       setGetStockDatas(response.data);
     } catch (error) {
       console.error(error);
@@ -57,7 +57,7 @@ function Cards() {
 
   const fetchgetInventoryDatas = async () => {
     try {
-      const response = await axios.get('/api/getInventoryData');
+      const response = await axios.get('http://localhost:4000/api/getInventoryData');
       setGetInventoryDatas(response.data);
     } catch (error) {
       console.error(error);
@@ -66,7 +66,7 @@ function Cards() {
 
   const fetchgetScrapDatas = async () => {
     try {
-      const response = await axios.get('/api/getScrapData');
+      const response = await axios.get('http://localhost:4000/api/getScrapData');
       setGetScrapDatas(response.data);
     } catch (error) {
       console.error(error);

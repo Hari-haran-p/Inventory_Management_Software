@@ -41,7 +41,7 @@ function Report() {
 
   useEffect(() => {
     axios
-      .get("/api/getAdminStockData")
+      .get("http://localhost:4000/api/getAdminStockData")
       .then((response) => {
         setData(response.data);
       })
@@ -50,7 +50,7 @@ function Report() {
       });
 
     axios
-      .get("/api/getItems")
+      .get("http://localhost:4000/api/getItems")
       .then((response) => {
         setItemData(response.data);
       })
@@ -60,7 +60,7 @@ function Report() {
   }, []);
 
   axios
-  .get("/api/getAdminStockData")
+  .get("http://localhost:4000/api/getAdminStockData")
   .then((response) => {
     setData(response.data);
   })

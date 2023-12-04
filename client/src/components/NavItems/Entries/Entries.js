@@ -33,20 +33,20 @@ function Entries() {
 
 
   async function fetchItems() {
-    const response = await axios.get("/api/getItems");
+    const response = await axios.get("http://localhost:4000/api/getItems");
     setItem(response.data);
   }
 
   async function fetchManufacturer() {
-    const response = await axios.get("/api/getManufacturer");
+    const response = await axios.get("http://localhost:4000/api/getManufacturer");
     setManufacturer(response.data);
   }
   async function fetchSupplier() {
-    const response = await axios.get("/api/getSupplier");
+    const response = await axios.get("http://localhost:4000/api/getSupplier");
     setSupplier(response.data);
   }
   async function fetchQuantityUnits() {
-    const response = await axios.get("/api/getQuantityUnits");
+    const response = await axios.get("http://localhost:4000/api/getQuantityUnits");
     setQuantityUnits(response.data);
   }
 
@@ -90,7 +90,6 @@ function Entries() {
     setTimeout(clearMessage, 4000);
   }, [message, error]);
 
-  console.log(item);
   return (
     <>
       {isLoading ? (

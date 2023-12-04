@@ -11,7 +11,7 @@ const {
 } = require("./auth/loginMiddleware.js");
 
 const db = require("./database/db.js");
-const { getTransferData, transferRequest, acceptRequest, rejectRequest, cancelTransferRequest, deleteTransferRequest } = require("./transfer.js");
+const { getTransferData, transferRequest, acceptRequest, rejectRequest, cancelTransferRequest, deleteTransferRequest, acknowledgeTransfer } = require("./transfer.js");
 const { itemEdit, stockEdit } = require("./edit.js");
 const { manufacturerAdd, supplierAdd, itemAdd, stockAdd } = require("./vendor.js");
 const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest ,acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData} = require("./scrap.js");
@@ -56,14 +56,12 @@ app.get("/api/getManufacturer", (req, res) => {
 
 app.get("/api/getCategories", (req, res) => {
     db.query("SELECT * FROM categories_view", (error, result) => {
-        console.log(result);
         res.send(result);
     });
 });
 
 app.get("/api/getInventory", (req, res) => {
     db.query("SELECT * FROM inventory_view", (error, result) => {
-        console.log(result);
 
         res.send(result);
     });
@@ -168,9 +166,6 @@ app.get("/api/getScrapData", (req, res) => {
     });
 });
 
-
-
-
 app.get("/api/getLabDetails", (req, res) => {
     db.query("SELECT * FROM labdetails", (error, result) => {
         if (error) console.log(error);
@@ -258,6 +253,8 @@ app.post("/api/acceptRequest", acceptRequest);
 
 app.post("/api/rejectRequest", rejectRequest);
 
+app.post("/api/acknowledgeTransfer", acknowledgeTransfer);
+
 app.post("/api/importItems", importItems);
 
 app.post("/api/importStocks", importStocks);
@@ -280,4 +277,4 @@ app.get("/api/getTableScrapData", getTableScrapData);
 
 const server = https.createServer()
 
-app.listen(4000, () => console.log("App listening on port 4000"));       
+app.listen(4000, () => console.log("App listening on port 4000"));

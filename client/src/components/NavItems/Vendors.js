@@ -18,13 +18,13 @@ function Vendors({ open }) {
 
   async function fetchManufacturer() {
     const response = await axios
-      .get("/api/getManufacturer")
+      .get("http://localhost:4000/api/getManufacturer")
       .catch((error) => console.log(error));
     setManufacturer(response.data);
   }
   async function fetchSupplier() {
     const response = await axios
-      .get("/api/getSupplier")
+      .get("http://localhost:4000/api/getSupplier")
       .catch((error) => console.log(error));
     setSupplier(response.data);
   }

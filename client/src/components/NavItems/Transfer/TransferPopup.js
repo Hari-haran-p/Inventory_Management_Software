@@ -19,12 +19,12 @@ const TransferPopup = ({ isVisible, onClose, user, setMessage, setError }) => {
   const [stock, setStock] = useState([]);
 
   async function fetchItems() {
-    const response = await axios.get("/api/getItems");
+    const response = await axios.get("http://localhost:4000/api/getItems");
     setItem(response.data);
   }
 
   async function fetchStock() {
-    const response = await axios.get("/api/getStock");
+    const response = await axios.get("http://localhost:4000/api/getStock");
     setStock(response.data);
   }
 
@@ -95,7 +95,7 @@ const TransferPopup = ({ isVisible, onClose, user, setMessage, setError }) => {
       e.preventDefault();
       const sendItem = item.find((f) => f.item_code == data.itemcode);
       const response = await axios.post(
-        "/api/transferRequest",
+        "http://localhost:4000/api/transferRequest",
         {
           resData: {
             ...data,
@@ -142,11 +142,11 @@ const TransferPopup = ({ isVisible, onClose, user, setMessage, setError }) => {
       {isLoading ? (
         <div className="flex justify-center items-center h-full"><label class="loader"></label></div>
       ) : (
-        <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center">
+        <div className=" inset-0  flex ">
           <div className="flex flex-col">
           <div
-          style={{ height: "600px" }}
-          className="popup-responsive animate1 popup-responsive-small bg-white w-full px-14 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center border-gray-700 rounded-lg"
+          // style={{ height: "600px" }}
+          className="popup-responsive popup-responsive-small bg-white w-full px-14 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center border-gray-700 rounded-lg"
         >
             <button
               className="text-black rounded-full border-black px-2 border-2 text-3xl place-self-end"

@@ -8,7 +8,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
     try {
       setIsLoading(true);
       e.preventDefault();
-      const response = await axios.post("/api/cancelTransferRequest",
+      const response = await axios.post("http://localhost:4000/api/cancelTransferRequest",
         {
           transfer_id: data.id,
           dept_id: user.dept_code
@@ -29,13 +29,32 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
     }
   }
 
+  const handleAcknowledge = async()=>{
+    try{
+      const response = await axios.post("http://localhost:4000/api/acknowledgeTransfer", {...data, ...user})
+      if (response) {
+        setIsLoading(false);
+        setMessage(response.data.Data);
+        console.log(response.data)
+        onClose();
+      }
+    }catch(error){
+      if (error) {
+        setIsLoading(false);
+        setError(error.response.data.Data)
+        console.error(error);
+        onClose();
+      }
+    }
+  }
+
 
   const handleDelete = async (e) => {
     try {
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "/api/deleteTransferRequest",
+        "http://localhost:4000/api/deleteTransferRequest",
         {
           transfer_id: data.id,
           dept_id: user.dept_code,
@@ -174,7 +193,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
                   {" "} {data.status}
                 </span>
               </div>
-
+              {data.status == "APPROVED" && <div><button onClick={()=>handleAcknowledge()} className=" mt-2 border border-blue-500 p-3 rounded-lg">Acknowledge</button></div>}
             </div>
           </div>
         </div>

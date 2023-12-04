@@ -8,7 +8,7 @@ const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fe
             if (window.confirm("Are you sure want to cancel ?")) {
                 setIsLoading(true);
                 e.preventDefault();
-                const response = await axios.post("/api/cancelScrapRequest",
+                const response = await axios.post("http://localhost:4000/api/cancelScrapRequest",
                     {
                         scrap_id: data.id,
                         dept_id: user.dept_code,
