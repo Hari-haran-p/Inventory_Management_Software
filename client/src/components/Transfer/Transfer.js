@@ -8,7 +8,6 @@ import TransferCard from "./TransferCard";
 import TrackTransfer from "./Track/TrackTransfer.js";
 import ApprovalPopup from "./ApprovalPopup";
 import Table from "./Table";
-import TransferImport from "./BulkTransferImport.js";
 
 
 const Transfer = () => {
@@ -22,8 +21,6 @@ const Transfer = () => {
   const [noData, setNoData] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
-  const [showTransferImport, setShowTransferImport] = useState(false);
-  
 
 
   const onClose = () => {
@@ -126,7 +123,7 @@ const Transfer = () => {
 
   return (
     <>
-      {"" ? (
+      {isLoading ? (
         <div className="flex flex-col justify-center items-center h-full duration-800 ">
           <span class="loader animate-bounce duration-800"></span>
           Loading
@@ -166,12 +163,6 @@ const Transfer = () => {
                 >
                   Request Transfer
                 </div>
-
-                <button
-                        onClick={() => setShowTransferImport(true)}
-                        class="w-11/12 md:w-32 bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-2 px-6 inline-flex items-center">
-                        <span class="mx-auto text-lg">Upload</span>
-                      </button>
               </div>
             </div>
           </div>
@@ -197,7 +188,7 @@ const Transfer = () => {
             setError={setError}
             setMessage={setMessage}
           />
-
+          
           <ApprovalPopup
             user={user}
             transferData={transferData}
@@ -207,14 +198,6 @@ const Transfer = () => {
             setMessage={setMessage}
             noData={noData}
           />
-            <TransferImport
-                  isVisible={showTransferImport}
-                  user={user}
-                  setMessage={setMessage}
-                  setError={setError}
-                  onClose={() => setShowTransferImport(false)}
-                  // setIsLoading={setIsLoading}
-                />
 
         </div>
       )}

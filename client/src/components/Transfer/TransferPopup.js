@@ -94,14 +94,11 @@ const TransferPopup = ({ isVisible, onClose, user, setMessage, setError }) => {
       setIsLoading(true);
       e.preventDefault();
       const sendItem = item.find((f) => f.item_code == data.itemcode);
-      const stockApex = stock.find((f)=>f.item_code == data.itemcode && f.dept_id == user.dept_code)
-      console.log("na tha print aren  " ,  stockApex);
       const response = await axios.post(
         "http://localhost:4000/api/transferRequest",
         {
           resData: {
             ...data,
-            apex_no: stockApex.apex_no,
             manufacturerId: sendItem.manufacturer_id,
             supplierId: sendItem.supplier_id,
             reqLabId: user.dept_code,

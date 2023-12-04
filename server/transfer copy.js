@@ -35,7 +35,7 @@ const transferRequest = async function (req, res, next) {
     try {
         connection = await db.getConnection();
         await connection.beginTransaction();
-        const apex_no = req.body.resData.apex_no;
+
         const item_code = req.body.resData.itemcode;
         const manufacturer_id = req.body.resData.manufacturerId;
         const supplier_id = req.body.resData.supplierId;
@@ -43,8 +43,6 @@ const transferRequest = async function (req, res, next) {
         const transfer_to = req.body.resData.reqLabId;
         const transfer_from = req.body.resData.fromLabId;
         const user_id = req.body.resData.user_id;
-
-
 
         if(transfer_to.toUpperCase() == transfer_from.toUpperCase()){
             res.status(500).json({Data: "Requested lab cannot be your lab"});
@@ -65,10 +63,11 @@ const transferRequest = async function (req, res, next) {
 
         if (transferResult.length > 0 && transferResult[0].stock_qty >= transfer_qty) {
             const insertResult = await new Promise((resolve, reject) => {
-                connection.query("INSERT INTO transfertable (apex_no,item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfered_from, user_id) VALUES (?,?, ?, ?, ?, ?, ?, ?)",
-                    [apex_no,item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfer_from, user_id], async (error, result) => {
+                connection.query("INSERT INTO transfertable (item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfered_from, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    [item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfer_from, user_id], async (error, result) => {
                         if (error) {
                             await connection.rollback();
+
                             res.status(400).json({ "Data": "Stock quantity not available" });
                             return;
                             reject(error);
@@ -205,7 +204,7 @@ const acceptRequest = async function (req, res, next) {
         connection = await db.getConnection();
         await connection.beginTransaction();
 
-        if (req.body.role == 'slbincharge' ) {
+        if (req.body.role == 'slbincharge') {
             const result1 = await new Promise((resolve, reject) => {
                 connection.query("UPDATE transfertable SET status = ? WHERE id = ?", ["LABAPPROVED", req.body.id], async (error, result) => {
                     if (error) {
@@ -237,6 +236,7 @@ const acceptRequest = async function (req, res, next) {
             if (fromDataResult.length > 0 && fromDataResult[0].stock_qty >= req.body.transfer_qty) {
                 const stockMinus = fromDataResult[0].stock_qty - req.body.transfer_qty;
                 const inventoryMinus = fromDataResult[0].inventory_value - req.body.cost_per_item * req.body.transfer_qty;
+
                 const fromUpdateResult = await new Promise((resolve, reject) => {
                     connection.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ? WHERE dept_id = ?  and item_code = ?",
                         [stockMinus, inventoryMinus, req.body.transfered_from.toUpperCase(), req.body.item_code],
@@ -369,7 +369,6 @@ const rejectRequest = async function (req, res, next) {
             connection.release();
     }
 }
-
 
 
 module.exports = {

@@ -1,62 +1,30 @@
-import React, { useState } from 'react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Filler,
-  Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import React, { useState } from 'react'
 
+const Masss = () => {
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Filler,
-  Legend
-);
-
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top',
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Line Chart',
-    },
-  },
-};
-
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      fill: true,
-      label: 'Dataset 2',
-      data: [100, 544, 797, 896, 432, 779],
-      borderColor: 'rgb(53, 162, 235)',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    },
-  ],
-};
-
-const DateRangeFilter = () => {
+  const [Dopen,setDopen] = useState(false);
   
   return (
- <Line options={options} data={data} />
-  );
-};
+    <>
+      <div className='flex flex-col gap-3'>
 
-export default DateRangeFilter;
+        <div className=' h-24 w-full border-2 border-gray-950'>
+          awd
+          <div className=' w-3/4 h-auto flex flex-col justify-center items-center'>
+            sdvvsefadsf
+            jabhwd
+            kjabwd
+          </div>
+        </div>
+        <div className=' h-24 w-full border-2 border-gray-950'>
+
+        </div>
+        <div className=' h-24 w-full border-2 border-gray-950'>
+
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default Masss

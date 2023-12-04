@@ -1,3 +1,4 @@
+
 const db = require("./database/db.js");
 
 const importItems = async function (req, res, next) {
@@ -373,10 +374,110 @@ const importStocks = async function (req, res, next) {
 
 }
 
+const importTransferItems = async function (req, res, next) {
 
+    let connection;
+    try {
+
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+        const data = req.body.items;
+
+
+
+        const stockTableData = await new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM stocktable", (error, result) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+        const itemData = await new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM itemtable", (error, result) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+
+        for (var i = 0; i < data.length; i++) {
+            const stockResult = stockTableData.filter((f) => {
+                if (f.apex_no == data[i].apex_no && f.item_code == data[i].item_code && f.dept_id == data[i].from_lab) {
+                    return f;
+                }
+            })
+
+            const itemResult = itemData.filter((f) => {
+                if (f.item_code == data[i].item_code) {
+                    return f;
+                }
+            })
+
+            if (stockResult && itemResult) {
+
+                if (stockResult[0].stock_qty >= data[i].transfer_qty) {
+                    const update = await new Promise((resolve, reject) => {
+
+                        connection.query(
+                            "INSERT INTO transfertable (apex_no, item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfered_from, user_id, status) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)",
+                            [
+                                data[i].apex_no,
+                                data[i].item_code,
+                                stockResult[0].manufacturer_id,
+                                stockResult[0].supplier_id,
+                                data[i].transfer_qty,
+                                data[i].to_lab,
+                                data[i].from_lab,
+                                stockResult[0].user_id,
+                                "APPROVED"
+                            ],
+                            async (error, result) => {
+                                if (error) {
+                                    console.log(error);
+                                    res.status(401).json({ Data: `Quantity mismatch at ${i + 1} row` });
+                                    reject(error);
+                                    return
+                                } else {
+                                    resolve(result);
+
+                                }
+                            }
+                        );
+                    });
+
+                } else {
+                    res.status(401).json({ Data: `Quantity mismatch at ${i + 1} row` });
+                    return
+                }
+            } else {
+                res.status(401).json({ Data: `Item not Found at ${i + 1} row` });
+                return
+            }
+        }
+
+
+        connection.commit();
+        res.status(200).json({ Data: "Data sucessfully imported" });
+
+    } catch (error) {
+        if (connection) {
+            await connection.rollback();
+        }
+    } finally {
+        if (connection) {
+            await connection.release();
+        }
+    }
+
+}
 
 module.exports = {
     importItems: importItems,
     importStocks: importStocks,
+    importTransferItems: importTransferItems,
 
 }

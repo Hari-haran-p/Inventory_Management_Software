@@ -122,7 +122,7 @@ function Table({ stockData }) {
               }}
               placeholder="Search..."
               className="text-black indent-2 font-medium w-80 h-8 rounded-xl border-2 border-black"
-            />  
+            />
           </div>
           <div
             onClick={() => setClick(true)}
