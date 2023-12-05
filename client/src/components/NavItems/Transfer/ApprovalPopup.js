@@ -12,27 +12,21 @@ function ApprovalPopup({ isVisible, transferData, onClose, setError, setMessage,
                     <div
                         style={{
                             height: '100vh',
-                            width: "100%",
-
+                            width: "100%",  
                             margin: '15px',
                         }}
                         className="flex flex-col"
                     >
-                        <div className="bg-white px-10 py-5 w-5/6 h-5/6 overflow-x-auto overflow-y-auto border-gray-700 rounded-lg">
+                        <div style={{backgroundColor: "#F4F4F4"}} className=" px-10 py-5 w-full h-full overflow-x-auto overflow-y-auto border-gray-700 rounded-lg">
                             <div className="w-full text-end pr-10">
-                                <button
+                                {/* <button
                                     className="text-black fixed z-50 rounded-full border-2 border-black px-2 text-3xl"
                                     onClick={() => onClose()}
                                 >
                                     X
-                                </button>
+                                </button> */}
                             </div>
                             <div className="  flex flex-col items-center">
-                                <div className="py-1 flex pb-8 pt-8">
-                                    <span className="px-1 text-black font-medium text-2xl whitespace-nowrap">
-                                        Pending Requests
-                                    </span>
-                                </div>
                                 <div
                                     style={{ width: "100%", height: "30%" }}
                                     class="relative rounded-2xl overflow-x-auto overflow-y-auto"

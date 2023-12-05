@@ -460,10 +460,10 @@ input::-webkit-inner-spin-button {
 
 } */
 
-button:hover {
+/* button:hover {
   transform: scale(.9);
   transition: all .2s ease-in-out;
-}
+} */
 
 @keyframes reloadAnimation {
   0% {

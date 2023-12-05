@@ -132,7 +132,7 @@ function Table({ stockData }) {
           </div>
         </div>
       </div>
-      <div class="sm:-mx-6 lg:-mx-8 overflow-y-auto overflow-x-auto animate2 border-gray-700 rounded-lg">
+      <div class="sm:-mx-6 lg:-mx-8 overflow-y-auto overflow-x-auto  border-gray-700 rounded-lg">
         <div class=" align-middle inline-block min-w-full ">
           <div
             style={{ width: "90%", height: "50%", maxHeight: "360px" }}
