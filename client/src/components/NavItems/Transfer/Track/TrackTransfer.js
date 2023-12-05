@@ -10,17 +10,17 @@ const TrackTransfer = ({ isVisible, onClose, trackTransferData, user , setMessag
   return (
 
     <>
-      <div className=" lg:w-full ">
-        <div className="bg-white w-5/6 h-5/6   overflow-y-auto rounded-2xl p-4">
+      <div className=" lg:w-full">
+        <div style={{backgroundColor: "#F4F4F4"}} className=" w-full h-full overflow-y-auto rounded-2xl p-4">
           <div className="flex items-center justify-between px-6">
-            <div className="text-lg pt-2 mt-2">Your Pending Transfer Requests: </div>
-            <button
+            <div className="text-lg pt-2 mt-2 ">Your Pending Transfer Requests: </div>
+            {/* <button
               className="text-black text-lg border-2 border-black px-2 place-self-end"
               style={{ borderRadius: "50%" }}
               onClick={() => onClose()}
             >
               X
-            </button>
+            </button> */}
           </div>
           <div>
             <div className="mt-6 flex flex-col justify-center items-center gap-10">

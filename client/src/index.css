@@ -460,10 +460,10 @@ input::-webkit-inner-spin-button {
 
 } */
 
-button:hover {
+/* button:hover {
   transform: scale(.9);
   transition: all .2s ease-in-out;
-}
+} */
 
 @keyframes reloadAnimation {
   0% {
@@ -558,3 +558,20 @@ tbody tr:nth-child(even) {
     width: 150px;
   }
 }
+.container {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.container-box {
+  width: 100%;
+  height:50px;
+  background-color: lightblue;
+  cursor: pointer;
+  overflow: hidden;
+  transition: height 0.5s ease-in-out;
+  box-sizing: border-box;
+  margin-bottom: 10px; /* Add some margin for spacing */
+}
+
+

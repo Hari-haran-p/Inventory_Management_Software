@@ -15,7 +15,7 @@ const { getTransferData, transferRequest, acceptRequest, rejectRequest, cancelTr
 const { itemEdit, stockEdit } = require("./edit.js");
 const { manufacturerAdd, supplierAdd, itemAdd, stockAdd } = require("./vendor.js");
 const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest ,acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData} = require("./scrap.js");
-const {importItems, importStocks} = require("./excel_import.js")
+const {importItems, importStocks , importTransferItems} = require("./excel_import.js")
 
 const app = express();
 app.use(cors());
@@ -107,7 +107,6 @@ app.get("/api/getStock", (req, res) => {
         }
     });
 });
-
 
 app.get("/api/getAdminStockData", (req, res) => {
     db.query("SELECT * FROM admin_stock_view", (error, result) => {
@@ -256,6 +255,8 @@ app.post("/api/rejectRequest", rejectRequest);
 app.post("/api/acknowledgeTransfer", acknowledgeTransfer);
 
 app.post("/api/importItems", importItems);
+
+app.post("/api/importTransferItems", importTransferItems);
 
 app.post("/api/importStocks", importStocks);
 

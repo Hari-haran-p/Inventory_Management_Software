@@ -1,62 +1,61 @@
 import React, { useState } from 'react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Filler,
-  Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import Accordion from './Accordion';
 
+const ContainerComponent = () => {
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Filler,
-  Legend
-);
-
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top',
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Line Chart',
-    },
-  },
-};
-
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-export const data = {
-  labels,
-  datasets: [
+  const [accordions, setAccordion] = useState([
     {
-      fill: true,
-      label: 'Dataset 2',
-      data: [100, 544, 797, 896, 432, 779],
-      borderColor: 'rgb(53, 162, 235)',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      key: 1,
+      title: 'What is GeeksforGeeks?',
+      data: [{a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}],
+      isOpen: true
     },
-  ],
-};
+    {
+      key: 2,
+      title: 'What GeeksforGeeks offer us?',
+      data: [{a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}],
+      isOpen: false
+    },
+    {
+      key: 3,
+      title: 'Which is the best portal to study Computer Science?',
+      data: [{a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}],
+      isOpen: false
+    },
+    
+  ]);
 
-const DateRangeFilter = () => {
-  
+  const toggleAccordion = (accordionkey) => {
+    const updatedAccordions = accordions.map((accord) => {
+      if (accord.key === accordionkey) {
+        return { ...accord, isOpen: !accord.isOpen };
+      } else {
+        return { ...accord, isOpen: false };
+      }
+    });
+
+    setAccordion(updatedAccordions);
+  };
   return (
- <Line options={options} data={data} />
+
+    <>
+      <div>
+        <div className="p-2 m-8">
+          <h2 className='text-2xl mb-2 mx-auto text-green-800'>Accordion Using React and Tailwind</h2>
+          {accordions.map((accordion) => (
+            <Accordion
+              key={accordion.key}
+              title={accordion.title}
+              data={accordion.data}
+              isOpen={accordion.isOpen}
+              toggleAccordion={() => toggleAccordion(accordion.key)}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+
   );
 };
 
-export default DateRangeFilter;
+export default ContainerComponent;

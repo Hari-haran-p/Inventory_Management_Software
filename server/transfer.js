@@ -29,23 +29,86 @@ const getTransferData = function (req, res, next) {
 }
 
 
-const transferRequest = async function (req, res, next) {
+// const transferRequest = async function (req, res, next) {
 
+//     let connection;
+//     try {
+//         connection = await db.getConnection();
+//         await connection.beginTransaction();
+//         const apex_no = req.body.resData.apex_no;
+//         const item_code = req.body.resData.itemcode;
+//         const manufacturer_id = req.body.resData.manufacturerId;
+//         const supplier_id = req.body.resData.supplierId;
+//         const transfer_qty = req.body.resData.stockReq;
+//         const transfer_to = req.body.resData.reqLabId;
+//         const transfer_from = req.body.resData.fromLabId;
+//         const user_id = req.body.resData.user_id;
+
+//         if (transfer_to.toUpperCase() == transfer_from.toUpperCase()) {
+//             res.status(500).json({ Data: "Requested lab cannot be your lab" });
+//             return;
+//         }
+
+//         const transferResult = await new Promise((resolve, reject) => {
+//             connection.query("SELECT * FROM admin_stock_view WHERE item_code = ? AND dept_id = ? ", [item_code, transfer_from], async (error, result) => {
+//                 if (error) {
+//                     await connection.rollback();
+//                     res.status(500).json({ "Data": "Some internal error" });
+//                     return;
+//                     reject(error);
+//                 } else
+//                     resolve(result);
+//             });
+//         })
+//         // if (transferResult.length > 0 && transferResult[0].stock_qty >= transfer_qty) {
+//         const insertResult = await new Promise((resolve, reject) => {
+//             connection.query("INSERT INTO transfertable (apex_no, item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfered_from, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+//                 ["APX001", item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfer_from, user_id], async (error, result) => {
+//                     if (error) {
+//                         await connection.rollback();
+
+//                         res.status(400).json({ "Data": "Stock quantity not available" });
+//                         return;
+//                         reject(error);
+//                     } else
+//                         resolve(result);
+//                 })
+//         })
+
+//         // } else {
+//         //     res.status(400).json({ "Data": "Stock quantity not available" });
+//         //     return;
+//         // }
+//         await connection.commit();
+//         res.status(200).json({ "Data": "Request raised sucessfully" });
+//         return;
+
+//     } catch (error) {
+//         if (connection)
+//             await connection.rollback()
+//     } finally {
+//         if (connection)
+//             connection.release();
+//     }
+// }
+
+const transferRequest = async function (req, res, next) {
     let connection;
     try {
         connection = await db.getConnection();
         await connection.beginTransaction();
 
-        const item_code = req.body.resData.itemcode;
-        const manufacturer_id = req.body.resData.manufacturerId;
-        const supplier_id = req.body.resData.supplierId;
-        const transfer_qty = req.body.resData.stockReq;
-        const transfer_to = req.body.resData.reqLabId;
-        const transfer_from = req.body.resData.fromLabId;
-        const user_id = req.body.resData.user_id;
-
-        if (transfer_to.toUpperCase() == transfer_from.toUpperCase()) {
-            res.status(500).json({ Data: "Requested lab cannot be your lab" });
+        const item_code = req.body.items.item_code;
+        const manufacturer_id = req.body.items.manufacturer_id;
+        const supplier_id = req.body.items.supplier_id;
+        const apex_no = req.body.items.apex_no;
+        const transfer_from = req.body.items.dept_id;
+        const transfer_qty = req.body.items.required_stock;
+        const transfer_to = req.body.user_id.dept_code;
+        const user_id = req.body.user_id.user_id;
+        
+        if(transfer_to.toUpperCase() == transfer_from.toUpperCase()){
+            res.status(500).json({Data: "Requested lab cannot be your lab"});
             return;
         }
 
@@ -60,25 +123,26 @@ const transferRequest = async function (req, res, next) {
                     resolve(result);
             });
         })
-        // if (transferResult.length > 0 && transferResult[0].stock_qty >= transfer_qty) {
-        const insertResult = await new Promise((resolve, reject) => {
-            connection.query("INSERT INTO transfertable (apex_no, item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfered_from, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                ["APX001", item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfer_from, user_id], async (error, result) => {
-                    if (error) {
-                        await connection.rollback();
 
-                        res.status(400).json({ "Data": "Stock quantity not available" });
-                        return;
-                        reject(error);
-                    } else
-                        resolve(result);
-                })
-        })
+        if (transferResult.length > 0 && transferResult[0].stock_qty >= transfer_qty) {
+            const insertResult = await new Promise((resolve, reject) => {
+                connection.query("INSERT INTO transfertable (item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfered_from ,user_id) VALUES ( ?, ?, ?, ?, ?, ?, ?)",
+                    [item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfer_from, user_id], async (error, result) => {
+                        if (error) {
+                            await connection.rollback();
 
-        // } else {
-        //     res.status(400).json({ "Data": "Stock quantity not available" });
-        //     return;
-        // }
+                            res.status(400).json({ "Data": "Stock quantity not available" });
+                            return;
+                            reject(error);
+                        } else
+                            resolve(result);
+                    })
+            })
+
+        } else {
+            res.status(400).json({ "Data": "Stock quantity not available" });
+            return;
+        }
         await connection.commit();
         res.status(200).json({ "Data": "Request raised sucessfully" });
         return;
@@ -89,9 +153,9 @@ const transferRequest = async function (req, res, next) {
     } finally {
         if (connection)
             connection.release();
+        
     }
 }
-
 
 const cancelTransferRequest = async function (req, res, next) {
 

@@ -3,11 +3,14 @@ import axios from "axios";
 import { useAuth } from "../../../AuthContext";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import TransferPopup from "./TransferPopup";
+import TransferRequestTable from "./TransferPopup";
 import TransferCard from "./TransferCard";
 import TrackTransfer from "./Track/TrackTransfer.js";
 import ApprovalPopup from "./ApprovalPopup";
+import Table from "./Table";
+import TransferImport from "./BulkTransferImport.js";
 import TransferTable from "./TransferTable.js";
+// import TransferRequestTable from "./TransferRequestTable.js";
 
 
 const Transfer = () => {
@@ -21,6 +24,8 @@ const Transfer = () => {
   const [noData, setNoData] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
+  const [showTransferImport, setShowTransferImport] = useState(false);
+
 
 
   const onClose = () => {
@@ -117,15 +122,38 @@ const Transfer = () => {
 
   const [showTable, setShowTable] = useState(true);
 
+
+
+
+  const [getStock, setGetStock] = useState([]);
+  async function fetchGetStock() {
+    const response = await axios
+      .get("http://localhost:4000/api/getAdminStockData")
+      .catch((error) => console.log(error));
+    setGetStock(response.data);
+  }
+
+  const [getLabDetails, setGetLabDetails] = useState([]);
+  async function fetchGetLabDetails() {
+    const response = await axios
+      .get("http://localhost:4000/api/getLabDetails")
+      .catch((error) => console.log(error));
+      setGetLabDetails(response.data);
+  }
+
+  // console.log(getLabDetails);
+  // const {user, getUser} = useAuth();
+
   useEffect(() => {
     fetchOverallTranferedData();
     fetchStockData();
+    fetchGetStock();
+    fetchGetLabDetails();
   }, []);
-
 
   return (
     <>
-      {isLoading ? (
+      {"" ? (
         <div className="flex flex-col justify-center items-center h-full duration-800 ">
           <span class="loader animate-bounce duration-800"></span>
           Loading
@@ -146,6 +174,12 @@ const Transfer = () => {
             <div className="flex flex-wrap gap-5 items-center justify-between	pt-4">
               <div className="text-2xl whitespace-nowrap animate1">Transfer Items :</div>
               <div className="flex flex-wrap gap-5">
+                <a
+                  className="bg-blue-500 animate1 cursor-pointer whitespace-nowrap hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
+                  href="/transfer"
+                >
+                  Home
+                </a>
                 <div
                   className="bg-blue-500 animate1 cursor-pointer whitespace-nowrap hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
                   onClick={() => {
@@ -153,6 +187,7 @@ const Transfer = () => {
                     setTransferPopup(false)
                     setTrackTransfer(true);
                     setShowTable(false);
+                    setShowTransferImport(false)
                   }}
                 >
                   Track Your Request
@@ -165,6 +200,8 @@ const Transfer = () => {
                     setTransferPopup(false)
                     setTrackTransfer(false);
                     setShowTable(false);
+                    setShowTransferImport(false)
+
                   }}
                 >
                   Approval Request
@@ -176,24 +213,46 @@ const Transfer = () => {
                     setShowTable(false)
                     setTrackTransfer(false);
                     setApprovalRequest(false);
+                    setShowTransferImport(false)
+
                   }}
                 >
                   Request Transfer
                 </div>
+
+                <button
+                  onClick={() => {
+                    setTransferPopup(false)
+                    setShowTable(false)
+                    setTrackTransfer(false);
+                    setApprovalRequest(false);
+                    setShowTransferImport(true)
+                  }}
+                  class="bg-blue-500 animate1  whitespace-nowrap cursor-pointer hover:bg-blue-700 text-white h-10 text-sm  py-2 px-6 rounded w-42">
+                  <span>Bulk Transfer</span>
+                </button>
               </div>
             </div>
           </div>
-          <TransferTable 
+          <TransferTable
             OverallTranferedData={OverallTranferedData}
-            isVisible = {showTable}
-            onClose = {onClose}
+            isVisible={showTable}
+            onClose={onClose}
           />
-          <TransferPopup
+
+          <TransferRequestTable
             user={user}
             isVisible={showTransferPopup}
             onClose={onClose}
             setMessage={setMessage}
             setError={setError}
+            getLabDetails={getLabDetails}
+            setGetLabDetails={setGetLabDetails}
+            getStock={getStock}
+            fetchGetStock={fetchGetStock}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            
           />
 
           <TrackTransfer
@@ -214,6 +273,25 @@ const Transfer = () => {
             setMessage={setMessage}
             noData={noData}
           />
+          <TransferImport
+            isVisible={showTransferImport}
+            user={user}
+            setMessage={setMessage}
+            setError={setError}
+            onClose={() => setShowTransferImport(false)}
+          // setIsLoading={setIsLoading}
+          />
+          {/* <TransferRequestTable
+            getLabDetails={getLabDetails}
+            setGetLabDetails={setGetLabDetails}
+            getStock={getStock}
+            fetchGetStock={fetchGetStock}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            setMessage={setMessage}
+            setError={setError}
+            user={user}
+          /> */}
 
         </div>
       )}
