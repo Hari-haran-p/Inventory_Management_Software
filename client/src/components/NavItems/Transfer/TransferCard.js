@@ -32,6 +32,8 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
     }
   }
 
+  console.log(data);
+
   const handleReject = async (e) => {
     e.preventDefault();
     if (rejectDesc == "") {
@@ -114,8 +116,8 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
           </center>
           <div className="flex card-sub" style={{ gap: "13%" }}>
             <div className="lg:text-sm p-6">
-              <div className="">Item Name : {data.item_name}</div>
-              <div className="pt-4">Item code : {data.item_code}</div>
+              <div className="">Item code(Apex No) :{data.item_code}({data.apex_no})</div>
+              <div className="pt-4">Item Name : {data.item_name}</div>
             </div>
             <div className="text-sm p-6   ">
               <div>Item Subame : {data.item_subname}</div>

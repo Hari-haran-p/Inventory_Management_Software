@@ -10,8 +10,8 @@ const TrackTransfer = ({ isVisible, onClose, trackTransferData, user , setMessag
   return (
 
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center lg:w-full ">
-        <div className="bg-white w-5/6 h-5/6 animate1  overflow-y-auto rounded-2xl p-4">
+      <div className=" lg:w-full ">
+        <div className="bg-white w-5/6 h-5/6   overflow-y-auto rounded-2xl p-4">
           <div className="flex items-center justify-between px-6">
             <div className="text-lg pt-2 mt-2">Your Pending Transfer Requests: </div>
             <button

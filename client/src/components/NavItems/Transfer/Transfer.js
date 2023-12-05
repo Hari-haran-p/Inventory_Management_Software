@@ -9,6 +9,7 @@ import TrackTransfer from "./Track/TrackTransfer.js";
 import ApprovalPopup from "./ApprovalPopup";
 import Table from "./Table";
 import TransferImport from "./BulkTransferImport.js";
+import TransferTable from "./TransferTable.js";
 
 
 const Transfer = () => {
@@ -16,7 +17,7 @@ const Transfer = () => {
   const [showTransferPopup, setTransferPopup] = useState(false);
   const [showTrackTransfer, setTrackTransfer] = useState(false);
   const [showApprovalRequest, setApprovalRequest] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [trackTransferData, setTrackTransferData] = useState([]);
   const [transferData, setTransferData] = useState([]);
   const [noData, setNoData] = useState(false);
@@ -118,6 +119,8 @@ const Transfer = () => {
     }
   };
 
+  const [showTable, setShowTable] = useState(true);
+
   useEffect(() => {
     fetchOverallTranferedData();
     fetchStockData();
@@ -147,40 +150,71 @@ const Transfer = () => {
             <div className="flex flex-wrap gap-5 items-center justify-between	pt-4">
               <div className="text-2xl whitespace-nowrap animate1">Transfer Items :</div>
               <div className="flex flex-wrap gap-5">
+              <a
+                  className="bg-blue-500 animate1 cursor-pointer whitespace-nowrap hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
+                  href="/transfer"
+                >
+                  Home
+                </a>
                 <div
                   className="bg-blue-500 animate1 cursor-pointer whitespace-nowrap hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
-                  onClick={() => setTrackTransfer(true)}
+                  onClick={() => {
+                    setApprovalRequest(false);
+                    setTransferPopup(false)
+                    setTrackTransfer(true);
+                    setShowTable(false);
+                    setShowTransferImport(false)
+                  }}
                 >
                   Track Your Request
                 </div>
 
                 <div
                   className="bg-blue-500 animate1 whitespace-nowrap cursor-pointer hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
-                  onClick={() => setApprovalRequest(true)}
+                  onClick={() => {
+                    setApprovalRequest(true);
+                    setTransferPopup(false)
+                    setTrackTransfer(false);
+                    setShowTable(false);
+                    setShowTransferImport(false)
+
+                  }}
                 >
                   Approval Request
                 </div>
                 <div
                   className="bg-blue-500 animate1  whitespace-nowrap cursor-pointer hover:bg-blue-700 text-white h-10 text-sm  py-2 px-6 rounded w-42"
-                  onClick={() => setTransferPopup(true)}
+                  onClick={() => {
+                    setTransferPopup(true)
+                    setShowTable(false)
+                    setTrackTransfer(false);
+                    setApprovalRequest(false);
+                    setShowTransferImport(false)
+
+                  }}
                 >
                   Request Transfer
                 </div>
 
                 <button
-                        onClick={() => setShowTransferImport(true)}
-                        class="w-11/12 md:w-32 bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-2 px-6 inline-flex items-center">
-                        <span class="mx-auto text-lg">Upload</span>
+                        onClick={() => {
+                          setTransferPopup(false)
+                          setShowTable(false)
+                          setTrackTransfer(false);
+                          setApprovalRequest(false);
+                          setShowTransferImport(true)
+                        }}
+                        class="bg-blue-500 animate1  whitespace-nowrap cursor-pointer hover:bg-blue-700 text-white h-10 text-sm  py-2 px-6 rounded w-42">
+                        <span>Upload</span>
                       </button>
               </div>
             </div>
           </div>
-          <div className="pl-8">Transfer History</div>
-          <br /><br />
-          <div className="flex items-center flex-col">
-
-            <Table stockData={OverallTranferedData} />
-          </div>
+          <TransferTable 
+            OverallTranferedData={OverallTranferedData}
+            isVisible = {showTable}
+            onClose = {onClose}
+          />
           <TransferPopup
             user={user}
             isVisible={showTransferPopup}

@@ -11,7 +11,7 @@ const {
 } = require("./auth/loginMiddleware.js");
 
 const db = require("./database/db.js");
-const { getTransferData, transferRequest, acceptRequest, rejectRequest, cancelTransferRequest, deleteTransferRequest } = require("./transfer.js");
+const { getTransferData, transferRequest, acceptRequest, rejectRequest, cancelTransferRequest, deleteTransferRequest, acknowledgeTransfer } = require("./transfer.js");
 const { itemEdit, stockEdit } = require("./edit.js");
 const { manufacturerAdd, supplierAdd, itemAdd, stockAdd } = require("./vendor.js");
 const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest ,acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData} = require("./scrap.js");
@@ -252,6 +252,8 @@ app.post("/api/acceptRequest", acceptRequest);
 
 app.post("/api/rejectRequest", rejectRequest);
 
+app.post("/api/acknowledgeTransfer", acknowledgeTransfer);
+
 app.post("/api/importItems", importItems);
 
 app.post("/api/importTransferItems", importTransferItems);
@@ -276,4 +278,4 @@ app.get("/api/getTableScrapData", getTableScrapData);
 
 const server = https.createServer()
 
-app.listen(4000, () => console.log("App listening on port 4000"));       
+app.listen(4000, () => console.log("App listening on port 4000"));

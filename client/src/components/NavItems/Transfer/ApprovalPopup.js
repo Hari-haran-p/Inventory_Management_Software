@@ -7,20 +7,18 @@ function ApprovalPopup({ isVisible, transferData, onClose, setError, setMessage,
     if (!isVisible) return null;
     return (
         <>
-            <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-50">
-                <div className="fixed inset-0 w-full flex justify-center items-center">
+            <div className="">
+                <div className=" inset-0 w-full">
                     <div
                         style={{
                             height: '100vh',
                             width: "100%",
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
+
                             margin: '15px',
                         }}
                         className="flex flex-col"
                     >
-                        <div className="bg-white px-10 py-5 animate1 w-5/6 h-5/6 overflow-x-auto overflow-y-auto border-gray-700 rounded-lg">
+                        <div className="bg-white px-10 py-5 w-5/6 h-5/6 overflow-x-auto overflow-y-auto border-gray-700 rounded-lg">
                             <div className="w-full text-end pr-10">
                                 <button
                                     className="text-black fixed z-50 rounded-full border-2 border-black px-2 text-3xl"

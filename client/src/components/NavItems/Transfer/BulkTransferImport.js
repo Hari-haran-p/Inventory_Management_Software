@@ -92,13 +92,13 @@ const TransferImport = (props) => {
 
         <div
             style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}
-            className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm">
+            className="">
             <div
                 style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", margin: "15px", width: "80%" }}
                 className="flex  flex-col">
                 <div
                     style={{ height: "80%" }}
-                    className="bg-white w-full px-14 animate1 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center border-gray-700 rounded-lg"
+                    className="bg-white w-full px-14  py-5 overflow-x-auto overflow-y-auto flex flex-col items-center border-gray-700 rounded-lg"
                 >
                     <button
                         className="text-black rounded-full border-black border-2 px-2 text-3xl place-self-end"

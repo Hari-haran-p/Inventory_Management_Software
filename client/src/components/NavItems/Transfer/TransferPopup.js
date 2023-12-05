@@ -145,11 +145,11 @@ const TransferPopup = ({ isVisible, onClose, user, setMessage, setError }) => {
       {isLoading ? (
         <div className="flex justify-center items-center h-full"><label class="loader"></label></div>
       ) : (
-        <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center">
+        <div className=" inset-0  flex ">
           <div className="flex flex-col">
           <div
-          style={{ height: "600px" }}
-          className="popup-responsive animate1 popup-responsive-small bg-white w-full px-14 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center border-gray-700 rounded-lg"
+          // style={{ height: "600px" }}
+          className="popup-responsive popup-responsive-small bg-white w-full px-14 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center border-gray-700 rounded-lg"
         >
             <button
               className="text-black rounded-full border-black px-2 border-2 text-3xl place-self-end"
