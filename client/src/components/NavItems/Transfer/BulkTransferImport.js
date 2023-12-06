@@ -4,7 +4,7 @@ import { read, utils, writeFile } from 'xlsx';
 
 const TransferImport = (props) => {
 
-    const { user, onClose, isVisible, setIsLoading, setMessage, setError } = props
+    const { user, onClose, isVisible, setIsLoading, setMessage, setError ,setshowTransferTable,setShowTransferImport } = props
 
     const [filename, setFilename] = useState("Kindly select file");
     const [file, setFile] = useState("");
@@ -65,14 +65,18 @@ const TransferImport = (props) => {
                         const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
                         setRows(rows);
                         const response = await axios.post("http://localhost:4000/api/importTransferItems", { items: rows })
+                        console.log(response);
                         if (response) {
                             // setIsLoading(false);
                             setMessage(response.data.Data)
                             setFile("");
                             setFilename("Kindly select file");
+                            setShowTransferImport(false)
+                            setshowTransferTable(true)
                         }
                     }
                 } catch (error) {
+                    console.log(error);
                     if (error) {
                         // setIsLoading(false);
                         setError(error.response.data.Data);

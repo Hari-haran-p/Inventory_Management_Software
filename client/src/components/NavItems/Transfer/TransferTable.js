@@ -9,7 +9,6 @@ const TransferTable = ({OverallTranferedData, isVisible}) => {
 
     return (
         <div>
-            <div className="pl-8">Transfer History</div>
             <br /><br />
             <div className="flex items-center flex-col">
 
