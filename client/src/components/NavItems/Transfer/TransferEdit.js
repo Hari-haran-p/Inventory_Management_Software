@@ -25,8 +25,8 @@ function TransferEdit({
     inventory_value: "",
     required_stock: "",
     to_lab: "",
-    manufacturer_id:"",
-    supplier_id:"",
+    manufacturer_id: "",
+    supplier_id: "",
   });
 
   const [selectedLab, setSelectedLab] = useState("");
@@ -46,9 +46,8 @@ function TransferEdit({
     try {
       setIsLoading(true);
       e.preventDefault();
-
       const response = await axios.post(
-        "http://localhost:4000/api/transferRequest",{items:formData , user_id:user}
+        "http://localhost:4000/api/transferRequest", { items: formData, user_id: user }
       );
       if (response.status == 200) {
         console.log(response.data);
@@ -57,7 +56,6 @@ function TransferEdit({
         setIsLoading(false);
       }
     } catch (error) {
-
       if (error) {
         console.log(error);
         setError(error.response.data.Data);
@@ -239,7 +237,7 @@ function TransferEdit({
                   </label>
                 </div>
                 <select
-                disabled
+                  disabled
                   value={selectedLab}
                   onChange={(e) => {
                     setSelectedLab(e.target.value);

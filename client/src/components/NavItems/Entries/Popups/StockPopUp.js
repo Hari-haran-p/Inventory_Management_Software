@@ -6,7 +6,7 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
   const [data, setData] = useState({
     itemcode: "",
     itemname: "",
-    itemsubname:"",
+    itemsubname: "",
     stock_qty: "",
     manufacturerId: "",
     supplierId: "",
@@ -53,7 +53,7 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
             setIsLoading(false);
             onClose();
           }
-        }else {
+        } else {
           setError("Enter Valid item name");
           setData({
             itemcode: "",
@@ -104,7 +104,7 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
 
   const uniqueItemNamesArray = [];
   const uniqueItemNamesSet = new Set();
-  
+
   item.forEach((item) => {
     const itemName = item.item_name;
     if (!uniqueItemNamesSet.has(itemName)) {
@@ -113,41 +113,23 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
     }
   });
 
-  const [itemResult, setItemResult] = useState(uniqueItemNamesArray);
-  const [suggestion, setSuggestion] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-
-  const handleItemChange = (e) => {
-    if (e.target.value.trim().length > 0) {
-      setSuggestion(true);
-      setIsTyping(true);
-    } else {
-      setIsTyping(false);
-      setSuggestion(false);
-    }
-    setItemResult(
-      uniqueItemNamesArray.filter((f) => f.itemname.toLowerCase().includes(e.target.value))
-    );
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-
   const [subName, setSubName] = useState(item);
 
-  function resultClick(code) {
-    setData({ ...data, itemname: code });
+
+  const handleItemChange = (e) => {
     const result = item.filter((items) => {
-      if (items.item_name.toUpperCase() == code.toUpperCase()) {
+      if (items.item_name.toUpperCase() == e.target.value.toUpperCase()) {
         return items;
       }
     });
     setSubName(result);
-    setSuggestion(false);
-    setIsTyping(false);
-  }
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
 
   function finalClick(e) {
     const code = e.target.value;
-    if(!data.itemname){
+    if (!data.itemname) {
       setError("Item name cannot be empty");
       return;
     }
@@ -156,10 +138,10 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
         return items;
       }
     })
-    setData({...data,[e.target.name]:code, itemcode: result[0].item_code});
+    setData({ ...data, [e.target.name]: code, itemcode: result[0].item_code });
     setAutoForm(result[0]);
   }
-  
+
   if (!isVisible) return null;
 
   return (
@@ -203,50 +185,33 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
               </div>
               <div className="flex flex-wrap mt-8">
                 <span className="text-lg pb-1 text-gray-600 ">Item Name</span>
-                <input
-                  type="text"
+                <select
                   name="itemname"
-                  list="itemcode"
                   value={data.itemname}
                   onChange={handleItemChange}
-                  className="text-md block px-3 py-2 rounded-lg w-full border-b-0
-                bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
+                  className="text-md block px-3 py-2 rounded-lg w-full
+                bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
                   required
                   autoComplete="off"
-                />
-              </div>
-              <div>
-                {isTyping && suggestion && (
-                  <div
-                    className="text-md block px-3 py-2 rounded-b-lg w-full border-t-0
-                bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
-                  >
-                    {itemResult && itemResult.length > 0 ? (
-                      itemResult.slice(0, 4).map((result) => {
-                        return (
-                          <div
-                            key={result.itemname}
-                            value={result.itemname}
-                            className="hover:bg-sky-100 rounded-lg"
-                            onClick={() => resultClick(result.itemname)}
-                          >
-                            {result.itemname}
-                          </div>
-                        );
-                      })) : (
-                      <div>No Match</div>
-                    )}
-                  </div>
-                )}
+                >
+                  <option value="" selected>
+                    Select Units
+                  </option>
+                  {uniqueItemNamesArray.map((item) => {
+                    console.log(item);
+                    return <option value={item.itemname} key={item.itemname} >{item.itemname}</option>;
+                  })}
+                </select>
+
               </div>
             </div>
             <div className="flex flex-wrap mt-8">
-            <span class="px-1 text-lg text-gray-600">Item Sub-Name</span>
+              <span class="px-1 text-lg text-gray-600">Item Sub-Name</span>
 
               <select
                 name="itemsubname"
                 value={data.itemsubname}
-                onChange={(e)=>{
+                onChange={(e) => {
                   finalClick(e)
                 }}
                 className="text-md block px-3 py-2 rounded-lg w-full
@@ -274,7 +239,6 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
                 disabled
               />
             </div>
-            
             <div class="flex flex-wrap mt-8">
               <span class="px-1 text-lg text-gray-600">Item Description</span>
               <input

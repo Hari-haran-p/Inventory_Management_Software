@@ -295,15 +295,13 @@ const importStocks = async function (req, res, next) {
         let errorOccured = false;
         const result = data.map(async (d, index) => {
 
-            if (Object.values(d).length < 9) {
+            if (Object.values(d).length < 10) {
                 await connection.rollback();
                 res.status(401).json({ Data: `Some values are missing at row ${index + 1}` });
                 return
             };
 
-            const result = stockData.find((s) => s.item_code.toUpperCase() == d.item_code.toUpperCase() && s.dept_id.toUpperCase() == d.dept_id.toUpperCase())
-
-
+            const result = stockData.find((s) => s.item_code.toUpperCase() == d.item_code.toUpperCase() && s.dept_id.toUpperCase() == d.dept_id.toUpperCase() && s.apex_no.toUpperCase() == d.apex_no.toUpperCase())
 
             if (result) {
                 console.log("update");
@@ -323,7 +321,6 @@ const importStocks = async function (req, res, next) {
                         })
                 })
             } else {
-
                 console.log("insert");
                 // console.log(d, curr_date)
                 const insert = await new Promise((resolve, reject) => {
@@ -384,7 +381,6 @@ const importTransferItems = async function (req, res, next) {
         const data = req.body.items;
 
 
-
         const stockTableData = await new Promise((resolve, reject) => {
             connection.query("SELECT * FROM stocktable", (error, result) => {
                 if (error) {
@@ -405,6 +401,7 @@ const importTransferItems = async function (req, res, next) {
         })
 
         for (var i = 0; i < data.length; i++) {
+
             const stockResult = stockTableData.filter((f) => {
                 if (f.apex_no == data[i].apex_no && f.item_code == data[i].item_code && f.dept_id == data[i].from_lab) {
                     return f;

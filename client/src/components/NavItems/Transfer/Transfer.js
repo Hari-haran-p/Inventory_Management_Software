@@ -123,8 +123,6 @@ const Transfer = () => {
   const [showTable, setShowTable] = useState(true);
 
 
-
-
   const [getStock, setGetStock] = useState([]);
   async function fetchGetStock() {
     const response = await axios
@@ -234,6 +232,7 @@ const Transfer = () => {
               </div>
             </div>
           </div>
+          
           <TransferTable
             OverallTranferedData={OverallTranferedData}
             isVisible={showTable}
@@ -273,6 +272,7 @@ const Transfer = () => {
             setMessage={setMessage}
             noData={noData}
           />
+
           <TransferImport
             isVisible={showTransferImport}
             user={user}
