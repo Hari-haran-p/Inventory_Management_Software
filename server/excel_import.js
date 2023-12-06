@@ -376,6 +376,8 @@ const importStocks = async function (req, res, next) {
 
 const importTransferItems = async function (req, res, next) {
 
+
+ 
     let connection;
     try {
 
@@ -460,7 +462,7 @@ const importTransferItems = async function (req, res, next) {
         }
 
 
-        connection.commit();
+        await connection.commit();
         res.status(200).json({ Data: "Data sucessfully imported" });
 
     } catch (error) {

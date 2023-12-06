@@ -14,8 +14,9 @@ const db = require("./database/db.js");
 const { getTransferData, transferRequest, acceptRequest, rejectRequest, cancelTransferRequest, deleteTransferRequest, acknowledgeTransfer } = require("./transfer.js");
 const { itemEdit, stockEdit } = require("./edit.js");
 const { manufacturerAdd, supplierAdd, itemAdd, stockAdd } = require("./vendor.js");
-const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest ,acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData} = require("./scrap.js");
-const {importItems, importStocks , importTransferItems} = require("./excel_import.js")
+const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest, acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData } = require("./scrap.js");
+const { importItems, importStocks, importTransferItems } = require("./excel_import.js");
+const { log } = require("console");
 
 const app = express();
 app.use(cors());
@@ -24,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get("/api/", (req, res) => {
-    db.query("SELECT * FROM itemtable").then((res)=>console.log(res)).catch((err)=>console.log(err));
+    db.query("SELECT * FROM itemtable").then((res) => console.log(res)).catch((err) => console.log(err));
     res.send("Hello from backend");
 });
 
@@ -69,7 +70,7 @@ app.get("/api/getInventory", (req, res) => {
 
 app.get("/api/getLabItem", (req, res) => {
     db.query("SELECT * FROM lab_item_view", (error, result) => {
-        
+
         res.send(result);
     });
 });
@@ -221,10 +222,41 @@ app.get("/api/getOverallTransferedData", (req, res) => {
     });
 });
 
-app.get("/api/getStock/:id", (req, res)=>{
+app.get("/api/getTransferCardData", async (req, res) => {
+    try {
+        const [
+            transferPendingResult,
+            transferApprovedResult,
+            transferLabApprovedResult,
+            transferAcknowledgedResult,
+            transferRejectedResult,
+        ] = await Promise.all([
+            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ? OR status = ?", ["PENDING" , "CANCELED"]),
+            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ?", ["APPROVED"]),
+            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ?", ["LABAPPROVED"]),
+            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ?", ["ACKNOWLEDGED"]),
+            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ?", ["REJECTED"]),
+        ]);
+
+        res.status(200).json({
+            pending: transferPendingResult,
+            approved: transferApprovedResult,
+            labapproved: transferLabApprovedResult,
+            acknowledged: transferAcknowledgedResult,
+            rejected: transferRejectedResult,
+        });
+    } catch (error) {
+        console.error("Error executing the queries:", error);
+        res.status(500).json({ error: "There was some error" });
+    }
+});
+
+
+
+app.get("/api/getStock/:id", (req, res) => {
     db.query("SELECT * FROM admin_stock_view WHERE dept_id = ?", [req.params.id])
-    .then((response)=>res.send(response))
-    .catch((error)=>res.send(error));
+        .then((response) => res.send(response))
+        .catch((error) => res.send(error));
 })
 
 app.post("/api/getTransferData", getTransferData)

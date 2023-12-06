@@ -25,6 +25,7 @@ const Transfer = () => {
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [showTransferImport, setShowTransferImport] = useState(false);
+  const [showTransferTable, setshowTransferTable] = useState(false);
 
 
 
@@ -123,7 +124,13 @@ const Transfer = () => {
   const [showTable, setShowTable] = useState(true);
 
 
+  const [isNavbarVisible, setIsNavbarVisible] = useState(false);
+  const [isArrowRotated, setIsArrowRotated] = useState(false);
 
+  const toggleNavbar = () => {
+    setIsNavbarVisible((prev) => !prev);
+    setIsArrowRotated((prev) => !prev);
+  };
 
   const [getStock, setGetStock] = useState([]);
   async function fetchGetStock() {
@@ -138,7 +145,7 @@ const Transfer = () => {
     const response = await axios
       .get("http://localhost:4000/api/getLabDetails")
       .catch((error) => console.log(error));
-      setGetLabDetails(response.data);
+    setGetLabDetails(response.data);
   }
 
   // console.log(getLabDetails);
@@ -171,66 +178,87 @@ const Transfer = () => {
                 <span class="block sm:inline">{error}</span>
               </div>
             ) : null}
-            <div className="flex flex-wrap gap-5 items-center justify-between	pt-4">
-              <div className="text-2xl whitespace-nowrap animate1">Transfer Items :</div>
-              <div className="flex flex-wrap gap-5">
-                <a
-                  className="bg-blue-500 animate1 cursor-pointer whitespace-nowrap hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
-                  href="/transfer"
-                >
-                  Home
-                </a>
-                <div
-                  className="bg-blue-500 animate1 cursor-pointer whitespace-nowrap hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
-                  onClick={() => {
-                    setApprovalRequest(false);
-                    setTransferPopup(false)
-                    setTrackTransfer(true);
-                    setShowTable(false);
-                    setShowTransferImport(false)
-                  }}
-                >
-                  Track Your Request
-                </div>
-
-                <div
-                  className="bg-blue-500 animate1 whitespace-nowrap cursor-pointer hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
-                  onClick={() => {
-                    setApprovalRequest(true);
-                    setTransferPopup(false)
-                    setTrackTransfer(false);
-                    setShowTable(false);
-                    setShowTransferImport(false)
-
-                  }}
-                >
-                  Approval Request
-                </div>
-                <div
-                  className="bg-blue-500 animate1  whitespace-nowrap cursor-pointer hover:bg-blue-700 text-white h-10 text-sm  py-2 px-6 rounded w-42"
-                  onClick={() => {
-                    setTransferPopup(true)
-                    setShowTable(false)
-                    setTrackTransfer(false);
-                    setApprovalRequest(false);
-                    setShowTransferImport(false)
-
-                  }}
-                >
-                  Request Transfer
-                </div>
-
+            <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-xl">
+              <div>
+                  <div className="text-2xl font-bold text-blue-700 ">Transfer</div>
+              </div>
+              <div className="flex justify-end items-center gap-10">
                 <button
-                  onClick={() => {
-                    setTransferPopup(false)
-                    setShowTable(false)
-                    setTrackTransfer(false);
-                    setApprovalRequest(false);
-                    setShowTransferImport(true)
-                  }}
-                  class="bg-blue-500 animate1  whitespace-nowrap cursor-pointer hover:bg-blue-700 text-white h-10 text-sm  py-2 px-6 rounded w-42">
-                  <span>Bulk Transfer</span>
+                  onClick={toggleNavbar}
+                  className={`transition-transform duration-1000 transform ${isArrowRotated ? 'rotate-180' : ''}`}
+                >
+                  <img className="border-blue-700 border-2 w-10 rounded-full" src="/images/control.png" />
                 </button>
+                <div
+                  className={`transition-transform transform duration-1000 ${isNavbarVisible ? '' : 'translate-x-full'}`}
+                >
+                  {isNavbarVisible && (
+                    <div className="flex flex-wrap gap-5 items-center justify-between">
+                      <div
+                        className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTable == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4 `}
+                        onClick={() => {
+                          setApprovalRequest(false);
+                          setTransferPopup(false)
+                          setTrackTransfer(false);
+                          setShowTable(true);
+                          setShowTransferImport(false)
+                        }}
+                      >
+                        Home
+                      </div>
+                      <div
+                        className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackTransfer == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                        onClick={() => {
+                          setApprovalRequest(false);
+                          setTransferPopup(false)
+                          setTrackTransfer(true);
+                          setShowTable(false);
+                          setShowTransferImport(false)
+                        }}
+                      >
+                        Track Your Request
+                      </div>
+
+                      <div
+                        className={`cursor-pointer font-bold text-black whitespace-nowrap ${showApprovalRequest == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                        onClick={() => {
+                          setApprovalRequest(true);
+                          setTransferPopup(false)
+                          setTrackTransfer(false);
+                          setShowTable(false);
+                          setShowTransferImport(false)
+
+                        }}
+                      >
+                        Approval Request
+                      </div>
+                      <div
+                        className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTransferPopup == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                        onClick={() => {
+                          setTransferPopup(true)
+                          setShowTable(false)
+                          setTrackTransfer(false);
+                          setApprovalRequest(false);
+                          setShowTransferImport(false)
+                        }}
+                      >
+                        Request Transfer
+                      </div>
+                      <button
+                        onClick={() => {
+                          setTransferPopup(false)
+                          setShowTable(false)
+                          setTrackTransfer(false);
+                          setApprovalRequest(false);
+                          setShowTransferImport(true) // Close the navbar 
+                        }}
+                        className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTransferImport == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                      >
+                        <span>Bulk Transfer</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -252,7 +280,7 @@ const Transfer = () => {
             fetchGetStock={fetchGetStock}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
-            
+
           />
 
           <TrackTransfer
@@ -279,6 +307,8 @@ const Transfer = () => {
             setMessage={setMessage}
             setError={setError}
             onClose={() => setShowTransferImport(false)}
+            setshowTransferTable = {setShowTable}
+            setShowTransferImport = {setShowTransferImport}
           // setIsLoading={setIsLoading}
           />
           {/* <TransferRequestTable

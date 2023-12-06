@@ -112,17 +112,17 @@ const transferRequest = async function (req, res, next) {
             return;
         }
 
-        const transferResult = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM admin_stock_view WHERE item_code = ? AND dept_id = ? ", [item_code, transfer_from], async (error, result) => {
-                if (error) {
-                    await connection.rollback();
-                    res.status(500).json({ "Data": "Some internal error" });
-                    return;
-                    reject(error);
-                } else
-                    resolve(result);
-            });
-        })
+            const transferResult = await new Promise((resolve, reject) => {
+                connection.query("SELECT * FROM admin_stock_view WHERE item_code = ? AND dept_id = ? ", [item_code, transfer_from], async (error, result) => {
+                    if (error) {
+                        await connection.rollback();
+                        res.status(500).json({ "Data": "Some internal error" });
+                        return;
+                        reject(error);
+                    } else
+                        resolve(result);
+                });
+            })
 
         if (transferResult.length > 0 && transferResult[0].stock_qty >= transfer_qty) {
             const insertResult = await new Promise((resolve, reject) => {
@@ -161,7 +161,7 @@ const cancelTransferRequest = async function (req, res, next) {
 
     let connection;
     try {
-
+console.log(req.body);
         connection = await db.getConnection();
         await connection.beginTransaction();
 
@@ -184,7 +184,9 @@ const cancelTransferRequest = async function (req, res, next) {
                     async (error, result) => {
                         if (error) {
                             await connection.rollback();
+                            
                             res.status(400).json({ "Data": "Some Internal error" });
+                        
                             reject(error)
                         } else
                             resolve(result);
@@ -195,6 +197,7 @@ const cancelTransferRequest = async function (req, res, next) {
             res.status(200).json({ "Data": "Canceled sucessfully" });
 
         } else {
+            
             res.status(400).json({ "Data": "Some Internal Error" });
             return;
         }

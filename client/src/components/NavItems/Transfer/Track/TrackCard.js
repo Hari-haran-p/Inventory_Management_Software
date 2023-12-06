@@ -17,14 +17,14 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
         setIsLoading(false);
         setMessage(response.data.Data);
         console.log(response.data)
-        onClose();
+        // onClose();
       }
     } catch (error) {
       if (error) {
         setIsLoading(false);
         setError(error.response.data.Data)
         console.error(error);
-        onClose();
+        // onClose();
       }
     }
   }
@@ -36,14 +36,14 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
         setIsLoading(false);
         setMessage(response.data.Data);
         console.log(response.data)
-        onClose();
+        // onClose();
       }
     }catch(error){
       if (error) {
         setIsLoading(false);
         setError(error.response.data.Data)
         console.error(error);
-        onClose();
+        // onClose();
       }
     }
   }
@@ -64,14 +64,14 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
         setIsLoading(false);
         setMessage(response.data.Data);
         console.log(response.data);
-        onClose();
+        // onClose();
       }
     } catch (error) {
       if (error) {
         setIsLoading(false);
         setError(error.response.data.Data);
         console.error(error);
-        onClose();
+        // onClose();
       }
     }
   };
@@ -93,7 +93,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
           <span class="loader"></span>
         </div>
       ) : (
-        <div className="relative track-card w-11/12 rounded-xl overflow-hidden p-10">
+        <div className="relative track-card w-full rounded-xl overflow-hidden p-10">
           <div className="flex flex-col flex-wrap">
 
             <div className="flex justify-between flex-wrap items-center pb-2">
