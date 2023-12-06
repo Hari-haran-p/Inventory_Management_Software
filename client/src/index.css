@@ -477,13 +477,6 @@ input::-webkit-inner-spin-button {
   }
 }
 
-tbody tr:nth-child(odd) {
-  background-color: #ffffff;
-}
-
-tbody tr:nth-child(even) {
-  background-color: #cddff7;
-}
 
 #scrollToTopButton {
   position: fixed;
