@@ -42,14 +42,14 @@ function Table({ stockData }) {
           "inventory_value",
           "user_id",
           "dept_id",
-          "stock_date"
+          "stock_date",
         ];
         return propertiesToSearch.some((property) =>
           typeof item[property] === "string"
             ? item[property].toLowerCase().includes(searchQuery.toLowerCase())
             : typeof item[property] === "number"
-              ? item[property].toString().includes(searchQuery)
-              : false
+            ? item[property].toString().includes(searchQuery)
+            : false
         );
       });
 
@@ -111,56 +111,59 @@ function Table({ stockData }) {
   };
 
   return (
-    <div className=" w-10/12" style={{height:"60vh"}}>
-      <div className="flex  w-full mb-5 h-auto  justify-between font-semibold">
-        <div className="sub-titles2 animate1 text-center text-2xl font-semibold">
-          Master Table
+    <div className="w-10/12 border-2 bg-white rounded-t-3xl h-auto">
+      <div className="flex h-auto  my-4 items-center font-semibold ">
+        <div className="ml-6 text-2xl text-blue-600 w-1/4 font-semibold">Master Table</div>
+        
+        <div className="flex items-center mr-4 w-3/4 justify-end">
+        <div className="w-10 h-10 mr-6 flex justify-center items-center">
+          <img className="w-9 h-9 border-2 border-blue-600 rounded-md p-1" src="./images/filter icon.png" alt=""/>
         </div>
-        <div className="input-field2 animate1 flex">
-          <div className="h-auto">
-            <input
-              name="inputQuery"
-              type="text"
-              onKeyDown={handleKeyEnter}
-              value={searchQuery}
-              onChange={(e) => {
-                setClick(false);
-                setSearchQuery(e.target.value);
-              }}
-              placeholder="Search..."
-              className="text-black indent-2 font-medium w-80 h-8 rounded-xl border-2 border-black"
-            />
-          </div>
-          <div
+          <input
+            name="inputQuery"
+            type="text"
+            onKeyDown={handleKeyEnter}
+            value={searchQuery}
+            onChange={(e) => {
+              setClick(false);
+              setSearchQuery(e.target.value);
+            }}
+            placeholder="Search..."
+            className="text-black indent-2 h-9 font-medium w-80 border-2 rounded-lg border-black"
+          />
+
+          <button
             onClick={() => setClick(true)}
-            className="focus:ring-4 shadow-lg transform active:scale-75 transition-transform cursor-pointer border-2 border-black rounded-full w-full ml-5 mr-16 px-2"
-          >
-            <i className="bi bi-search"></i>
-          </div>
+            className="cursor-pointer ml-1 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2"
+          >Search
+            {/* <img className="w-8 h-8" src="./images/search icon.png" alt="" /> */}
+          </button>
         </div>
       </div>
-      <div class="sm:-mx-6 lg:-mx-8 overflow-y-auto overflow-x-auto animate2 border-gray-700 rounded-lg">
-        <div class=" align-middle inline-block min-w-full ">
+      <div class="overflow-y-auto overflow-x-auto w-full border-gray-700 rounded-lg">
+        <div class=" align-middle inline-block">
           <div
-            style={{ width: "90%", height: "50%", maxHeight: "50vh" }}
+            style={{ width: "90px", height: "50%", maxHeight: "50vh" }}
             class="shadow sm:rounded-lg  h-96"
           >
-            <table class="min-w-full text-sm">
-              <thead style={{ backgroundColor: "#0f6af2", color: "white" }} class=" text-xs uppercase font-medium">
-                <tr>
-                  <th className="px-6 py-3">s.no</th>
+            <table class="w-10/12 text-sm ">
+              <thead
+                class=" text-md uppercase border-b-2 font-medium"
+              >
+                <tr className=" border-r-white">
+                  <th className="px-6 py-4 ">s.no</th>
                   <th
                     onClick={() => sortData("apex_no")}
                     scope="col"
                     className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                   >
                     <div className="flex">
-
                       <div>Apex No.</div>
                       {sortedColumn === "apex_no" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.apex_no === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.apex_no === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -174,8 +177,9 @@ function Table({ stockData }) {
                       <div>Item Code</div>
                       {sortedColumn === "item_code" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.item_code === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.item_code === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -189,8 +193,9 @@ function Table({ stockData }) {
                       <div>Item Type</div>
                       {sortedColumn === "item_type" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.item_type === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.item_type === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -204,8 +209,9 @@ function Table({ stockData }) {
                       <div>Item Name</div>
                       {sortedColumn === "item_name" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.item_name === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.item_name === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -220,8 +226,9 @@ function Table({ stockData }) {
                       </div>
                       {sortedColumn === "item_subname" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.item_subname === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.item_subname === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -236,8 +243,9 @@ function Table({ stockData }) {
                       </div>
                       {sortedColumn === "item_description" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.item_description === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.item_description === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -252,8 +260,9 @@ function Table({ stockData }) {
                       </div>
                       {sortedColumn === "cost_per_item" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.cost_per_item === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.cost_per_item === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -268,8 +277,9 @@ function Table({ stockData }) {
                       </div>
                       {sortedColumn === "quantity_units" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.quantity_units === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.quantity_units === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -284,8 +294,11 @@ function Table({ stockData }) {
                       </div>
                       {sortedColumn === "manufacturer_name" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.manufacturer_name === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.manufacturer_name === "asc"
+                              ? "up"
+                              : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -300,8 +313,9 @@ function Table({ stockData }) {
                       </div>
                       {sortedColumn === "supplier_name" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.supplier_name === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.supplier_name === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -316,8 +330,9 @@ function Table({ stockData }) {
                       </div>
                       {sortedColumn === "contact" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.contact === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.contact === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -330,8 +345,9 @@ function Table({ stockData }) {
                       <div onClick={() => sortData("stock_qty")}>Stock Qty</div>
                       {sortedColumn === "stock_qty" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.stock_qty === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.stock_qty === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -346,8 +362,9 @@ function Table({ stockData }) {
                       </div>
                       {sortedColumn === "inventory_value" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.inventory_value === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.inventory_value === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -362,8 +379,9 @@ function Table({ stockData }) {
                       </div>
                       {sortedColumn === "user_id" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.user_id === "asc" ? "up" : "down"
-                            } ml-2`}
+                          className={`bi bi-arrow-${
+                            sortOrder.user_id === "asc" ? "up" : "down"
+                          } ml-2`}
                         ></i>
                       )}
                     </div>
@@ -400,8 +418,7 @@ function Table({ stockData }) {
                       )}
                     </div>
                   </th>
-                  
-                  
+
                   <th
                     scope="col"
                     className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
@@ -411,7 +428,7 @@ function Table({ stockData }) {
               <tbody style={{ backgroundColor: "white", fontWeight: "bold" }}>
                 {filteredData.map((data, index) => {
                   return (
-                    <tr className="shadow-md rounded-xl">
+                    <tr className="border-b-2">
                       <td class="pl-4">{index + 1}</td>
                       <td class=" px-6 py-4 whitespace-nowrap">
                         {data.apex_no}
