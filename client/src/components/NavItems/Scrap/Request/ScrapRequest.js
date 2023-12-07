@@ -371,7 +371,7 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
         style={{ width: "90%" }}
         className=" flex ml-20 h-auto mt-5 p-10 justify-between  font-semibold"
       >
-        <div className="sub-titles text-2xl font-semibold">Transfer Request</div>
+        <div className="sub-titles text-2xl font-semibold">Scrap Request</div>
         <div className="flex input-field">
           <div className="h-auto ">
             <input
