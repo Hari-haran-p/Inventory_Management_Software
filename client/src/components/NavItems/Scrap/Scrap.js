@@ -179,6 +179,7 @@ const Scrap = () => {
                                                 setShowTrackScrap(false)
                                                 setShowScrapTable(true)
                                                 setShowScrapApprove(false)
+                                                setShowScrap(false)
                                             }}
                                         >
                                             Home
@@ -189,6 +190,7 @@ const Scrap = () => {
                                                 setShowTrackScrap(true)
                                                 setShowScrapTable(false)
                                                 setShowScrapApprove(false)
+                                                setShowScrap(false)
                                             }}
                                         >
                                             Track Your Request
@@ -200,14 +202,18 @@ const Scrap = () => {
                                                 setShowTrackScrap(false)
                                                 setShowScrapTable(false)
                                                 setShowScrapApprove(true)
+                                                setShowScrap(false)
                                             }}
                                         >
                                             Approval Request
                                         </div>
                                         <div
-                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapApprove == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrap == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                             onClick={() => {
                                                 setShowScrap(true)
+                                                setShowTrackScrap(false)
+                                                setShowScrapTable(false)
+                                                setShowScrapApprove(false)
                                             }}
                                         >
                                             Scrap
@@ -225,7 +231,7 @@ const Scrap = () => {
             />
             <ScrapTrack
                 isVisible={showTrackScrap}
-                onClose={() => setShowTrackScrap(false)}
+                // onClose={() => setShowTrackScrap(false)}
                 user={user}
                 setScrapTrackData={setScrapTrackData}
                 scrapTrackData={scrapTrackData}

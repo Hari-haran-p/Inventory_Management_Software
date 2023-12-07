@@ -369,7 +369,7 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
     <div>
       <div
         style={{ width: "90%" }}
-        className=" flex ml-20 h-auto mt-5 mb-5 justify-between  font-semibold"
+        className=" flex ml-20 h-auto mt-5 p-10 justify-between  font-semibold"
       >
         <div className="sub-titles text-2xl font-semibold">Transfer Request</div>
         <div className="flex input-field">

@@ -111,7 +111,7 @@ function Table({ scrapData,isVisible }) {
   if (!isVisible) return null;
 
   return (
-    <div className=" w-full p-32 h-full">
+    <div className=" w-full p-20 h-full">
       <div className="flex  w-full mb-5 h-auto justify-between font-semibold">
         <div className="sub-titles2 text-center text-2xl font-semibold">
           Scrap Table

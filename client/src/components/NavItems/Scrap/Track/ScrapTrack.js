@@ -3,7 +3,7 @@ import Accordion from "./Accordion";
 import axios from "axios";
 import { useAuth } from '../../../../AuthContext';
 
-const ScrapTrack = (isVisible,setMessage,onClose,setError) => {
+const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
 
   const [pendingData, setPendingData] = useState([]);
   const [accordions, setAccordions] = useState([]);
@@ -72,7 +72,6 @@ const ScrapTrack = (isVisible,setMessage,onClose,setError) => {
 
     setAccordions(updatedAccordions);
   };
-
 
   if (!isVisible) return null;
 
