@@ -7,7 +7,7 @@ const RejectPopup = ({ isVisible, onClose, getRejectDesc, rejectDesc, setError, 
 
     return (
         <>
-            <div className="fixed inset-0 bg-black bg-opacity-25 flex justify-center items-center">
+            <div className=" bg-black bg-opacity-25 flex justify-center items-center">
                 <div
                     style={{ width:"80%", display: "flex", alignItems: "center", justifyContent: "center", }}
                     className="flex flex-col ">

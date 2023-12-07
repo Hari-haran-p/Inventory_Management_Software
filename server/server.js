@@ -222,7 +222,11 @@ app.get("/api/getOverallTransferedData", (req, res) => {
     });
 });
 
-app.get("/api/getTransferCardData", async (req, res) => {
+
+
+app.get("/api/getTransferCardData/:id", async (req, res) => {
+    const user = req.params.id;
+
     try {
         const [
             transferPendingResult,
@@ -231,11 +235,11 @@ app.get("/api/getTransferCardData", async (req, res) => {
             transferAcknowledgedResult,
             transferRejectedResult,
         ] = await Promise.all([
-            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ? OR status = ?", ["PENDING" , "CANCELED"]),
-            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ?", ["APPROVED"]),
-            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ?", ["LABAPPROVED"]),
-            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ?", ["ACKNOWLEDGED"]),
-            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ?", ["REJECTED"]),
+            db.query("SELECT * FROM transfer_request_merged_view WHERE (status = ? OR status = ?) AND user_id = ?", ["PENDING", "CANCELED", user]),
+            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ? AND user_id = ?", ["APPROVED", user]),
+            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ? AND user_id = ?", ["LABAPPROVED", user]),
+            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ? AND user_id = ?", ["ACKNOWLEDGED", user]),
+            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ? AND user_id = ?", ["REJECTED", user]),
         ]);
 
         res.status(200).json({
@@ -250,6 +254,36 @@ app.get("/api/getTransferCardData", async (req, res) => {
         res.status(500).json({ error: "There was some error" });
     }
 });
+
+app.get("/api/getScrapCardData/:id", async (req, res) => {
+
+const user = req.params.id;
+    try {
+        const [
+            scrapPendingResult,
+            scrapApprovedResult,
+            scrapAcknowledgedResult,
+            scrapRejectedResult,
+        ] = await Promise.all([
+            db.query("SELECT * FROM scrap_table_view WHERE (status = ? OR status = ?) AND user_id = ?", ["PENDING", "CANCELED", user]),
+            db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["APPROVED", user]),
+            db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["ACKNOWLEDGED", user]),
+            db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["REJECTED", user]),
+        ]);
+
+
+        res.status(200).json({
+            pending: scrapPendingResult,
+            approved: scrapApprovedResult,
+            acknowledged: scrapAcknowledgedResult,
+            rejected: scrapRejectedResult,
+        });
+    } catch (error) {
+        console.error("Error executing the queries:", error);
+        res.status(500).json({ error: "There was some error" });
+    }
+});
+
 
 
 

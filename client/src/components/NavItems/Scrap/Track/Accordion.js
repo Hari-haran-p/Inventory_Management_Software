@@ -34,7 +34,6 @@ const Accordion = (props) => {
                 user={props.user}
                 setError={props.setError}
                 setMessage={props.setMessage}
-                fetchPendingData = {props.fetchPendingData}
               />
             ))
           ) : (

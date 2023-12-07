@@ -131,12 +131,12 @@ function TransferRequestTable({isVisible, user, getStock ,getLabDetails,setGetLa
               className="text-black indent-2 font-medium w-80 h-8 rounded-xl border-2 border-black"
             />
           </div>
-          <div
+          {/* <div
             onClick={() => setClick(true)}
             className="focus:ring-4  shadow-lg transform active:scale-75 transition-transform cursor-pointer border-2 border-black rounded-full w-full ml-5 px-2 mr-16"
           >
             <i className="bi bi-search"></i>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -144,7 +144,7 @@ function TransferRequestTable({isVisible, user, getStock ,getLabDetails,setGetLa
       <div className="flex justify-center items-center flex-col ">
         <div
           style={{ width: "90%", height: "30%", maxHeight: "300px" }}
-          class="relative rounded-2xl animate overflow-x-auto overflow-y-auto scrollbar-none border-2"
+          class="rounded-2xl animate overflow-x-auto overflow-y-auto scrollbar-none border-2"
         >
           <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 ">
             <thead style={{backgroundColor:"#0f6af2" , color:"white"}} class="text-sm uppercase">

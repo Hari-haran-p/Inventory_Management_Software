@@ -16,11 +16,11 @@ const TrackTransfer = ({
   const fetchPendingData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/getTransferCardData"
+        `http://localhost:4000/api/getTransferCardData/${user.user_id}`
       );
       setPendingData(response.data);
     } catch (error) {
-      console.error(error);
+      console.error(error); 
     }
   };
 

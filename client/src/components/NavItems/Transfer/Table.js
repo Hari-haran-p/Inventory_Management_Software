@@ -108,10 +108,10 @@ function Table({ stockData }) {
   return (
     <div className=" w-9/12 h-full">
       <div className="flex  w-full mb-5 h-auto  justify-between font-semibold">
-        <div className="sub-titles2 animate1 text-center text-2xl font-semibold">
+        <div className="sub-titles2 text-center text-2xl font-semibold">
           Transfer Table
         </div>
-        <div className="input-field2 animate1 flex">
+        <div className="input-field2 flex">
           <div className="h-auto">
             <input
               name="inputQuery"
@@ -126,12 +126,12 @@ function Table({ stockData }) {
               className="text-black indent-2 font-medium w-80 h-8 rounded-xl border-2 border-black"
             />  
           </div>
-          <div
+          {/* <div
             onClick={() => setClick(true)}
             className="focus:ring-4 shadow-lg transform active:scale-75 transition-transform cursor-pointer border-2 border-black rounded-full w-full ml-5 mr-16 px-2"
           >
             <i className="bi bi-search"></i>
-          </div>
+          </div> */}
         </div>
       </div>
       <div class="sm:-mx-6 lg:-mx-8 overflow-y-auto overflow-x-auto  border-gray-700 rounded-lg">
