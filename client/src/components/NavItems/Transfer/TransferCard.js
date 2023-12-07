@@ -83,7 +83,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
           <span class="loader"></span>
         </div >
       ) : (
-        <div className="card ">
+        <div className="card">
           <div className="p-3 flex items-center justify-between">
             <div>
               <div className="lg:text-lg">Requested By : {toSentenceCase(data.username)}</div>

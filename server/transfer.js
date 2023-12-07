@@ -4,6 +4,7 @@ const db = require("./database/db.js");
 const getTransferData = function (req, res, next) {
 
     const user_dept = req.body.dept_code;
+    
     if (req.body.role == 'slbincharge') {
         db.query("SELECT * FROM transfer_request_merged_view WHERE transfered_from = ? AND status = ? ", [user_dept, "PENDING"])
             .catch((error) => res.status(500).json({ error: "There was some Error" }))
@@ -15,7 +16,7 @@ const getTransferData = function (req, res, next) {
                 }
             })
     } else if (req.body.role == 'slsincharge' && user_dept == "SLBS") {
-        db.query("SELECT * FROM transfer_request_merged_view WHERE status = ?", ["LABAPPROVED"])
+        db.query("SELECT * FROM transfer_request_merged_view WHERE transfered_from = ? OR status = ?", [user_dept, "LABAPPROVED"])
             .catch((error) => res.status(500).json({ error: "There was some Error" }))
             .then((response) => {
                 if (response.length > 0) {
@@ -208,7 +209,6 @@ console.log(req.body);
         if (connection)
             connection.release();
     }
-
 }
 
 const deleteTransferRequest = async function (req, res, next) {
@@ -285,7 +285,8 @@ const acceptRequest = async function (req, res, next) {
                 });
             });
 
-        } else if (req.body.role == "slsincharge" && req.body.status == "LABAPPROVED") {
+        } else if (req.body.role == "slsincharge" && (req.body.status == "LABAPPROVED" || req.body.status == "PENDING")) {
+            console.log("correct");
             const result1 = await new Promise((resolve, reject) => {
                 connection.query("UPDATE transfertable SET status = ? WHERE id = ?", ["APPROVED", req.body.id], async (error, result) => {
                     if (error) {

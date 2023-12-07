@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import MasterTablePopup from "./MasterTablePopup";
 
-function Table({ scrapData }) {
-  //For open popup
-  console.log(scrapData);
+function Table({ scrapData,isVisible }) {
   const [openPopup, setOpenPopup] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
 
@@ -108,13 +106,15 @@ function Table({ scrapData }) {
     }
   };
 
+  if (!isVisible) return null;
+
   return (
-    <div className=" w-9/12 h-full">
-      <div className="flex  w-full mb-5 h-auto  justify-between font-semibold">
-        <div className="sub-titles2 animate1 text-center text-2xl font-semibold">
-          Master Table
+    <div className=" w-full p-32 h-full">
+      <div className="flex  w-full mb-5 h-auto justify-between font-semibold">
+        <div className="sub-titles2 text-center text-2xl font-semibold">
+          Scrap Table
         </div>
-        <div className="input-field2 animate1 flex">
+        <div className="input-field2 flex">
           <div className="h-auto">
             <input
               name="inputQuery"
@@ -137,10 +137,10 @@ function Table({ scrapData }) {
           </div>
         </div>
       </div>
-      <div class="sm:-mx-6 lg:-mx-8 overflow-y-auto overflow-x-auto animate2 border-gray-700 rounded-lg">
+      <div class="sm:-mx-6 lg:-mx-8 overflow-y-auto overflow-x-auto border-gray-700 rounded-lg">
         <div class=" align-middle inline-block min-w-full ">
           <div
-            style={{ width: "90%", height: "50%", maxHeight: "360px" }}
+            style={{ width: "90%", height: "60%", maxHeight: "360px" }}
             class="shadow sm:rounded-lg  h-96"
           >
             <table class="min-w-full text-sm">

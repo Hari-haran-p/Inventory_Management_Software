@@ -178,22 +178,22 @@ const Transfer = () => {
                 <span class="block sm:inline">{error}</span>
               </div>
             ) : null}
-            <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-xl">
+            <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-xl	">
               <div>
-                  <div className="text-2xl font-bold text-blue-700 ">Transfer</div>
+                  <div className="text-2xl navTransferHeading font-bold text-blue-700 ">Transfer</div>
               </div>
-              <div className="flex justify-end items-center gap-10">
+              <div className="flex justify-end items-center gap-10 navIconArrow">
                 <button
                   onClick={toggleNavbar}
                   className={`transition-transform duration-1000 transform ${isArrowRotated ? 'rotate-180' : ''}`}
                 >
-                  <img className="border-blue-700 border-2 w-10 rounded-full" src="/images/control.png" />
+                  <img style={{width:"30px"}}className="border-blue-700 border-2 rounded-full" src="/images/control.png" />
                 </button>
                 <div
-                  className={`transition-transform transform duration-1000 ${isNavbarVisible ? '' : 'translate-x-full'}`}
+                  className={`transition-transform transform duration-1000 ${isNavbarVisible ? '' : 'lg:translate-x-full'}`}
                 >
                   {isNavbarVisible && (
-                    <div className="flex flex-wrap gap-5 items-center justify-between">
+                    <div className="flex flex-wrap gap-5 z-50 items-center justify-between navTransfer">
                       <div
                         className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTable == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4 `}
                         onClick={() => {
@@ -311,19 +311,8 @@ const Transfer = () => {
             onClose={() => setShowTransferImport(false)}
             setshowTransferTable = {setShowTable}
             setShowTransferImport = {setShowTransferImport}
-          // setIsLoading={setIsLoading}
           />
-          {/* <TransferRequestTable
-            getLabDetails={getLabDetails}
-            setGetLabDetails={setGetLabDetails}
-            getStock={getStock}
-            fetchGetStock={fetchGetStock}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            setMessage={setMessage}
-            setError={setError}
-            user={user}
-          /> */}
+
 
         </div>
       )}
