@@ -224,7 +224,6 @@ const Scrap = () => {
                 fetchGetStock={fetchStockData}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
-
             />
 
         </>

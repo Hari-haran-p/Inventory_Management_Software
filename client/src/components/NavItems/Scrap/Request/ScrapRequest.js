@@ -256,7 +256,7 @@
 
 import React from "react";
 import { useEffect, useState } from "react";
-import TransferEdit from "./TransferEdit";
+import ScrapEdit from "./ScrapEdit";
 
 function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDetails, fetchGetStock, setMessage, setError, setIsLoading, isLoading}) {
 
@@ -603,7 +603,7 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
       </div>
       {openEdit && editData && (
         <div className="blur-background">
-          <TransferEdit
+          <ScrapEdit
             data={editData}
             getLabDetails = {getLabDetails}
             setGetLabDetails = {setGetLabDetails}

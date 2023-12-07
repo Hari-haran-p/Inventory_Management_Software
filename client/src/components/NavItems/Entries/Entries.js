@@ -104,7 +104,7 @@ function Entries() {
           Loading
         </div >
       ) : (
-        <div style={{ backgroundColor: "#F4F4F4" }} className="flex h-auto sm:h-full justify-center items-center">
+        <div style={{ backgroundColor: "#F4F4F4" }} className="flex h-auto justify-center items-center">
           {message ? (
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded  fixed z-50 top-0 message" role="alert">
               <span class="block sm:inline">{message}</span>
@@ -119,7 +119,6 @@ function Entries() {
             <div className="pt-10 pb-10 animate1 flex flex-wrap w-full justify-center items-center gap-10 lg:gap-20">
               <div className="flex flex-col items-center justify-center gap-10 lg:gap-32">
                 <div
-
                   style={{ width: "500px" }}
                   className="entry-card   shadow-2xl  bg-white rounded-3xl text-2xl animate  text-black flex p-4 items-center"
                 >

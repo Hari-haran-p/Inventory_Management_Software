@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
+const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCancel = async (e) => {
@@ -31,9 +31,11 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
 
   const handleAcknowledge = async()=>{
     try{
+      setIsLoading(true);
       const response = await axios.post("http://localhost:4000/api/acknowledgeTransfer", {...data, ...user})
       if (response) {
         setIsLoading(false);
+        fetchPendingData();
         setMessage(response.data.Data);
         console.log(response.data)
         // onClose();

@@ -52,13 +52,15 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
-    setIsLoggedIn(false);
-    setUser([]);
-    try {
-      Cookies.remove("token");
-      navigate("/");
-    } catch (error) {
-      console.log(error);
+    if(window.confirm("Are you sure want to logout ?")){
+      setIsLoggedIn(false);
+      setUser([]);
+      try {
+        Cookies.remove("token");
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
