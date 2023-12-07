@@ -192,6 +192,14 @@ const Scrap = () => {
                                         >
                                             Approval Request
                                         </div>
+                                        <div
+                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapApprove == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                                            onClick={() => {
+                                                setShowScrap(true)
+                                            }}
+                                        >
+                                            Scrap
+                                        </div>
                                     </div>
                                 )}
                             </div>
