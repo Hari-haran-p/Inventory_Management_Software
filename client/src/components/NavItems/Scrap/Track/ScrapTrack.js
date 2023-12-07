@@ -73,7 +73,6 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
     setAccordions(updatedAccordions);
   };
 
-
   if (!isVisible) return null;
 
   return (

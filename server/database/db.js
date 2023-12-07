@@ -3,12 +3,12 @@ const dotenv = require("dotenv").config();
 
 // Create a connection pool
 const pool = mysql.createPool({
-  host: process.env.DB_HOST_PUBLIC,
-  user: process.env.DB_USERNAME,
-  password:process.env.DB_PASSWORD,
-  database:process.env.DB_NAME,
-  port: process.env.DB_PORT_PUBLIC
-});
+  host: "121.200.55.42",
+  user: "lab",
+  password: "Spl@765",
+  database: "LAB",
+  port: "3306"
+}); 
 
 module.exports = {
   query: (sql, values) => {

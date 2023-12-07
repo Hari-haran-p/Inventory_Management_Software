@@ -2,23 +2,95 @@ const { response } = require("express");
 const db = require("./database/db.js");
 
 
+// const scrapRequest = async function (req, res, next) {
+
+//     const formData = req.body.formData;
+//     const resultData = req.body.resultData[0];
+
+//     if (formData.stockReq > resultData.stock_qty) {
+//         res.status(500).json({ Data: "Check for entered stock quantity" });
+//         return;
+//     }
+
+//     db.query("INSERT INTO scraptable (item_code, manufacturer_id, supplier_id, scrap_qty, user_id, inventory_value, dept_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+//         [formData.itemcode, resultData.manufacturer_id, resultData.supplier_id, formData.stockReq, req.body.user_id, formData.stockReq * resultData.cost_per_item, req.body.dept_id]
+//     ).then((response) => {
+//         res.status(200).json({ Data: "Request sucessfully Initiated" });
+//     }).catch((error) => {
+//         res.status(500).json({ Data: "Some internal Error" });
+//     })
+
+// }
+
 const scrapRequest = async function (req, res, next) {
 
-    const formData = req.body.formData;
-    const resultData = req.body.resultData[0];
+    let connection;
+    try {
+        connection = await db.getConnection();
+        await connection.beginTransaction();
 
-    if (formData.stockReq > resultData.stock_qty) {
-        res.status(500).json({ Data: "Check for entered stock quantity" });
+        const apex_no = req.body.items.apex_no;
+        const item_code = req.body.items.item_code;
+        const manufacturer_id = req.body.items.manufacturer_id;
+        const supplier_id = req.body.items.supplier_id;
+        const scrap_qty = req.body.items.required_stock;
+        const user_id = req.body.user.user_id;
+        const inventory_value = scrap_qty * req.body.items.cost_per_item;
+        const dept_id = req.body.items.dept_id;
+
+        // console.log(req.body);
+        // if (transfer_to.toUpperCase() == transfer_from.toUpperCase()) {
+        //     res.status(500).json({ Data: "Requested lab cannot be your lab" });
+        //     return;
+        // }
+
+        const transferResult = await new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM stocktable WHERE apex_no = ? AND item_code = ? AND dept_id = ? ", [apex_no, item_code, dept_id], async (error, result) => {
+                if (error) {
+
+                    await connection.rollback();
+                    res.status(500).json({ "Data": "Some internal error" });
+                    return;
+                    reject(error);
+                } else {
+
+                    resolve(result);
+                }
+            });
+        })
+
+        if (transferResult.length > 0 && transferResult[0].stock_qty >= scrap_qty) {
+            const insertResult = await new Promise((resolve, reject) => {
+                connection.query("INSERT INTO scraptable (apex_no, item_code, manufacturer_id, supplier_id, scrap_qty, user_id, inventory_value, dept_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    [apex_no, item_code, manufacturer_id, supplier_id, scrap_qty, user_id, inventory_value, dept_id, "PENDING"], async (error, result) => {
+                        if (error) {
+
+                            await connection.rollback();
+                            res.status(400).json({ "Data": "Some Internal Error" });
+                            return;
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    })
+            })
+        } else {
+            res.status(400).json({ "Data": "Stock quantity not available" });
+            return;
+        }
+
+        await connection.commit();
+        res.status(200).json({ "Data": "Request raised sucessfully" });
         return;
-    }
 
-    db.query("INSERT INTO scraptable (item_code, manufacturer_id, supplier_id, scrap_qty, user_id, inventory_value, dept_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        [formData.itemcode, resultData.manufacturer_id, resultData.supplier_id, formData.stockReq, req.body.user_id, formData.stockReq * resultData.cost_per_item, req.body.dept_id]
-    ).then((response) => {
-        res.status(200).json({ Data: "Request sucessfully Initiated" });
-    }).catch((error) => {
-        res.status(500).json({ Data: "Some internal Error" });
-    })
+    } catch (error) {
+        if (connection)
+            await connection.rollback()
+    } finally {
+        if (connection)
+            connection.release();
+
+    }
 
 }
 

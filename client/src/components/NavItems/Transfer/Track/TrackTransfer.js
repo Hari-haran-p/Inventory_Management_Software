@@ -98,6 +98,8 @@ const TrackTransfer = ({
               setError={setError}
               toggleAccordion={() => toggleAccordion(accordion.key)}
               noDataMessage={accordion.noDataMessage}
+              fetchPendingData = {fetchPendingData}
+
             />
           ))}
         </div>

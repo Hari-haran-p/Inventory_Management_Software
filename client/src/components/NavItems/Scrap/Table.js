@@ -26,6 +26,7 @@ function Table({ scrapData,isVisible }) {
       const filteredResults = scrapData.filter((item) => {
         const propertiesToSearch = [
           "id",
+          "apex_no",
           "item_code",
           "item_type",
           "item_name",
@@ -57,6 +58,7 @@ function Table({ scrapData,isVisible }) {
   //sort by functionality
   const [sortOrder, setSortOrder] = useState({
     id: "asc",
+    apex_no:"asc",
     item_code: "asc",
     item_type: "asc",
     item_name: "asc",
@@ -109,7 +111,7 @@ function Table({ scrapData,isVisible }) {
   if (!isVisible) return null;
 
   return (
-    <div className=" w-full p-32 h-full">
+    <div className=" w-full p-20 h-full">
       <div className="flex  w-full mb-5 h-auto justify-between font-semibold">
         <div className="sub-titles2 text-center text-2xl font-semibold">
           Scrap Table
@@ -147,6 +149,21 @@ function Table({ scrapData,isVisible }) {
               <thead style={{ backgroundColor: "#0f6af2", color: "white" }} class=" text-xs uppercase font-medium">
                 <tr>
                   <th className="px-6 py-3">s.no</th>
+                  <th
+                    onClick={() => sortData("apex_no")}
+                    scope="col"
+                    className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
+                  >
+                    <div className="flex">
+                      <div>Apex No</div>
+                      {sortedColumn === "apex_no" && (
+                        <i
+                          className={`bi bi-arrow-${sortOrder.id === "asc" ? "up" : "down"
+                            } ml-2`}
+                        ></i>
+                      )}
+                    </div>
+                  </th>
                   <th
                     onClick={() => sortData("id")}
                     scope="col"
@@ -389,6 +406,9 @@ function Table({ scrapData,isVisible }) {
                   return (
                     <tr className="shadow-md rounded-xl">
                       <td class="pl-4">{index + 1}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {data.apex_no}
+                      </td>
                       <td class="flex px-6 py-4 whitespace-nowrap">
                         {data.id}
                       </td>

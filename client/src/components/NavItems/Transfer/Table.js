@@ -29,6 +29,7 @@ function Table({ stockData }) {
     if (click || searchQuery == "") {
       const filteredResults = stockData.filter((item) => {
         const propertiesToSearch = [
+          "apex_no",
           "item_code", 
           "item_type", 
           "item_name", 
@@ -55,6 +56,7 @@ function Table({ stockData }) {
 
   //sort by functionality
   const [sortOrder, setSortOrder] = useState({
+          apex_no : "asc",
           item_code : "asc",
           item_type : "asc",
           item_name : "asc",
@@ -142,6 +144,22 @@ function Table({ stockData }) {
               <thead  style={{backgroundColor:"#0f6af2" , color:"white"}} class=" text-xs uppercase font-medium">
                 <tr>
                   <th className="px-6 py-3">s.no</th>
+                  <th
+                   onClick={() => sortData("apex_no")}
+                    scope="col"
+                    className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
+                  >
+                    <div className="flex">
+                      <div>Apex No.</div>
+                      {sortedColumn === "apex_no" && (
+                      <i
+                        className={`bi bi-arrow-${
+                          sortOrder.item_code === "asc" ? "up" : "down"
+                        } ml-2`}
+                      ></i>
+                    )}
+                    </div>
+                  </th>
                   <th
                    onClick={() => sortData("item_code")}
                     scope="col"
@@ -318,6 +336,9 @@ function Table({ stockData }) {
                     <tr className="shadow-md rounded-xl">
                       <td class="pl-4">{index + 1}</td>
                       <td class="flex px-6 py-4 whitespace-nowrap">
+                        {data.apex_no}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
                         {data.item_code}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
