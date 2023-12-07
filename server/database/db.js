@@ -8,7 +8,7 @@ const pool = mysql.createPool({
   password: "password",
   database: "LAB",
   port: "3306"
-});
+}); 
 
 module.exports = {
   query: (sql, values) => {

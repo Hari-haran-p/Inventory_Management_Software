@@ -10,6 +10,8 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import ItemImport from "./Imports/ItemImport";
 import StockImport from "./Imports/StockImport";
+import ManufcturerImport from "./Imports/ManufcturerImport";
+import SupplierImport from "./Imports/SupplierImport";
 
 function Entries() {
 
@@ -25,6 +27,10 @@ function Entries() {
 
   const [showItemImport, setShowItemImport] = useState(false);
   const [showStockImport, setShowStockImport] = useState(false);
+
+  const [showManufacturerImport, setShowManufacturerImport] = useState(false);
+  const [showSupplierImport, setShowSupplierImport] = useState(false);
+
 
   const [item, setItem] = useState([]);
   const [manufacturer, setManufacturer] = useState([]);
@@ -123,6 +129,7 @@ function Entries() {
                     <div style={{ color: "#5e9ff2" }} className="text-sm  break-words ">Streamline Manufacturer Data Entry Process.</div>
                     <div className="button-container flex gap-3 justify-center">
                       <button
+                        onClick={() => setShowManufacturerImport(true)}
                         class="w-11/12 md:w-32 bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-2 px-6 inline-flex items-center">
                         <span class="mx-auto text-lg">Upload</span>
                       </button>
@@ -141,7 +148,15 @@ function Entries() {
                   setError={setError}
                   setIsLoading={setIsLoading}
                 />
+                <ManufcturerImport
+                  isVisible={showManufacturerImport}
+                  user={user}
+                  setMessage={setMessage}
+                  setError={setError}
+                  onClose={() => setShowManufacturerImport(false)}
+                  setIsLoading={setIsLoading}
 
+                />
                 <div
 
                   style={{ width: "500px" }}
@@ -153,6 +168,7 @@ function Entries() {
                     <div style={{ color: "#5e9ff2" }} className="text-sm break-words ">Efficient Supplier Data Entry Process.</div>
                     <div className="flex button-container gap-3 items-center justify-center">
                       <button
+                        onClick={() => setShowSupplierImport(true)}
                         class="w-11/12 md:w-32 bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-2 px-6 inline-flex items-center">
                         <span class="mx-auto text-lg">Upload</span>
                       </button>
@@ -171,6 +187,15 @@ function Entries() {
                   setMessage={setMessage}
                   setError={setError}
                   setIsLoading={setIsLoading}
+                />
+                <SupplierImport
+                  isVisible={showSupplierImport}
+                  user={user}
+                  setMessage={setMessage}
+                  setError={setError}
+                  onClose={() => setShowSupplierImport(false)}
+                  setIsLoading={setIsLoading}
+
                 />
               </div>
               {/* {user.role === "slbincharge" && (

@@ -15,7 +15,7 @@ const { getTransferData, transferRequest, acceptRequest, rejectRequest, cancelTr
 const { itemEdit, stockEdit } = require("./edit.js");
 const { manufacturerAdd, supplierAdd, itemAdd, stockAdd } = require("./vendor.js");
 const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest, acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData } = require("./scrap.js");
-const { importItems, importStocks, importTransferItems } = require("./excel_import.js");
+const { importItems, importStocks, importTransferItems, importManufacturers, importSuppliers } = require("./excel_import.js");
 const { log } = require("console");
 
 const app = express();
@@ -292,6 +292,10 @@ app.post("/api/importTransferItems", importTransferItems);
 
 app.post("/api/importStocks", importStocks);
 
+app.post("/api/importManufacturers", importManufacturers);
+
+app.post("/api/importSuppliers", importSuppliers);
+
 app.post("/api/scrapRequest", scrapRequest);
 
 app.get("/api/getScrap", getAllScrapData);
@@ -308,6 +312,5 @@ app.post("/api/deleteScrapRequest", deleteScrapRequest);
 
 app.get("/api/getTableScrapData", getTableScrapData);
 
-const server = https.createServer()
 
 app.listen(4000, () => console.log("App listening on port 4000"));

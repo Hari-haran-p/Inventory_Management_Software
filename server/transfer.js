@@ -349,7 +349,7 @@ const rejectRequest = async function (req, res, next) {
 
 
 const acknowledgeTransfer = async function (req, res, next) {
-
+console.log(req.body);
     let connection;
     try {
         connection = await db.getConnection();
@@ -367,6 +367,7 @@ const acknowledgeTransfer = async function (req, res, next) {
                 }
             });
         });
+        console.log(fromDataResult);
         if (fromDataResult.length > 0 && fromDataResult[0].stock_qty >= req.body.transfer_qty) {
             const stockMinus = fromDataResult[0].stock_qty - req.body.transfer_qty;
             const inventoryMinus = fromDataResult[0].inventory_value - req.body.cost_per_item * req.body.transfer_qty;

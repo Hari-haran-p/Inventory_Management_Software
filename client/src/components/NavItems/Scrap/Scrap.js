@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import ScrapTrack from './Track/ScrapTrack';
 import ScrapApprove from './Approve/ScrapApprove';
 import ScrapRequest from './Request/ScrapRequest';
+import ScrapRequestTable from './Request/ScrapRequest';
 
 const Scrap = () => {
 
@@ -21,6 +22,15 @@ const Scrap = () => {
     const [noTrackData, setNoTrackData] = useState(true);
     const [noTableData, setNoTableData] = useState(true);
 
+
+    
+    const [getLabDetails, setGetLabDetails] = useState([]);
+    async function fetchGetLabDetails() {
+      const response = await axios
+        .get("http://localhost:4000/api/getLabDetails")
+        .catch((error) => console.log(error));
+      setGetLabDetails(response.data);
+    }
 
     async function fetchScrapData() {
         const response = await axios.get("http://localhost:4000/api/getScrap");
@@ -51,6 +61,7 @@ const Scrap = () => {
             setNoTableData(true);
         }
     }
+
 
     async function fetchScrapTrackData(id) {
         const response = await axios.get(`http://localhost:4000/api/getScrapData/${id}`);
@@ -93,6 +104,7 @@ const Scrap = () => {
         } else {
             getUser();
             fetchStockData();
+            fetchGetLabDetails();
             fetchTableData();
             if (user.role == 'slsincharge') {
                 fetchScrapData();
@@ -192,13 +204,27 @@ const Scrap = () => {
                 fetchScrapData={fetchScrapData}
                 noData={noData}
             />
-            <ScrapRequest
+            {/* <ScrapRequest
                 isVisible={showScrap}
                 onClose={() => setShowScrap(false)}
                 user={user}
                 setMessage={setMesaage}
                 setError={setError}
                 fetchScrapTrackData={fetchScrapTrackData}
+            /> */}
+            <ScrapRequestTable
+                user={user}
+                isVisible={showScrap}
+                onClose={()=>setShowScrap(false)}
+                setMessage={setMesaage}
+                setError={setError}
+                getLabDetails={getLabDetails}
+                setGetLabDetails={setGetLabDetails}
+                getStock={stockData}
+                fetchGetStock={fetchStockData}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+
             />
 
         </>
