@@ -244,6 +244,7 @@ const Transfer = () => {
                       >
                         Request Transfer
                       </div>
+                      {user.role == "slsincharge" && 
                       <button
                         onClick={() => {
                           setTransferPopup(false)
@@ -256,6 +257,7 @@ const Transfer = () => {
                       >
                         <span>Bulk Transfer</span>
                       </button>
+                      }
                     </div>
                   )}
                 </div>

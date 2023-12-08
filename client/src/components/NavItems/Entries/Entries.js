@@ -116,7 +116,7 @@ function Entries() {
             </div>
           ) : null}
           {/* <div className="entry-div"> */}
-            <div className="pt-10 pb-10 animate1 flex flex-wrap w-full justify-center items-center gap-10 lg:gap-20">
+            <div className="pt-10 pb-10 animate1 flex flex-wrap w-full h-auto min-h-screen justify-center items-center gap-10 lg:gap-20">
               <div className="flex flex-col items-center justify-center gap-10 lg:gap-32">
                 <div
                   style={{ width: "500px" }}

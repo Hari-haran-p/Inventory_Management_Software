@@ -29,10 +29,10 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
     }
   }
 
-  const handleAcknowledge = async()=>{
-    try{
+  const handleAcknowledge = async () => {
+    try {
       setIsLoading(true);
-      const response = await axios.post("http://localhost:4000/api/acknowledgeTransfer", {...data, ...user})
+      const response = await axios.post("http://localhost:4000/api/acknowledgeTransfer", { ...data, ...user })
       if (response) {
         setIsLoading(false);
         fetchPendingData();
@@ -40,7 +40,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
         console.log(response.data)
         // onClose();
       }
-    }catch(error){
+    } catch (error) {
       if (error) {
         setIsLoading(false);
         setError(error.response.data.Data)
@@ -188,19 +188,20 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
               >
                 Delete
               </button>
+              
             ) : null}
-            
-          </div>
-          <div className="flex flex-wrap items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between">
               <div className={`text-lg border-2 ${data.status == 'PENDING' ? "border-indigo-500 rounded-md p-1  text-indigo-700 bg-indigo-100" : data.status == 'CANCELED' ? "border-red-500  text-red-700 rounded-md p-1 bg-red-100" : data.status == 'LABAPPROVED' ? "border-orange-500  text-orange-700 rounded-md p-1 bg-orange-100" : data.status == 'APPROVED' ? "border-green-500 text-green-700  rounded-md p-1 bg-green-100" : data.status == "REJECTED" ? "border-red-500 text-red-700 rounded-md p-1 bg-red-100" : data.status == "ACKNOWLEDGED" ? "border-2 border-purple-600 text-purple-800  rounded-md p-1 bg-purple-100 " : ""} `}>Status :
                 <span className={`font-bold`}>
                   {" "} {data.status}
                 </span>
               </div>
               <div>
-              {data.status == "APPROVED" && <div><button onClick={()=>handleAcknowledge()} className="text-lg font-bold border-2 border-sky-500 text-sky-700  rounded-md p-1 bg-sky-100 hover:bg-sky-500 hover:text-white">Acknowledge</button></div>}
+                {data.status == "APPROVED" && <div><button onClick={() => handleAcknowledge()} className="text-lg font-bold border-2 border-sky-500 text-sky-700  rounded-md p-1 bg-sky-100 hover:bg-sky-500 hover:text-white">Acknowledge</button></div>}
               </div>
             </div>
+          </div>
+
         </div>
       )}
     </>
