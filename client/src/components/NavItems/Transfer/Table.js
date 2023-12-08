@@ -104,12 +104,12 @@ function Table({ stockData }) {
   
 
   return (
-    <div className=" w-9/12 h-full">
-      <div className="flex  w-full mb-5 h-auto  justify-between font-semibold">
-        <div className="sub-titles2 animate1 text-center text-2xl font-semibold">
+    <div className=" w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
+      <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
+        <div className="pl-4 text-2xl flex items-center whitespace-nowrap  text-blue-600 font-semibold">
           Transfer Table
         </div>
-        <div className="input-field2 animate1 flex">
+        <div className="flex flex-wrap justify-center items-center">
           <div className="h-auto">
             <input
               name="inputQuery"
@@ -121,25 +121,25 @@ function Table({ stockData }) {
                 setSearchQuery(e.target.value);
               }}
               placeholder="Search..."
-              className="text-black indent-2 font-medium w-80 h-8 rounded-xl border-2 border-black"
+              className="text-black indent-2 font-medium w-80 h-9 rounded-md border-2 border-black"
             />  
           </div>
           <div
             onClick={() => setClick(true)}
-            className="focus:ring-4 shadow-lg transform active:scale-75 transition-transform cursor-pointer border-2 border-black rounded-full w-full ml-5 mr-16 px-2"
+            className="cursor-pointer text-center ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2 mr-4"
           >
-            <i className="bi bi-search"></i>
+            Search
           </div>
         </div>
       </div>
-      <div class="sm:-mx-6 lg:-mx-8 overflow-y-auto overflow-x-auto  border-gray-700 rounded-lg">
-        <div class=" align-middle inline-block min-w-full ">
+      <div class="soverflow-y-auto  overflow-x-auto border-gray-700 rounded-lg">
+        <div style={{ width: "100%" }} class=" align-middle  inline-block">
           <div
-            style={{ width: "90%", height: "50%", maxHeight: "360px" }}
+            style={{ height: "50%", maxHeight: "50vh" }}
             class="shadow sm:rounded-lg  h-96"
           >
             <table class="min-w-full text-sm">
-              <thead  style={{backgroundColor:"#0f6af2" , color:"white"}} class=" text-xs uppercase font-medium">
+              <thead  class=" text-md uppercase border-b-2 font-medium">
                 <tr>
                   <th className="px-6 py-3">s.no</th>
                   <th
@@ -315,7 +315,7 @@ function Table({ stockData }) {
               <tbody style={{backgroundColor:"white" , fontWeight:"bold"}}>
                 {filteredData.map((data, index) => {
                   return (
-                    <tr className="shadow-md rounded-xl">
+                    <tr className="border-b-2">
                       <td class="pl-4">{index + 1}</td>
                       <td class="flex px-6 py-4 whitespace-nowrap">
                         {data.item_code}

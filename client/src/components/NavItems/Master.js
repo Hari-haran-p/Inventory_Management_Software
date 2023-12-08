@@ -65,7 +65,7 @@ function Master() {
               <Cards />
             </div>
             <div className="flex items-center justify-center w-full">
-              <Table stockData={stockData} fetchStockData={fetchStockData} />
+              <Table stockData={stockData} fetchStockData={fetchStockData} setStockData={setStockData} />
             </div>
           </div>
         </div>

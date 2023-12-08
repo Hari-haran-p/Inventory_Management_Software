@@ -69,6 +69,7 @@ function Report() {
   });
   
 
+
   const handleOkClick = () => {
     if (selectedTable === "masterTable") {
       const selectedData = data.map((item) => {
@@ -134,6 +135,7 @@ function Report() {
     }
   };
 
+  // console.log(requiredData);
   return (
     <div>
       <div
@@ -229,7 +231,6 @@ function Report() {
                           checked={selectedColumns[key]}
                           onChange={handleCheckboxChange}
                         />
-                        {/* {console.log(selectedColumns[key])} */}
                         {key}
                       </label>
                     ))}
