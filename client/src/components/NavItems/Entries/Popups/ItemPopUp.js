@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoading, manufacturer, supplier, quantityUnits,noDataOpenManufacturer ,noDataOpenSupplier }) => {
+const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoading, manufacturer, supplier, quantityUnits, noDataOpenManufacturer, noDataOpenSupplier }) => {
 
 
   //<-------------Assigning state requird state variables --------->
@@ -21,84 +21,13 @@ const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoadin
 
   const navigate = useNavigate();
 
-  const [msuggestion, setMSuggestion] = useState(false);
-  const [isMTyping, setIsMTyping] = useState(false);
-  const [ssuggestion, setSSuggestion] = useState(false);
-  const [isSTyping, setIsSTyping] = useState(false);
-
   //<----------End of assigning state variables ------------>
-
-
-  //<--------Functions to show suggestion for manufacturer in form -------------->
-
-  const [manufacturerResult, setManufacturerResult] = useState(manufacturer);
-
-  const handleManufacturerChange = (e) => {
-    if (e.target.value.trim().length > 0) {
-      setMSuggestion(true);
-      setIsMTyping(true);
-    } else {
-      setIsMTyping(false);
-      setMSuggestion(false);
-    }
-    setManufacturerResult(
-      manufacturer.filter((f) => f.name.toLowerCase().includes(e.target.value))
-    );
-    // console.log(manufacturerResult)
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-
-  function manuResultClick(code) {
-    setData({ ...data, manufacturerName: code });
-    const result = manufacturer.filter((manu) => {
-      if (manu.id == code) {
-        return manu;
-      }
-    });
-    // setAutoForm(result[0]);
-    setMSuggestion(false);
-    setIsMTyping(false);
-  }
-
-  //<--------End of Functions to show suggestion for Manufacturer in form -------------->
-
-  //<--------Functions to show suggestion for Supplier in form ------------>
-
-  const [supplierResult, setSupplierResult] = useState(manufacturer);
-
-  const handleSupplierChange = (e) => {
-    if (e.target.value.trim().length > 0) {
-      setSSuggestion(true);
-      setIsSTyping(true);
-    } else {
-      setIsSTyping(false);
-      setSSuggestion(false);
-    }
-    setSupplierResult(
-      supplier.filter((f) => f.name.toLowerCase().includes(e.target.value))
-    );
-    // console.log(manufacturerResult)
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-
-  function supplierResultClick(code) {
-    setData({ ...data, supplierName: code });
-    const result = supplier.filter((supp) => {
-      if (supp.id == code) {
-        return supp;
-      }
-    });
-    // setAutoForm(result[0]);
-    setSSuggestion(false);
-    setIsSTyping(false);
-  }
-
-  //<--------End of fdtunctions to show suggestion for Supplier in form -------------->
 
   //<--------Form handling --------------->
 
   const handleChange = (e) => {
     e.preventDefault();
+    console.log(e.target.value);
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
@@ -143,11 +72,11 @@ const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoadin
 
   return (
     <div
-    style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}} 
-    className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm">
-      <div 
-      style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",margin:"15px"}}
-      className="flex  flex-col">
+      style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}
+      className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm">
+      <div
+        style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", margin: "15px" }}
+        className="flex  flex-col">
         <div
           style={{ height: "80%" }}
           className="bg-white w-full px-14 animate1 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center border-gray-700 rounded-lg"
@@ -207,41 +136,22 @@ const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoadin
                     <span className="px-1 text-lg text-gray-600">
                       Manufacturer Name
                     </span>
-                    <input
-                      type="text"
+                    <select
                       name="manufacturerName"
                       value={data.manufacturerName}
-                      list="manufacturers"
+                      onChange={handleChange}
                       className="text-md block px-3 py-2 rounded-lg w-full
-                bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
+                bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
                       required
-                      onChange={handleManufacturerChange}
                       autoComplete="off"
-                    />
-                  </div>
-                  <div className="flex flex-wrap">
-                    {isMTyping && msuggestion && (
-                      <div
-                        className="text-md block px-3 py-2 rounded-b-lg w-full border-t-0
-                        bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
-                      >
-                        {manufacturerResult && manufacturerResult.length > 0 ?
-                          (manufacturerResult.slice(0, 4).map((result) => {
-                            return (
-                              <div
-                                key={result.id}
-                                value={result.id}
-                                className="hover:bg-sky-100 rounded-lg p-1"
-                                onClick={() => manuResultClick(result.id)}
-                              >
-                                {result.id}-{result.name}
-                              </div>
-                            );
-                          })) : (
-                            <div className="cursor-pointer" onClick={noDataOpenManufacturer}>click here to add manufacturer</div>
-                          )}
-                      </div>
-                    )}
+                    >
+                      <option value="" selected>
+                        Select Units
+                      </option>
+                      {manufacturer.map((item) => {
+                        return <option value={item.id} key={item.id} >{item.name}</option>;
+                      })}
+                    </select>
                   </div>
                 </div>
                 <div className="py-1">
@@ -249,41 +159,24 @@ const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoadin
                     <span className="px-1 text-lg text-gray-600">
                       Supplier Name
                     </span>
-                    <input
-                      type="text"
+                    <select
                       name="supplierName"
                       value={data.supplierName}
-                      list="supplier"
+                      onChange={handleChange}
                       className="text-md block px-3 py-2 rounded-lg w-full
-                bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
+                bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
                       required
-                      onChange={handleSupplierChange}
-                    />
+                      autoComplete="off"
+                    >
+                      <option value="" selected>
+                        Select Units
+                      </option>
+                      {supplier.map((item) => {
+                        return <option value={item.id} key={item.id} >{item.name}</option>;
+                      })}
+                    </select>
                   </div>
-                  <div className="flex flex-wrap ">
-                    {isSTyping && ssuggestion && (
-                      <div
-                        className="text-md block px-3 py-2 rounded-b-lg w-full border-t-0
-                bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
-                      >
-                        {supplierResult && supplierResult.length > 0 ? (
-                          supplierResult.slice(0, 4).map((result) => {
-                            return (
-                              <div
-                                key={result.id}
-                                value={result.id}
-                                className="hover:bg-sky-100 rounded-lg p-1"
-                                onClick={() => supplierResultClick(result.id)}
-                              >
-                                {result.id}-{result.name}
-                              </div>
-                            );
-                          })) : (
-                          <div className="cursor-pointer" onClick={noDataOpenSupplier}>Click here to add Supplier</div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  
                 </div>
                 <div class="flex flex-wrap mt-8">
                   <span className="px-1 text-lg text-gray-600">Item Name</span>

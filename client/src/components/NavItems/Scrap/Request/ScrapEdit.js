@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function TransferEdit({
+function ScrapEdit({
   data,
   user,
   onClose,
@@ -47,7 +47,7 @@ function TransferEdit({
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "http://localhost:4000/api/transferRequest", { items: formData, user_id: user }
+        "http://localhost:4000/api/scrapRequest", { items: formData, user: user }
       );
       if (response.status == 200) {
         console.log(response.data);
@@ -258,7 +258,7 @@ function TransferEdit({
               <div className="flex flex-wrap">
                 <div className="flex">
                   <label for="required_stock" className="text-md pr-5 ">
-                    Required Stock
+                    Scrap Quantity
                   </label>
                 </div>
                 <input
@@ -288,4 +288,4 @@ function TransferEdit({
   );
 }
 
-export default TransferEdit;
+export default ScrapEdit;

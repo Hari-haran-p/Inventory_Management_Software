@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import MasterTablePopup from "./MasterTablePopup";
 
-function Table({ scrapData }) {
-  //For open popup
-  console.log(scrapData);
+function Table({ scrapData,isVisible }) {
   const [openPopup, setOpenPopup] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
 
@@ -28,6 +26,7 @@ function Table({ scrapData }) {
       const filteredResults = scrapData.filter((item) => {
         const propertiesToSearch = [
           "id",
+          "apex_no",
           "item_code",
           "item_type",
           "item_name",
@@ -59,6 +58,7 @@ function Table({ scrapData }) {
   //sort by functionality
   const [sortOrder, setSortOrder] = useState({
     id: "asc",
+    apex_no:"asc",
     item_code: "asc",
     item_type: "asc",
     item_name: "asc",
@@ -108,14 +108,17 @@ function Table({ scrapData }) {
     }
   };
 
+  if (!isVisible) return null;
+
   return (
-    <div className=" w-9/12 h-full">
-      <div className="flex  w-full mb-5 h-auto  justify-between font-semibold">
-        <div className="sub-titles2 animate1 text-center text-2xl font-semibold">
-          Master Table
+    <div className="w-full flex justify-center p-10 items-center">
+    <div className=" w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
+      <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
+        <div className="pl-4 text-2xl w-1/5 flex items-center whitespace-nowrap  text-blue-600 font-semibold">
+          Scrap Table
         </div>
-        <div className="input-field2 animate1 flex">
-          <div className="h-auto">
+        <div className="flex gap-4 items-center w-4/5 justify-end pr-6">
+          <div className="flex flex-wrap justify-center items-center">
             <input
               name="inputQuery"
               type="text"
@@ -126,27 +129,43 @@ function Table({ scrapData }) {
                 setSearchQuery(e.target.value);
               }}
               placeholder="Search..."
-              className="text-black indent-2 font-medium w-80 h-8 rounded-xl border-2 border-black"
+              style={{minWidth: "70%" }}
+              className="text-black indent-2 h-9 font-medium border-2 rounded-lg border-black"
             />
           </div>
-          <div
-            onClick={() => setClick(true)}
-            className="focus:ring-4 shadow-lg transform active:scale-75 transition-transform cursor-pointer border-2 border-black rounded-full w-full ml-5 mr-16 px-2"
-          >
-            <i className="bi bi-search"></i>
-          </div>
+          <button
+              onClick={() => setClick(true)}
+              className="cursor-pointer ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2"
+            >
+              Search
+            </button>
         </div>
       </div>
-      <div class="sm:-mx-6 lg:-mx-8 overflow-y-auto overflow-x-auto animate2 border-gray-700 rounded-lg">
-        <div class=" align-middle inline-block min-w-full ">
+      <div class="overflow-y-auto  overflow-x-auto border-gray-700 rounded-lg">
+        <div style={{ width: "100%" }} class=" align-middle  inline-block">
           <div
-            style={{ width: "90%", height: "50%", maxHeight: "360px" }}
+            style={{ height: "50%", maxHeight: "50vh" }}
             class="shadow sm:rounded-lg  h-96"
           >
-            <table class="min-w-full text-sm">
-              <thead style={{ backgroundColor: "#0f6af2", color: "white" }} class=" text-xs uppercase font-medium">
+            <table class="min-w-full text-sm ">
+              <thead class=" text-md uppercase border-b-2 font-medium">
                 <tr>
                   <th className="px-6 py-3">s.no</th>
+                  <th
+                    onClick={() => sortData("apex_no")}
+                    scope="col"
+                    className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
+                  >
+                    <div className="flex">
+                      <div>Apex No</div>
+                      {sortedColumn === "apex_no" && (
+                        <i
+                          className={`bi bi-arrow-${sortOrder.id === "asc" ? "up" : "down"
+                            } ml-2`}
+                        ></i>
+                      )}
+                    </div>
+                  </th>
                   <th
                     onClick={() => sortData("id")}
                     scope="col"
@@ -387,8 +406,11 @@ function Table({ scrapData }) {
               <tbody style={{ backgroundColor: "white", fontWeight: "bold" }}>
                 {filteredData.map((data, index) => {
                   return (
-                    <tr className="shadow-md rounded-xl">
+                    <tr className="border-b-2">
                       <td class="pl-4">{index + 1}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        {data.apex_no}
+                      </td>
                       <td class="flex px-6 py-4 whitespace-nowrap">
                         {data.id}
                       </td>
@@ -447,6 +469,7 @@ function Table({ scrapData }) {
           {/* <MasterTablePopup data={selectedData} onClose={handleClosePopup} /> */}
         </div>
       )}
+    </div>
     </div>
   );
 }

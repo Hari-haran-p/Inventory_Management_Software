@@ -8,7 +8,7 @@ function ApprovalPopup({ isVisible, transferData, onClose, setError, setMessage,
     return (
         <>
             <div className="">
-                <div className=" inset-0 w-full">
+                <div className=" w-full">
                     <div
                         style={{
                             height: '100vh',
@@ -29,12 +29,12 @@ function ApprovalPopup({ isVisible, transferData, onClose, setError, setMessage,
                             <div className="  flex flex-col items-center">
                                 <div
                                     style={{ width: "100%", height: "30%" }}
-                                    class="relative rounded-2xl overflow-x-auto overflow-y-auto"
+                                    class="overflow-x-auto overflow-y-auto"
                                 >
                                     <div className="pt-8 flex flex-col  gap-10 ">
                                         <span className=' font-bold text-xl'>Pending request:</span>
                                         {console.log(transferData)}
-                                        {noData ? <div>No Data</div> : (
+                                        {noData ? <div>No Request Available</div> : (
                                             transferData && transferData.map((data) =>
                                                 <>
                                                     <TransferCard setMessage={setMessage} setError={setError} data={data} user={user} onClose={onClose} />

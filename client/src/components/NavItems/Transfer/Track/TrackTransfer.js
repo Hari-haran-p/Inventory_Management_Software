@@ -1,43 +1,107 @@
-import axios from "axios";
+// Update TrackTransfer component
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../../../AuthContext";
-import TrackCard from "./TrackCard.js";
+import Accordion from "./Accordion";
+import axios from "axios";
 
-const TrackTransfer = ({ isVisible, onClose, trackTransferData, user , setMessage, setError}) => {
+const TrackTransfer = ({
+  isVisible,
+  user,
+  setMessage,
+  setError,
+  onClose,
+}) => {
+  const [pendingData, setPendingData] = useState([]);
+  const [accordions, setAccordions] = useState([]);
+
+  const fetchPendingData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/getTransferCardData/${user.user_id}`
+      );
+      setPendingData(response.data);
+    } catch (error) {
+      console.error(error); 
+    }
+  };
+
+  useEffect(() => {
+    fetchPendingData();
+  }, []);
+
+  useEffect(() => {
+    setAccordions([
+      {
+        key: 1,
+        title: "Pending",
+        data: pendingData.pending || [],
+        isOpen: true,
+        noDataMessage: "No pending data available",
+      },
+      {
+        key: 2,
+        title: "Approved",
+        data: pendingData.approved || [],
+        isOpen: false,
+        noDataMessage: "No approved data available",
+      },
+      {
+        key: 3,
+        title: "Lab Approved",
+        data: pendingData.labapproved || [],
+        isOpen: false,
+        noDataMessage: "No lab-approved data available",
+      },
+      {
+        key: 4,
+        title: "Acknowledged",
+        data: pendingData.acknowledged || [],
+        isOpen: false,
+        noDataMessage: "No acknowledged data available",
+      },
+      {
+        key: 5,
+        title: "Rejected",
+        data: pendingData.rejected || [],
+        isOpen: false,
+        noDataMessage: "No rejected data available",
+      },
+    ]);
+  }, [pendingData]);
+
+  const toggleAccordion = (accordionkey) => {
+    const updatedAccordions = accordions.map((accord) => {
+      if (accord.key === accordionkey) {
+        return { ...accord, isOpen: !accord.isOpen };
+      } else {
+        return { ...accord, isOpen: false };
+      }
+    });
+
+    setAccordions(updatedAccordions);
+  };
 
   if (!isVisible) return null;
 
   return (
-
     <>
-      <div className=" lg:w-full">
-        <div style={{backgroundColor: "#F4F4F4"}} className=" w-full h-full overflow-y-auto rounded-2xl p-4">
-          <div className="flex items-center justify-between px-6">
-            <div className="text-lg pt-2 mt-2 ">Your Pending Transfer Requests: </div>
-            {/* <button
-              className="text-black text-lg border-2 border-black px-2 place-self-end"
-              style={{ borderRadius: "50%" }}
-              onClick={() => onClose()}
-            >
-              X
-            </button> */}
-          </div>
-          <div>
-            <div className="mt-6 flex flex-col justify-center items-center gap-10">
-              {trackTransferData && trackTransferData.map((data, index) => {
-                return (
-                  <TrackCard 
-                    data={data} 
-                    index={index} 
-                    onClose={onClose} 
-                    user={user} 
-                    setError = {setError}
-                    setMessage = {setMessage}
-                  />
-                )
-              })}
-            </div>
-          </div>
+      <div>
+        <div className="p-2 m-8">
+          {accordions.map((accordion) => (
+            <Accordion
+              key={accordion.key}
+              title={accordion.title}
+              data={accordion.data}
+              isOpen={accordion.isOpen}
+              user={user}
+              setMessage={setMessage}
+              onClose={onClose}
+              setError={setError}
+              toggleAccordion={() => toggleAccordion(accordion.key)}
+              noDataMessage={accordion.noDataMessage}
+              fetchPendingData = {fetchPendingData}
+
+            />
+          ))}
         </div>
       </div>
     </>

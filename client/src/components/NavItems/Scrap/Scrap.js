@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import ScrapTrack from './Track/ScrapTrack';
 import ScrapApprove from './Approve/ScrapApprove';
 import ScrapRequest from './Request/ScrapRequest';
+import ScrapRequestTable from './Request/ScrapRequest';
 
 const Scrap = () => {
 
@@ -21,6 +22,15 @@ const Scrap = () => {
     const [noTrackData, setNoTrackData] = useState(true);
     const [noTableData, setNoTableData] = useState(true);
 
+
+    
+    const [getLabDetails, setGetLabDetails] = useState([]);
+    async function fetchGetLabDetails() {
+      const response = await axios
+        .get("http://localhost:4000/api/getLabDetails")
+        .catch((error) => console.log(error));
+      setGetLabDetails(response.data);
+    }
 
     async function fetchScrapData() {
         const response = await axios.get("http://localhost:4000/api/getScrap");
@@ -52,6 +62,7 @@ const Scrap = () => {
         }
     }
 
+
     async function fetchScrapTrackData(id) {
         const response = await axios.get(`http://localhost:4000/api/getScrapData/${id}`);
         if (response && response.status == 200) {
@@ -70,11 +81,20 @@ const Scrap = () => {
     const [showTrackScrap, setShowTrackScrap] = useState(false);
     const [showScrapApprove, setShowScrapApprove] = useState(false);
     const [showScrap, setShowScrap] = useState(false);
+    const [showScrapTable, setShowScrapTable] = useState(true);
+
 
     const [message, setMesaage] = useState(null);
     const [error, setError] = useState(null);
 
     const navigate = useNavigate();
+    const [isNavbarVisible, setIsNavbarVisible] = useState(false);
+    const [isArrowRotated, setIsArrowRotated] = useState(false);
+
+    const toggleNavbar = () => {
+        setIsNavbarVisible((prev) => !prev);
+        setIsArrowRotated((prev) => !prev);
+    };
 
     const { user, getUser } = useAuth();
 
@@ -93,6 +113,7 @@ const Scrap = () => {
         } else {
             getUser();
             fetchStockData();
+            fetchGetLabDetails();
             fetchTableData();
             if (user.role == 'slsincharge') {
                 fetchScrapData();
@@ -136,42 +157,81 @@ const Scrap = () => {
                             <span class="block sm:inline">{error}</span>
                         </div>
                     ) : null}
-                    <div className='text-2xl flex justify-between '>
-                        <h2 className=' whitespace-nowrap'>Scrap Stocks:</h2>
-                        <div className=' flex flex-wrap pr-10 gap-5'>
-                            <div
-                                className="bg-blue-500 animate1 whitespace-nowrap hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
-                                onClick={() => setShowTrackScrap(true)}
-                            >
-                                Track Your Request
-                            </div>
-                            {user.role == 'slsincharge' && (
-                                <div
-                                    className="bg-blue-500 animate1 whitespace-nowrap hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded w-42"
-                                    onClick={() => setShowScrapApprove(true)}
-                                >
-                                    Approve Request
-                                </div>
-                            )}
-                            <div
-                                className="bg-blue-500 animate1  whitespace-nowrap hover:bg-blue-700 text-white h-10 text-sm  py-2 px-6 rounded w-42"
-                                onClick={() => setShowScrap(true)}
-                            >
-                                Scrap
-                            </div>
+                    <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-xl	">
+                        <div>
+                            <div className="text-2xl navTransferHeading font-bold text-blue-700 ">Scrap</div>
                         </div>
-                    </div>
-                    <div className='pt-10'>
-                        <h4>Your scap history:</h4>
-                        <div className=' flex justify-center pt-10'>
-                            <Table scrapData={tableData} />
+                        <div className="flex justify-end items-center gap-10 navIconArrow">
+                            <button
+                                onClick={toggleNavbar}
+                                className={`transition-transform duration-1000 transform ${isArrowRotated ? 'rotate-180' : ''}`}
+                            >
+                                <img style={{ width: "30px" }} className="border-blue-700 border-2 rounded-full" src="/images/control.png" />
+                            </button>
+                            <div
+                                className={`transition-transform transform duration-1000 ${isNavbarVisible ? '' : 'lg:translate-x-full'}`}
+                            >
+                                {isNavbarVisible && (
+                                    <div className="flex flex-wrap gap-5 z-50 items-center justify-between navTransfer">
+                                        <div
+                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapTable == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4 `}
+                                            onClick={() => {
+                                                setShowTrackScrap(false)
+                                                setShowScrapTable(true)
+                                                setShowScrapApprove(false)
+                                                setShowScrap(false)
+                                            }}
+                                        >
+                                            Home
+                                        </div>
+                                        <div
+                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackScrap == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                                            onClick={() => {
+                                                setShowTrackScrap(true)
+                                                setShowScrapTable(false)
+                                                setShowScrapApprove(false)
+                                                setShowScrap(false)
+                                            }}
+                                        >
+                                            Track Your Request
+                                        </div>
+
+                                        <div
+                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapApprove == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                                            onClick={() => {
+                                                setShowTrackScrap(false)
+                                                setShowScrapTable(false)
+                                                setShowScrapApprove(true)
+                                                setShowScrap(false)
+                                            }}
+                                        >
+                                            Approval Request
+                                        </div>
+                                        <div
+                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrap == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                                            onClick={() => {
+                                                setShowScrap(true)
+                                                setShowTrackScrap(false)
+                                                setShowScrapTable(false)
+                                                setShowScrapApprove(false)
+                                            }}
+                                        >
+                                            Scrap
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
+            <Table
+                scrapData={tableData}
+                isVisible={showScrapTable}
+            />
             <ScrapTrack
                 isVisible={showTrackScrap}
-                onClose={() => setShowTrackScrap(false)}
+                // onClose={() => setShowTrackScrap(false)}
                 user={user}
                 setScrapTrackData={setScrapTrackData}
                 scrapTrackData={scrapTrackData}
@@ -192,13 +252,26 @@ const Scrap = () => {
                 fetchScrapData={fetchScrapData}
                 noData={noData}
             />
-            <ScrapRequest
+            {/* <ScrapRequest
                 isVisible={showScrap}
                 onClose={() => setShowScrap(false)}
                 user={user}
                 setMessage={setMesaage}
                 setError={setError}
                 fetchScrapTrackData={fetchScrapTrackData}
+            /> */}
+            <ScrapRequestTable
+                user={user}
+                isVisible={showScrap}
+                onClose={()=>setShowScrap(false)}
+                setMessage={setMesaage}
+                setError={setError}
+                getLabDetails={getLabDetails}
+                setGetLabDetails={setGetLabDetails}
+                getStock={stockData}
+                fetchGetStock={fetchStockData}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
             />
 
         </>

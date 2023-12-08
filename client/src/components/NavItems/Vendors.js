@@ -196,8 +196,8 @@ function Vendors({ open }) {
             className={`flex ${open ? "gap-24" : "gap-6"
               } gap-change  flex-col lg:flex-row items-center justify-center h-auto lg:flex-nowrap duration-500 lg:w-10/12 w-full mt-10 `}
           >
-            <div className="border-2 duration-500 rounded-lg  lg:w-4/12 w-full">
-              <h1 className="text-center text-xl font-bold animate1 py-3">Manufacturer</h1>
+            <div className="border-2 duration-500 rounded-lg  lg:w-5/12 w-full">
+              <h1 className="text-center text-2xl font-bold animate1 whitespace-nowrap text-blue-600 py-3">Manufacturer</h1>
               <div className="input-field">
                 <div className="flex flex-wrap justify-center my-5">
                   <div className="h-auto animate1">
@@ -288,7 +288,7 @@ function Vendors({ open }) {
 
 
             <div className="border-2  rounded-md duration-500 lg:w-7/12 w-full">
-              <h1 className="text-center text-xl font-bold animate1 py-3">Supplier</h1>
+              <h1 className="text-center text-2xl font-bold animate1 whitespace-nowrap  text-blue-600  py-3">Supplier</h1>
               <div className="input-field">
                 <div className="flex justify-center my-5">
                   <div className="h-auto animate1">

@@ -4,6 +4,7 @@ const db = require("./database/db.js");
 const getTransferData = function (req, res, next) {
 
     const user_dept = req.body.dept_code;
+    
     if (req.body.role == 'slbincharge') {
         db.query("SELECT * FROM transfer_request_merged_view WHERE transfered_from = ? AND status = ? ", [user_dept, "PENDING"])
             .catch((error) => res.status(500).json({ error: "There was some Error" }))
@@ -15,7 +16,7 @@ const getTransferData = function (req, res, next) {
                 }
             })
     } else if (req.body.role == 'slsincharge' && user_dept == "SLBS") {
-        db.query("SELECT * FROM transfer_request_merged_view WHERE status = ?", ["LABAPPROVED"])
+        db.query("SELECT * FROM transfer_request_merged_view WHERE transfered_from = ? OR status = ?", [user_dept, "LABAPPROVED"])
             .catch((error) => res.status(500).json({ error: "There was some Error" }))
             .then((response) => {
                 if (response.length > 0) {
@@ -93,6 +94,7 @@ const getTransferData = function (req, res, next) {
 // }
 
 const transferRequest = async function (req, res, next) {
+    
     let connection;
     try {
         connection = await db.getConnection();
@@ -106,31 +108,30 @@ const transferRequest = async function (req, res, next) {
         const transfer_qty = req.body.items.required_stock;
         const transfer_to = req.body.user_id.dept_code;
         const user_id = req.body.user_id.user_id;
-        
-        if(transfer_to.toUpperCase() == transfer_from.toUpperCase()){
-            res.status(500).json({Data: "Requested lab cannot be your lab"});
+        // console.log(req.body);
+        if (transfer_to.toUpperCase() == transfer_from.toUpperCase()) {
+            res.status(500).json({ Data: "Requested lab cannot be your lab" });
             return;
         }
 
-        const transferResult = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM admin_stock_view WHERE item_code = ? AND dept_id = ? ", [item_code, transfer_from], async (error, result) => {
-                if (error) {
-                    await connection.rollback();
-                    res.status(500).json({ "Data": "Some internal error" });
-                    return;
-                    reject(error);
-                } else
-                    resolve(result);
-            });
-        })
+            const transferResult = await new Promise((resolve, reject) => {
+                connection.query("SELECT * FROM admin_stock_view WHERE item_code = ? AND dept_id = ? ", [item_code, transfer_from], async (error, result) => {
+                    if (error) {
+                        await connection.rollback();
+                        res.status(500).json({ "Data": "Some internal error" });
+                        return;
+                        reject(error);
+                    } else
+                        resolve(result);
+                });
+            })
 
         if (transferResult.length > 0 && transferResult[0].stock_qty >= transfer_qty) {
             const insertResult = await new Promise((resolve, reject) => {
-                connection.query("INSERT INTO transfertable (item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfered_from ,user_id) VALUES ( ?, ?, ?, ?, ?, ?, ?)",
-                    [item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfer_from, user_id], async (error, result) => {
+                connection.query("INSERT INTO transfertable (apex_no, item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfered_from ,user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    [apex_no, item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfer_from, user_id], async (error, result) => {
                         if (error) {
                             await connection.rollback();
-
                             res.status(400).json({ "Data": "Stock quantity not available" });
                             return;
                             reject(error);
@@ -153,7 +154,7 @@ const transferRequest = async function (req, res, next) {
     } finally {
         if (connection)
             connection.release();
-        
+
     }
 }
 
@@ -161,7 +162,7 @@ const cancelTransferRequest = async function (req, res, next) {
 
     let connection;
     try {
-
+console.log(req.body);
         connection = await db.getConnection();
         await connection.beginTransaction();
 
@@ -184,7 +185,9 @@ const cancelTransferRequest = async function (req, res, next) {
                     async (error, result) => {
                         if (error) {
                             await connection.rollback();
+                            
                             res.status(400).json({ "Data": "Some Internal error" });
+                        
                             reject(error)
                         } else
                             resolve(result);
@@ -195,6 +198,7 @@ const cancelTransferRequest = async function (req, res, next) {
             res.status(200).json({ "Data": "Canceled sucessfully" });
 
         } else {
+            
             res.status(400).json({ "Data": "Some Internal Error" });
             return;
         }
@@ -206,7 +210,6 @@ const cancelTransferRequest = async function (req, res, next) {
         if (connection)
             connection.release();
     }
-
 }
 
 const deleteTransferRequest = async function (req, res, next) {
@@ -283,7 +286,8 @@ const acceptRequest = async function (req, res, next) {
                 });
             });
 
-        } else if (req.body.role == "slsincharge" && req.body.status == "LABAPPROVED") {
+        } else if (req.body.role == "slsincharge" && (req.body.status == "LABAPPROVED" || req.body.status == "PENDING")) {
+            console.log("correct");
             const result1 = await new Promise((resolve, reject) => {
                 connection.query("UPDATE transfertable SET status = ? WHERE id = ?", ["APPROVED", req.body.id], async (error, result) => {
                     if (error) {
@@ -347,14 +351,14 @@ const rejectRequest = async function (req, res, next) {
 
 
 const acknowledgeTransfer = async function (req, res, next) {
-    console.log(req.body);
+console.log(req.body);
     let connection;
     try {
         connection = await db.getConnection();
         await connection.beginTransaction();
 
         const fromDataResult = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM admin_stock_view WHERE dept_id = ? AND item_code = ?", [req.body.transfered_from, req.body.item_code], async (error, result) => {
+            connection.query("SELECT * FROM admin_stock_view WHERE dept_id = ? AND item_code = ? AND apex_no = ? ", [req.body.transfered_from, req.body.item_code, req.body.apex_no], async (error, result) => {
                 if (error) {
                     await connection.rollback();
                     res.status(400).json({ "data": "some Error" });
@@ -365,14 +369,14 @@ const acknowledgeTransfer = async function (req, res, next) {
                 }
             });
         });
-
+        console.log(fromDataResult);
         if (fromDataResult.length > 0 && fromDataResult[0].stock_qty >= req.body.transfer_qty) {
             const stockMinus = fromDataResult[0].stock_qty - req.body.transfer_qty;
             const inventoryMinus = fromDataResult[0].inventory_value - req.body.cost_per_item * req.body.transfer_qty;
 
             const fromUpdateResult = await new Promise((resolve, reject) => {
-                connection.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ? WHERE dept_id = ?  and item_code = ?",
-                    [stockMinus, inventoryMinus, req.body.transfered_from.toUpperCase(), req.body.item_code],
+                connection.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ? WHERE dept_id = ?  and item_code = ? and apex_no = ?",
+                    [stockMinus, inventoryMinus, req.body.transfered_from.toUpperCase(), req.body.item_code, req.body.apex_no],
                     async (error, result) => {
                         if (error) {
                             await connection.rollback();
@@ -390,7 +394,7 @@ const acknowledgeTransfer = async function (req, res, next) {
         }
 
         const toDataResult = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM admin_stock_view WHERE dept_id = ? AND item_code = ?", [req.body.transfer_to, req.body.item_code], async (error, result) => {
+            connection.query("SELECT * FROM admin_stock_view WHERE dept_id = ? AND item_code = ? AND apex_no = ?", [req.body.transfer_to, req.body.item_code, req.body.apex_no], async (error, result) => {
                 if (error) {
                     await connection.rollback();
                     res.status(400).json({ "data": "some Error" });
@@ -407,8 +411,8 @@ const acknowledgeTransfer = async function (req, res, next) {
             const inventoryAdd = toDataResult[0].inventory_value + req.body.transfer_qty * req.body.cost_per_item;
 
             const toUpdateResult = await new Promise((resolve, reject) => {
-                connection.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ? WHERE dept_id = ? AND item_code = ? ",
-                    [stockAdd, inventoryAdd, req.body.transfer_to.toUpperCase(), req.body.item_code], async (error, result) => {
+                connection.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ? WHERE dept_id = ? AND item_code = ? AND apex_no = ?",
+                    [stockAdd, inventoryAdd, req.body.transfer_to.toUpperCase(), req.body.item_code, req.body.apex_no], async (error, result) => {
                         if (error) {
                             await connection.rollback();
                             res.status(400).json({ "data": "some Error" });
@@ -446,7 +450,7 @@ const acknowledgeTransfer = async function (req, res, next) {
         }
 
         const transferUpdateResult = await new Promise((resolve, reject) => {
-            connection.query("UPDATE transfertable SET status = ? WHERE id = ?", ["APPROVED", req.body.id], async (error, result) => {
+            connection.query("UPDATE transfertable SET status = ? WHERE id = ?", ["ACKNOWLEDGED", req.body.id], async (error, result) => {
                 if (error) {
                     await connection.rollback();
                     res.status(400).json({ "data": "Some Error" });
@@ -457,18 +461,16 @@ const acknowledgeTransfer = async function (req, res, next) {
             })
         })
 
+        await connection.commit();
+        res.status(200).json({ "Data": "Item Transfer completed sucessfully check after few mins" });
+        return;
     } catch (error) {
-
         if (connection)
             connection.rollback();
-
     } finally {
-
         if (connection)
             connection.release();
-
     }
-
 
 }
 

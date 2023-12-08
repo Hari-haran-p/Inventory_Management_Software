@@ -1,6 +1,127 @@
 
 const db = require("./database/db.js");
 
+const importManufacturers = async function (req, res, next) {
+
+    let connection;
+    try {
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+        const data = req.body.items;
+
+        const manuData = await new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM manufacturer", (error, result) => {
+                if (error) {
+                    console.log(error);
+                    reject(error)
+                }
+                else
+                    resolve(result)
+            })
+        })
+
+        const manuTableSet = new Set();
+        for (const manu of manuData) {
+            manuTableSet.add(manu.name.toUpperCase());
+        }
+
+        for (let i = 0; i < data.length; i++) {
+            const currData = data[i];
+            if (manuTableSet.has(currData.name.toUpperCase())) {
+                res.status(401).json({ Data: `Manufacturer name at row ${i + 1} is duplicate` });
+                return;
+            }
+        }
+
+        const values = data.map((d) => [d.name]);
+
+        const result = await new Promise((resolve, reject) => {
+            connection.query("INSERT INTO manufacturer (name) VALUES ?", [values], (error, result) => {
+                if (error) {
+                    reject(error)
+                }
+                else
+                    resolve(result)
+            })
+        })
+
+        await connection.commit();
+        res.status(200).json({ Data: "Data sucessfully imported" })
+
+    } catch (error) {
+        if (connection) {
+            await connection.rollback();
+            res.status(401).json({ Data: `Some internal error` });
+        }
+    } finally {
+        if (connection) {
+            await connection.release();
+        }
+    }
+}
+
+const importSuppliers = async function (req, res, next) {
+
+    let connection;
+    try {
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+        const data = req.body.items;
+
+        const supplierData = await new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM supplier", (error, result) => {
+                if (error) {
+                    console.log(error);
+                    reject(error)
+                }
+                else
+                    resolve(result)
+            })
+        })
+
+        const supplierTableSet = new Set();
+        for (const data of supplierData) {
+            supplierTableSet.add(data.name.toUpperCase());
+        }
+
+        for (let i = 0; i < data.length; i++) {
+            const currData = data[i];
+            if (supplierTableSet.has(currData.name.toUpperCase())) {
+                res.status(401).json({ Data: `Supplier name at row ${i + 1} is duplicate` });
+                return;
+            }
+        }
+
+        const values = data.map((d) => [d.name, d.address, d.contact]);
+
+        const result = await new Promise((resolve, reject) => {
+            connection.query("INSERT INTO supplier (name, address, contact) VALUES ?", [values], (error, result) => {
+                if (error) {
+                    console.log(error);
+                    reject(error)
+                }
+                else
+                    resolve(result)
+            })
+        })
+
+        await connection.commit();
+        res.status(200).json({ Data: "Data sucessfully imported" })
+
+    } catch (error) {
+        if (connection) {
+            console.log(error);
+            await connection.rollback();
+            res.status(401).json({ Data: `Some internal error` });
+        }
+    } finally {
+        if (connection) {
+            await connection.release();
+        }
+    }
+}
+
+
 const importItems = async function (req, res, next) {
 
     let connection;
@@ -66,7 +187,6 @@ const importItems = async function (req, res, next) {
         for (const item of itemTableData) {
             itemTableSet.add(item.item_name.toUpperCase());
         }
-        // console.log(itemTableSet.has('clear varnish'));
         const itemTypeSet = new Set();
         for (const type of itemTypeData) {
             itemTypeSet.add(type.name);
@@ -86,9 +206,8 @@ const importItems = async function (req, res, next) {
 
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
-            if (itemTableSet.has(item.item_name.toUpperCase())) {
-                res.status(401).json({ Data: `Item name is not unique in row ${i + 1}` });
-                return;
+            if (itemTableData.find((i) => i.item_name.toUpperCase() === item.item_name.toUpperCase() && i.item_subname.toUpperCase() === item.item_subname.toUpperCase())) {
+                res.status(401).json({ Data: `Item subname duplicate entry at row ${i + 1}` })
             }
             if (itemTypeSet.has(item.item_type)) {
             } else {
@@ -116,23 +235,50 @@ const importItems = async function (req, res, next) {
             }
         }
 
-        const values = data.map((d) => [d.item_code, d.item_type, d.item_name.toUpperCase(), d.item_subname, d.item_description, d.cost_per_item, d.quantity_units, d.manufacturer_id, d.supplier_id])
+        let errorOccured = false;
+        let errorMessage = `Some internal error`;
 
-        const response = await new Promise((resolve, reject) => {
-            connection.query(`INSERT INTO itemtable (item_code, item_type, item_name, item_subname, item_description, cost_per_item, quantity_units, manufacturer_id, supplier_id) VALUES ?`, [values],
-                (error, result) => {
-                    if (error) {
-                        console.log(error);
-                        reject(error);
-                    } else {
-                        console.log(result);
-                        resolve(result);
-                    }
-                })
+        const result = data.map(async (d, index) => {
+
+            if (Object.values(d).length < 9) {
+                await connection.rollback();
+                errorOccured = true
+                errorMessage = `Some values are missing at row ${index + 1}`
+                // res.status(401).json({ Data: `Some values are missing at row ${index + 1}` });
+                return
+            };
+
+
+            const insert = await new Promise((resolve, reject) => {
+                connection.query("INSERT INTO itemtable (item_type, item_name, item_subname, item_description, cost_per_item, quantity_units, manufacturer_id, supplier_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    [d.item_type, d.item_name.toUpperCase(), d.item_subname, d.item_description, d.cost_per_item, d.quantity_units, d.manufacturer_id, d.supplier_id],
+                    async (error, result) => {
+                        if (error) {
+                            console.log(error);
+                            errorOccured = true;
+                            reject(error);
+                            return;
+                        } else {
+                            resolve(result);
+                        }
+                    })
+            })
+
         })
 
-        connection.commit();
-        res.status(200).json({ Data: "Data sucessfully imported" });
+        await Promise.all(result).catch(async (error) => {
+            await connection.rollback();
+            return;
+        });
+
+        if (!errorOccured) {
+            await connection.commit();
+            res.status(200).json({ Data: "Data Imported Sucessfully" })
+            return;
+        } else {
+            res.status(401).json({ Data: errorMessage });
+            return;
+        }
 
     } catch (error) {
         if (connection) {
@@ -150,10 +296,11 @@ const importStocks = async function (req, res, next) {
 
     const data = req.body.items;
     const user = req.body.user_id;
+    let errorMessage = `Some Internal Error`;
 
     let connection;
     try {
-
+        let errorOccured = false;
         connection = await db.getConnection();
         await connection.beginTransaction();
 
@@ -282,7 +429,9 @@ const importStocks = async function (req, res, next) {
                 // console.log(m.cost_per_item, "   ", d.stock_qty, "    ", d.inventory_value);
                 if (m.cost_per_item * d.stock_qty !== d.inventory_value) {
                     await connection.rollback();
-                    res.status(401).json({ Data: `Inventory value is not equivalent to cost of item at row ${index + 1}` });
+                    errorOccured = true
+                    errorMessage = `Inventory value is not equivalent to cost of item at row ${index + 1}`
+                    // res.status(401).json({ Data: `Inventory value is not equivalent to cost of item at row ${index + 1}` });
                     return;
                 }
             }
@@ -292,18 +441,18 @@ const importStocks = async function (req, res, next) {
         const date = new Date();
         const curr_date = date.toISOString().split("T")[0];
 
-        let errorOccured = false;
+
         const result = data.map(async (d, index) => {
 
-            if (Object.values(d).length < 9) {
+            if (Object.values(d).length < 10) {
                 await connection.rollback();
-                res.status(401).json({ Data: `Some values are missing at row ${index + 1}` });
+                errorOccured = true
+                errorMessage = `Some values are missing at row ${index + 1}`
+                // res.status(401).json({ Data: `Some values are missing at row ${index + 1}` });
                 return
             };
 
-            const result = stockData.find((s) => s.item_code.toUpperCase() == d.item_code.toUpperCase() && s.dept_id.toUpperCase() == d.dept_id.toUpperCase())
-
-
+            const result = stockData.find((s) => s.item_code.toUpperCase() == d.item_code.toUpperCase() && s.dept_id.toUpperCase() == d.dept_id.toUpperCase() && s.apex_no.toUpperCase() == d.apex_no.toUpperCase())
 
             if (result) {
                 console.log("update");
@@ -323,12 +472,11 @@ const importStocks = async function (req, res, next) {
                         })
                 })
             } else {
-
                 console.log("insert");
                 // console.log(d, curr_date)
                 const insert = await new Promise((resolve, reject) => {
-                    connection.query("INSERT INTO stocktable (apex_no, item_code, manufacturer_id, supplier_id, stock_qty, inventory_value, user_id, created_at, dept_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        [d.apex_no, d.item_code, d.manufacturer_id, d.supplier_id, d.stock_qty, d.inventory_value, d.user_id, curr_date, d.dept_id],
+                    connection.query("INSERT INTO stocktable (apex_no, item_code, manufacturer_id, supplier_id, stock_qty, inventory_value, user_id, created_at, dept_id, apex_reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [d.apex_no.toUpperCase(), d.item_code.toUpperCase(), d.manufacturer_id.toUpperCase(), d.supplier_id.toUpperCase(), d.stock_qty, d.inventory_value, d.user_id.toUpperCase(), curr_date, d.dept_id.toUpperCase(), d.apex_reason.toUpperCase()],
                         async (error, result) => {
                             if (error) {
                                 console.log(error);
@@ -353,18 +501,16 @@ const importStocks = async function (req, res, next) {
             res.status(200).json({ Data: "Accepted Sucessfully" })
             return;
         } else {
-            res.status(401).json({ Data: `Some Internal Error` });
+            res.status(401).json({ Data: errorMessage });
             return;
         }
-
-        console.log("imported");
 
     } catch (error) {
         console.log(error);
         if (connection) {
             await connection.rollback();
         }
-        res.status(401).json({ Data: `Some Internal Error` });
+        // res.status(401).json({ Data: `Some Internal Error` });
         return;
     } finally {
         if (connection) {
@@ -382,8 +528,6 @@ const importTransferItems = async function (req, res, next) {
         connection = await db.getConnection();
         await connection.beginTransaction();
         const data = req.body.items;
-
-
 
         const stockTableData = await new Promise((resolve, reject) => {
             connection.query("SELECT * FROM stocktable", (error, result) => {
@@ -405,6 +549,7 @@ const importTransferItems = async function (req, res, next) {
         })
 
         for (var i = 0; i < data.length; i++) {
+
             const stockResult = stockTableData.filter((f) => {
                 if (f.apex_no == data[i].apex_no && f.item_code == data[i].item_code && f.dept_id == data[i].from_lab) {
                     return f;
@@ -459,8 +604,7 @@ const importTransferItems = async function (req, res, next) {
             }
         }
 
-
-        connection.commit();
+        await connection.commit();
         res.status(200).json({ Data: "Data sucessfully imported" });
 
     } catch (error) {
@@ -476,6 +620,8 @@ const importTransferItems = async function (req, res, next) {
 }
 
 module.exports = {
+    importManufacturers: importManufacturers,
+    importSuppliers: importSuppliers,
     importItems: importItems,
     importStocks: importStocks,
     importTransferItems: importTransferItems,

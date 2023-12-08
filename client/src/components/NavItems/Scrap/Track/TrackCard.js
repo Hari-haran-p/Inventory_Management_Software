@@ -71,9 +71,8 @@ const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fe
 
     return (
         <>
-            <div className="relative track-card  w-11/12 rounded-xl overflow-hidden p-10">
+            <div className="relative track-card w-full rounded-xl overflow-hidden p-10">
                 <div className="flex flex-col flex-wrap">
-
                     <div className="flex justify-between flex-wrap items-center pb-2">
                         <div className="flex items-center flex-wrap gap-2 ">
                             <div className="text-lg font-bold">Item Code :</div>

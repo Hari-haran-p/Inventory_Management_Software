@@ -121,20 +121,17 @@ function ItemTable({itemData , fetchItemData, setMessage, setError}) {
     if (e.key === "Enter") {
       setClick(true);
     }
-  };
+  }; 
 
   return (
-    <div>
-      <div className="titles text-3xl font-semibold py-4 pl-10 animate1">
-        Item & Stock Management
-      </div>
-      <div
-        style={{ width: "90%" }}
-        className="flex ml-20 h-auto mt-5 mb-5 justify-between font-semibold"
-      >
-        <div className="sub-titles text-2xl font-semibold">Item Edit</div>
-        <div className="flex input-field">
-          <div className="h-auto animate1">
+    <>
+    <div className="p-10 text-2xl w-1/5 flex items-center whitespace-nowrap text-black font-semibold">Item & Stock Management</div>
+    <div className="w-full flex flex-col justify-center items-center">
+    <div className=" w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
+    <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
+        <div className="pl-4 text-2xl w-1/5 flex items-center whitespace-nowrap  text-blue-600 font-semibold">Item Edit</div>
+        <div className="flex gap-4 items-center w-4/5 justify-end pr-6">
+          <div className="h-auto">
             <input
               name="inputQuery"
               type="text"
@@ -145,24 +142,25 @@ function ItemTable({itemData , fetchItemData, setMessage, setError}) {
                 setSearchQuery(e.target.value);
               }}
               placeholder="Search..."
-              className="text-black indent-2 font-medium w-80 h-8 rounded-xl border-2 border-black"
+              className="text-black indent-2 h-9 font-medium border-2 rounded-lg border-black"
             />
           </div>
           <div
             onClick={() => setClick(true)}
-            className="focus:ring-4 animate1 shadow-lg transform active:scale-75 transition-transform cursor-pointer border-2 border-black rounded-full w-full ml-5 px-2 mr-16"
+            className="cursor-pointer ml-3 w-24 text-center rounded-md h-10 py-1 text-white bg-blue-600 border-2  "
           >
-            <i className="bi bi-search"></i>
+            Search
           </div>
         </div>
       </div>
-      <div className=" justify-center items-center flex flex-col animate1 ">
-        <div
-          style={{ width: "90%", height: "50%", maxHeight: "300px" }}
-          className="table-design relative overflow-x-auto rounded-3xl overflow-y-auto scrollbar-thin scrollbar-none scrollbar-thumb-gray-400 scrollbar-track-gray-200"
-        >
-          <table className="w-full text-sm text-left rounded-3xl ">
-            <thead style={{backgroundColor:"#0f6af2" , color:"white"}} className="text-sm uppercase" >
+      <div class="overflow-y-auto  overflow-x-auto border-gray-700 rounded-lg">
+        <div style={{ width: "100%" }} class=" align-middle  inline-block">
+          <div
+            style={{ height: "50%", maxHeight: "30vh" }}
+            class="shadow sm:rounded-lg  h-96"
+          >
+          <table class="min-w-full text-sm">
+          <thead class=" text-md uppercase border-b-2 font-medium">
               <tr>
                 <th
                   scope="col"
@@ -341,9 +339,9 @@ function ItemTable({itemData , fetchItemData, setMessage, setError}) {
               {filteredData.map((data, index) => (
                 <tr
                   key={data.id}
-                  className="bg-white"
+                  className="bg-white border-b-2"
                 >
-                  <td scope="row" className="px-6 py-4 ">
+                  <td scope="row" className="px-6 py-4">
                     {index + 1}
                   </td>
                   <td className="flex px-6 py-4 whitespace-nowrap">
@@ -394,6 +392,7 @@ function ItemTable({itemData , fetchItemData, setMessage, setError}) {
           </table>
         </div>
       </div>
+      </div>
       {openPopup && selectedData && (
         <div className="blur-background">
           <ItemPopup data={selectedData} onClose={handleClosePopup} />
@@ -412,6 +411,8 @@ function ItemTable({itemData , fetchItemData, setMessage, setError}) {
         </div>
       )}
     </div>
+    </div>
+    </>
   );
 }
 

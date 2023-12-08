@@ -38,7 +38,7 @@ import ContainerComponent from "./components/Hover.js";
 function App() {
 
   const [isLoading, setIsLoading] = useState(true);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
