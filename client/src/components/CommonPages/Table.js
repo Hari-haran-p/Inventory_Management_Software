@@ -261,9 +261,8 @@ function Table({ stockData, setStockData }) {
           Master Table
         </div>
 
-        <div className="flex gap-4 items-center w-4/5 justify-end">
-          <div className="flex flex-wrap justify-center items-center">
-          <div className="">
+        <div className="flex gap-4 items-center w-4/5 justify-end pr-10">
+          <div className="flex justify-center items-center">
             <input
               name="inputQuery"
               type="text"
@@ -284,8 +283,7 @@ function Table({ stockData, setStockData }) {
             >
               Search
             </button>
-          </div>
-          <div className="flex pl-3">
+          {/* <div className="flex pl-3">
           <div className="w-auto flex">
             <div
               onClick={() => {
@@ -312,7 +310,7 @@ function Table({ stockData, setStockData }) {
           >
             <i class="bi bi-box-arrow-down text-blue-500 text-4xl"></i>
           </div>
-          </div>
+          </div> */}
           </div>
 
           {downloadButton === true && (

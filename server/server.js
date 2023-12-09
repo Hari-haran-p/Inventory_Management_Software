@@ -56,13 +56,13 @@ app.get("/api/getManufacturer", (req, res) => {
 });
 
 app.get("/api/getCategories", (req, res) => {
-    db.query("SELECT * FROM categories_view", (error, result) => {
+    db.query("SELECT SUM(stock) as stock , name FROM (SELECT SUM(Stock) AS stock, NAME  FROM labs_stock_view GROUP BY  labname, NAME) AS subquery GROUP BY NAME", (error, result) => {
         res.send(result);
     });
 });
 
 app.get("/api/getInventory", (req, res) => {
-    db.query("SELECT * FROM inventory_view", (error, result) => {
+    db.query("SELECT * FROM areachart_view", (error, result) => {
 
         res.send(result);
     });
@@ -101,7 +101,7 @@ app.get("/api/getItems", (req, res) => {
 });
 
 app.get("/api/getStock", (req, res) => {
-    db.query("SELECT * FROM stocktable", (error, result) => {
+    db.query("SELECT * FROM stocktable WHERE stock_qty > 0 ", (error, result) => {
         if (error) console.log(error);
         else {
             res.send(result);
@@ -174,7 +174,7 @@ app.get("/api/getLabDetails", (req, res) => {
 });
 
 app.get("/api/getLabsStock", (req, res) => {
-    db.query("SELECT * FROM labs_stock_view", (error, result) => {
+    db.query("SELECT Stock as stock, name, labname FROM labs_stock_view", (error, result) => {
         if (error) console.log(error);
         res.send(result);
     });

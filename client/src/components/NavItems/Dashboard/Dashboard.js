@@ -100,12 +100,12 @@ function Dashboard({ open, setOpen }) {
             <div style={{ height:"30vh" }} className="d-card flex items-center justify-center">
               <Cards />
             </div>
-
-            <div className="w-11/12   area animate1" style={{height:"70vh",  paddingBottom: "4%", paddingLeft:"4%"}}>
+        
+            <div style={{ height:"65vh" }} className="lg:pl-28 w-11/12 animate1">
               <Areachart inventory={inventory} />
             </div>
             <br /><br />
-            <div className="twochart" style={{ display: "flex", width: "100%", gap: "2%", justifyContent: "center" }}>
+            <div className="twochart" style={{ display: "flex", width: "%100", gap: "2%", justifyContent: "center" }}>
               <Barchart categories={categories} open={open} setOpen={setOpen} labname={labname} labsStock={labsStock} />
               <Piechart labitem={labitem} />
             </div>
