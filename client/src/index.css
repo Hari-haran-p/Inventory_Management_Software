@@ -240,6 +240,10 @@ input::-webkit-inner-spin-button {
   .popup-content {
     min-width: 450px;
   }
+  .filter-popup{
+    scale: 0.6!important;
+    top: 10px!important;
+  }
 
 }
 
@@ -295,6 +299,12 @@ input::-webkit-inner-spin-button {
   .pieh {
     height: 400px;
   }
+  .filter-popup{
+    top: 50px;
+  }
+  .download-popup{
+    right: 110px;
+  }
 
 }
 
@@ -312,6 +322,7 @@ input::-webkit-inner-spin-button {
   .pie {
     transform: scale(0.9);
   }
+  
 
 
 }
@@ -333,8 +344,14 @@ input::-webkit-inner-spin-button {
     padding: 0;
     width: 100% !important;
   }
-
-
+  .filter-popup{
+    scale: 0.8;
+    top: 10px;
+  }
+  .download-popup{
+    right: 10px;
+    scale: 0.8;
+  }
 }
 
 .loader {
