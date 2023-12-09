@@ -122,14 +122,12 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
   };
 
   return (
-    <div>
-      <div
-        style={{ width: "90%" }}
-        className=" flex ml-20 h-auto mt-5 mb-5 justify-between  font-semibold"
-      >
-        <div className="sub-titles text-2xl font-semibold">Stock Edit</div>
-        <div className="flex input-field">
-          <div className="h-auto animate1">
+    <div className="w-full flex justify-center pt-10 items-center">
+    <div className=" w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
+    <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
+        <div className="pl-4 text-2xl w-1/5 flex items-center whitespace-nowrap  text-blue-600 font-semibold">Stock Edit</div>
+        <div className="flex gap-4 items-center w-4/5 justify-end pr-6">
+          <div className="h-auto">
             <input
               name="inputQuery"
               type="text"
@@ -140,26 +138,26 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                 setSearchQuery(e.target.value);
               }}
               placeholder="Search..."
-              className="text-black indent-2 font-medium w-80 h-8 rounded-xl border-2 border-black"
+              className="text-black indent-2 h-9 font-medium border-2 rounded-lg border-black"
             />
           </div>
           <div
             onClick={() => setClick(true)}
-            className="focus:ring-4 animate1 shadow-lg transform active:scale-75 transition-transform cursor-pointer border-2 border-black rounded-full w-full ml-5 px-2 mr-16"
+            className="cursor-pointer ml-3 w-24 text-center rounded-md h-10 py-1 text-white bg-blue-600 border-2  "
           >
-            <i className="bi bi-search"></i>
+            Search
           </div>
         </div>
       </div>
 
-
-      <div className="flex justify-center items-center flex-col animate2">
-        <div
-          style={{ width: "90%", height: "30%", maxHeight: "300px" }}
-          class="relative rounded-2xl animate overflow-x-auto overflow-y-auto scrollbar-none"
-        >
-          <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 ">
-            <thead style={{backgroundColor:"#0f6af2" , color:"white"}} class="text-sm uppercase">
+      <div class="overflow-y-auto  overflow-x-auto border-gray-700 rounded-lg">
+        <div style={{ width: "100%" }} class=" align-middle  inline-block">
+          <div
+            style={{ height: "50%", maxHeight: "30vh" }}
+            class="shadow sm:rounded-lg  h-96"
+          >
+          <table class="min-w-full text-sm">
+          <thead class=" text-md uppercase border-b-2 font-medium">
               <tr>
                 <th
                   scope="col"
@@ -309,9 +307,9 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                 return (
                   <tr
                     key={data.id}
-                    class="bg-white"
+                    class="bg-white border-b-2"
                   >
-                    <td scope="row" class="px-6 text-center py-4 ">
+                    <td scope="row" class="px-6 text-center py-4">
                       {index + 1}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
@@ -327,7 +325,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                       {data.stock_qty}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
-                      {data.created_at}
+                      {data.created_at.split("T")[0]}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
                       {data.dept_id}
@@ -350,15 +348,13 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                         className="bi bi-pen cursor-pointer"
                       ></i>
                     </td>
-                    {/* <td class="px-6 py-4 whitespace-nowrap">
-                        <i className="bi bi-trash cursor-pointer"></i>
-                      </td> */}
                   </tr>
                 );
               })}
             </tbody>
           </table>
         </div>
+      </div>
       </div>
       {stockOpenPopup && stockSelectedData && (
         <div className="blur-background">
@@ -381,6 +377,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
           />
         </div>
       )}
+    </div>
     </div>
   );
 }

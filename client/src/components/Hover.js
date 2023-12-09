@@ -1,71 +1,51 @@
-import React, { useState } from 'react';
+import React from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 
-const DateRangeFilter = () => {
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [dates, setDates] = useState([
-    '12-01-2002',
-    '22-01-2002',
-    '23-01-2002',
-    '31-01-2002',
-    '04-02-2023',
-    '05-06-2023',
-  ]);
 
-  const parseDate = (dateStr) => {
-    const parts = dateStr.split('-');
-    if (parts.length === 3) {
-      const [day, month, year] = parts.map(Number);
-      return new Date(year, month - 1, day);
-    }
-    return null;
-  };
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-  const handleFilter = () => {
-    const fromDateObj = parseDate(fromDate);
-    const toDateObj = parseDate(toDate);
-
-    if (!fromDateObj || !toDateObj) {
-      alert('Invalid date format. Please use dd-mm-yyyy.');
-      return;
-    }
-
-    const filteredDates = dates.filter((dateStr) => {
-      const dateObj = parseDate(dateStr);
-      return dateObj >= fromDateObj && dateObj <= toDateObj;
-    });
-
-    // Update state with filtered dates
-    setDates(filteredDates);
-  };
-
-  return (
-    <div>
-      <label htmlFor="fromDate">From Date:</label>
-      <input
-        type="text"
-        id="fromDate"
-        value={fromDate}
-        onChange={(e) => setFromDate(e.target.value)}
-      />
-      <br />
-      <label htmlFor="toDate">To Date:</label>
-      <input
-        type="text"
-        id="toDate"
-        value={toDate}
-        onChange={(e) => setToDate(e.target.value)}
-      />
-      <br />
-      <button onClick={handleFilter}>Filter Dates</button>
-      <br />
-      <ul>
-        {dates.map((date, index) => (
-          <li key={index}>{date}</li>
-        ))}
-      </ul>
-    </div>
-  );
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top',
+    },
+    title: {
+      display: true,
+      text: 'Chart.js Bar Chart',
+    },
+  },
 };
 
-export default DateRangeFilter;
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+export const data = {
+  labels,
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data:[9,23,2,80,19,23,3],
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    },
+  ],
+};
+
+export function Hover() {
+  return <Bar options={options} data={data} />;
+}

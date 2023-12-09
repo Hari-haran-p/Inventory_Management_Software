@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
+const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCancel = async (e) => {
     try {
       setIsLoading(true);
       e.preventDefault();
-      const response = await axios.post("/api/cancelTransferRequest",
+      const response = await axios.post("http://localhost:4000/api/cancelTransferRequest",
         {
           transfer_id: data.id,
           dept_id: user.dept_code
@@ -17,14 +17,35 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
         setIsLoading(false);
         setMessage(response.data.Data);
         console.log(response.data)
-        onClose();
+        // onClose();
       }
     } catch (error) {
       if (error) {
         setIsLoading(false);
         setError(error.response.data.Data)
         console.error(error);
-        onClose();
+        // onClose();
+      }
+    }
+  }
+
+  const handleAcknowledge = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.post("http://localhost:4000/api/acknowledgeTransfer", { ...data, ...user })
+      if (response) {
+        setIsLoading(false);
+        fetchPendingData();
+        setMessage(response.data.Data);
+        console.log(response.data)
+        // onClose();
+      }
+    } catch (error) {
+      if (error) {
+        setIsLoading(false);
+        setError(error.response.data.Data)
+        console.error(error);
+        // onClose();
       }
     }
   }
@@ -35,7 +56,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "/api/deleteTransferRequest",
+        "http://localhost:4000/api/deleteTransferRequest",
         {
           transfer_id: data.id,
           dept_id: user.dept_code,
@@ -45,14 +66,14 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
         setIsLoading(false);
         setMessage(response.data.Data);
         console.log(response.data);
-        onClose();
+        // onClose();
       }
     } catch (error) {
       if (error) {
         setIsLoading(false);
         setError(error.response.data.Data);
         console.error(error);
-        onClose();
+        // onClose();
       }
     }
   };
@@ -74,7 +95,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
           <span class="loader"></span>
         </div>
       ) : (
-        <div className="relative track-card w-11/12 rounded-xl overflow-hidden p-10">
+        <div className="track-card w-full rounded-xl overflow-hidden p-10">
           <div className="flex flex-col flex-wrap">
 
             <div className="flex justify-between flex-wrap items-center pb-2">
@@ -167,16 +188,20 @@ const TrackCard = ({ data, onClose, user, setMessage, setError }) => {
               >
                 Delete
               </button>
+              
             ) : null}
-            <div className="flex flex-col">
-              <div className={`text-lg border-2 ${data.status == 'PENDING' ? "border-indigo-500 rounded-md p-1  text-indigo-700 bg-indigo-100" : data.status == 'CANCELED' ? "border-red-500  text-red-700 rounded-md p-1 bg-red-100" : data.status == 'LABAPPROVED' ? "border-orange-500  text-orange-700 rounded-md p-1 bg-orange-100" : data.status == 'APPROVED' ? "border-green-500 text-green-700  rounded-md p-1 bg-green-100" : data.status == "REJECTED" ? "border-red-500 text-red-700 rounded-md p-1 bg-red-100" : ""} `}>Status :
+            <div className="flex flex-wrap items-center justify-between">
+              <div className={`text-lg border-2 ${data.status == 'PENDING' ? "border-indigo-500 rounded-md p-1  text-indigo-700 bg-indigo-100" : data.status == 'CANCELED' ? "border-red-500  text-red-700 rounded-md p-1 bg-red-100" : data.status == 'LABAPPROVED' ? "border-orange-500  text-orange-700 rounded-md p-1 bg-orange-100" : data.status == 'APPROVED' ? "border-green-500 text-green-700  rounded-md p-1 bg-green-100" : data.status == "REJECTED" ? "border-red-500 text-red-700 rounded-md p-1 bg-red-100" : data.status == "ACKNOWLEDGED" ? "border-2 border-purple-600 text-purple-800  rounded-md p-1 bg-purple-100 " : ""} `}>Status :
                 <span className={`font-bold`}>
                   {" "} {data.status}
                 </span>
               </div>
-
+              <div>
+                {data.status == "APPROVED" && <div><button onClick={() => handleAcknowledge()} className="text-lg font-bold border-2 border-sky-500 text-sky-700  rounded-md p-1 bg-sky-100 hover:bg-sky-500 hover:text-white">Acknowledge</button></div>}
+              </div>
             </div>
           </div>
+
         </div>
       )}
     </>

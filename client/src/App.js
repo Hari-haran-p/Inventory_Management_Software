@@ -30,7 +30,9 @@ import { useAuth } from "./AuthContext";
 import Report from "./components/ReportGeneration/Report";
 import Excel from "./components/CommonPages/Excel";
 import Scrap from "./components/NavItems/Scrap/Scrap";
-import DateRangeFilter from "./components/Hover";
+import { Hover } from "./components/Hover.js";
+// import TransferMain from "./components/NavItems/TransferReq/TransferMain.js";
+
 
 
 function App() {
@@ -64,8 +66,8 @@ function App() {
     { id:4, Name: "Entries",   iconName: "bi-list-check",       src: "/entries" },
     { id:5, Name: "Stores",    iconName: "bi-shop",             src: "/stores", role: "slsincharge" },
     { id:6, Name: "Transfer",  iconName: "bi-arrow-left-right", src: "/transfer" },
-    { id:7, Name: "Report",    iconName: "bi-printer-fill",     src: "/report" },
-    { id:8, Name: "Scrap",     iconName: "bi-folder-x",         src:"/scrap"},
+    { id:7, Name: "Scrap",     iconName: "bi-folder-x",         src:"/scrap"},
+    { id:8, Name: "Report",    iconName: "bi-printer-fill",     src: "/report" },
     { id:9, Name: "Logout",    iconName: "bi-box-arrow-right" },
     
   ];
@@ -172,10 +174,12 @@ function App() {
                   path="/excel"
                   element={<Excel />}
                 />
-                {/* <Route 
-                  path="/date"
-                  element={<DateRangeFilter />}
-                /> */}
+                <Route 
+                  path="/d"
+                  element={<Hover/>}
+                />
+                
+              
               </Routes>
 
             </GoogleOAuthProvider>

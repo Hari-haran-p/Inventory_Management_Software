@@ -17,7 +17,7 @@ function Stores() {
 
   const [itemData, setItemData] = useState([]);
   async function fetchItemData() {
-    const response = await axios.get("/api/getItems");
+    const response = await axios.get("http://localhost:4000/api/getItems");
     setItemData(response.data);
     // console.log(response.data);
   }
@@ -27,7 +27,7 @@ function Stores() {
   const [getStock, setGetStock] = useState([]);
   async function fetchGetStock() {
     const response = await axios
-      .get("/api/getStock")
+      .get("http://localhost:4000/api/getStock")
       .catch((error) => console.log(error));
     setGetStock(response.data);
   }

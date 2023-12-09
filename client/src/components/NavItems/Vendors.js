@@ -18,13 +18,13 @@ function Vendors({ open }) {
 
   async function fetchManufacturer() {
     const response = await axios
-      .get("/api/getManufacturer")
+      .get("http://localhost:4000/api/getManufacturer")
       .catch((error) => console.log(error));
     setManufacturer(response.data);
   }
   async function fetchSupplier() {
     const response = await axios
-      .get("/api/getSupplier")
+      .get("http://localhost:4000/api/getSupplier")
       .catch((error) => console.log(error));
     setSupplier(response.data);
   }
@@ -196,10 +196,10 @@ function Vendors({ open }) {
             className={`flex ${open ? "gap-24" : "gap-6"
               } gap-change  flex-col lg:flex-row items-center justify-center h-auto lg:flex-nowrap duration-500 lg:w-10/12 w-full mt-10 `}
           >
-            <div className="duration-500 rounded-lg p-6  lg:w-4/12 w-full">
-              <h1 className="text-center text-xl font-bold animate1 pb-2">Manufacturer</h1>
+            <div className="border-2 duration-500 rounded-lg  lg:w-5/12 w-full">
+              <h1 className="text-center text-2xl font-bold animate1 whitespace-nowrap text-blue-600 py-3">Manufacturer</h1>
               <div className="input-field">
-                <div className="flex justify-center my-5">
+                <div className="flex flex-wrap justify-center my-5">
                   <div className="h-auto animate1">
                     <input
                       name="inputQuery"
@@ -211,14 +211,14 @@ function Vendors({ open }) {
                         setSearchQuery(e.target.value);
                       }}
                       placeholder="Search..."
-                      className="text-black indent-2 font-medium w-80 h-8 rounded-xl border-2 border-black "
+                      className="text-black indent-2 font-medium w-80 h-9 rounded-md border-2 border-black "
                     />
                   </div>
                   <div
                     onClick={() => setClick(true)}
-                    className="focus:ring-4 shadow-lg animate1 transform active:scale-75 transition-transform cursor-pointer border-2 border-black rounded-full flex justify-center items-center h-8 pb-1 w-8 ml-2 bg-white"
+                    className="text-center font-bold cursor-pointer ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2"
                   >
-                    <i className="text-black bi bi-search"></i>
+                    Search
                   </div>
                 </div>
               </div>
@@ -228,9 +228,9 @@ function Vendors({ open }) {
                 style={{ maxWidth: "100%", maxHeight: "50vh" }}
               >
                 <div class=" align-middle inline-block min-w-full">
-                  <div class="shadow overflow-hidden sm:rounded-lg    ">
-                    <table class="min-w-full text-sm rounded-lg">
-                      <thead style={{ backgroundColor: "#0f6af2", color: "white" }} class="text-xs uppercase font-medium">
+                  <div class="shadow overflow-hidden sm:rounded-lg">
+                    <table class="min-w-full text-sm">
+                      <thead class=" text-md uppercase border-b-2 font-medium">
                         <tr>
                           <th scope="col" class="px-6 py-3">
                             s.no
@@ -267,13 +267,13 @@ function Vendors({ open }) {
                         {filteredData.map((data, index) => {
                           return (
                             <tr class="bg-white">
-                              <td scope="row" class="px-6 py-4 ">
+                              <td scope="row" class="border-b-2 px-6 py-4 ">
                                 {index + 1}
                               </td>
-                              <td class="px-6 py-4  text-gray-900 whitespace-nowrap">
+                              <td class="px-6 py-4 border-b-2  text-gray-900 whitespace-nowrap">
                                 {data.id}
                               </td>
-                              <td class="px-6 py-4  text-gray-900 whitespace-nowrap">
+                              <td class="px-6 py-4 border-b-2 text-gray-900 whitespace-nowrap">
                                 {data.name}
                               </td>
                             </tr>
@@ -287,8 +287,8 @@ function Vendors({ open }) {
             </div>
 
 
-            <div className="duration-500 lg:w-7/12 w-full p-6">
-              <h1 className="text-center text-xl font-bold  animate1 pb-2">Supplier</h1>
+            <div className="border-2  rounded-md duration-500 lg:w-7/12 w-full">
+              <h1 className="text-center text-2xl font-bold animate1 whitespace-nowrap  text-blue-600  py-3">Supplier</h1>
               <div className="input-field">
                 <div className="flex justify-center my-5">
                   <div className="h-auto animate1">
@@ -302,14 +302,14 @@ function Vendors({ open }) {
                         setSupplierSearchQuery(e.target.value);
                       }}
                       placeholder="Search..."
-                      className="text-black indent-2 font-medium w-80 h-8 rounded-xl border-2 border-black "
+                      className="text-black indent-2 font-medium w-80 h-9 rounded-md border-2 border-black"
                     />
                   </div>
                   <div
                     onClick={() => setButtonClick(true)}
-                    className="focus:ring-4 animate1 shadow-lg transform active:scale-75 transition-transform cursor-pointer border-2 border-black rounded-full flex justify-center items-center h-8 w-8 pb-1 ml-2 bg-white"
+                    className="text-center font-bold cursor-pointer ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2"
                   >
-                    <i className="text-black bi bi-search"></i>
+                    Search
                   </div>
                 </div>
                 <th scope="col" class=""></th>
@@ -328,7 +328,7 @@ function Vendors({ open }) {
                 <div class=" align-middle inline-block min-w-full ">
                   <div class="shadow overflow-hidden sm:rounded-lg">
                     <table class="min-w-full text-sm ">
-                      <thead style={{ backgroundColor: "#0f6af2", color: "white" }} class="text-xs uppercase font-medium">
+                      <thead class="text-md uppercase border-b-2 font-medium">
                         <tr>
                           <th scope="col" class="px-6 py-3">
                             s.no
@@ -407,16 +407,16 @@ function Vendors({ open }) {
                         {supplierFilteredData.map((data, index) => {
                           return (
                             <tr class="bg-white">
-                              <td class="px-6 py-4">{index + 1}</td>
-                              <td class="px-6 py-4">{data.id}</td>
+                              <td class="px-6 py-4 border-b-2">{index + 1}</td>
+                              <td class="px-6 py-4 border-b-2">{data.id}</td>
                               <td
                                 scope="row"
-                                class="px-6 py-4 text-gray-900 whitespace-nowrap"
+                                class="px-6 py-4 border-b-2 text-gray-900 whitespace-nowrap"
                               >
                                 {data.name}
                               </td>
-                              <td class="px-6 py-4">{data.address}</td>
-                              <td class="px-6 py-4">{data.contact}</td>
+                              <td class="px-6 py-4 border-b-2">{data.address}</td>
+                              <td class="px-6 py-4 border-b-2">{data.contact}</td>
                             </tr>
                           );
                         })}

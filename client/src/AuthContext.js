@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
       try {
         const token = Cookies.get("token");
         // console.log(token);
-        const result = await axios.post("/api/getUser", {
+        const result = await axios.post("http://localhost:4000/api/getUser", {
           token: token,
         }).catch((error) => console.log(error));
         setUser(result.data);
@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
   async function login(response) {
     try {
       console.log("hiiii.....")
-      const result = await axios.post("/api/loginUser", { res: response });
+      const result = await axios.post("http://localhost:4000/api/loginUser", { res: response });
       Cookies.set("token", result.data)
       setIsLoggedIn(true)
       await getUser();  
@@ -52,13 +52,15 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
-    setIsLoggedIn(false);
-    setUser([]);
-    try {
-      Cookies.remove("token");
-      navigate("/");
-    } catch (error) {
-      console.log(error);
+    if(window.confirm("Are you sure want to logout ?")){
+      setIsLoggedIn(false);
+      setUser([]);
+      try {
+        Cookies.remove("token");
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

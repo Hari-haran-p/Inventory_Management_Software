@@ -11,7 +11,6 @@ function ReportView({
   exportToExcel,
   downloadPDF,
 }) {
-
   const columnNames = Object.keys(requiredData[0]);
   const [previewSelectedColumn, setPreviewSelectedColumn] = useState("");
   const [filterOptionSelected, setFilterOptionSelected] = useState([]);
@@ -32,7 +31,6 @@ function ReportView({
 
   const parseDate = (dateStr) => {
     const parts = dateStr.split("-");
-    // console.log(parts);
     if (parts.length === 3) {
       const [day, month, year] = parts.map(Number);
       return new Date(year, month - 1, day);
@@ -63,9 +61,9 @@ function ReportView({
         const dateObj = parseDate(dateStr[previewSelectedColumn]);
         return dateObj >= fromDateObj && dateObj <= toDateObj;
       });
-      if(filteredDates.length > 0){
+      if (filteredDates.length > 0) {
         setRequiredData(filteredDates);
-      }else{
+      } else {
         setError("No Data");
       }
     } else {
@@ -74,6 +72,7 @@ function ReportView({
   };
 
   //<---------------------For sort functionality------------------------->
+  
   const [sortOrders, setSortOrders] = useState({
     item_code: "asc",
     item_type: "asc",
@@ -128,10 +127,6 @@ function ReportView({
       filterFunction(requiredData);
     }
   };
-
-
-
-
 
   return (
     <div>
