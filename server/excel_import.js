@@ -124,13 +124,14 @@ const importSuppliers = async function (req, res, next) {
 
 const importItems = async function (req, res, next) {
 
+
     let connection;
     try {
 
         connection = await db.getConnection();
         await connection.beginTransaction();
         const data = req.body.items;
-
+console.log(data);
         const itemTableData = await new Promise((resolve, reject) => {
             connection.query("SELECT * FROM itemtable", (error, result) => {
                 if (error) {

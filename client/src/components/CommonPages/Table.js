@@ -124,8 +124,8 @@ function Table({ stockData, setStockData }) {
   const [selectAll, setSelectAll] = useState(false);
   const [viewColumn, setViewColumn] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState({});
-  const columnNames =
-    filteredData.length > 0 ? Object.keys(filteredData[0]) : [];
+  let columnNames = filteredData.length > 0 ? Object.keys(filteredData[0]) : [];
+  if (columnNames.length > 0) delete columnNames[0]
   const [downloadButton, setDownloadButton] = useState(false);
   const [previewSelectedColumn, setPreviewSelectedColumn] = useState("");
   const [filterOptionSelected, setFilterOptionSelected] = useState([]);

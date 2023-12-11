@@ -18,7 +18,7 @@ const ManufacturerPopUp = ({ isVisible, onClose, setMessage, setError,setIsLoadi
       const response = await axios
         .post("http://localhost:4000/api/manufacturerAdd", { name: name.toUpperCase() })
       if (response && response.status == 201){
-        console.log(response);
+        // console.log(response);
         setMessage(response.data.Data);
         onClose();
         setIsLoading(false);
@@ -31,7 +31,7 @@ const ManufacturerPopUp = ({ isVisible, onClose, setMessage, setError,setIsLoadi
         setIsLoading(false);
         setName(null);
       }
-      console.log(error)
+      // console.log(error)
     }
   };
 

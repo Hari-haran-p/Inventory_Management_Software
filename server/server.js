@@ -303,8 +303,8 @@ app.post("/api/deleteTransferrequest", deleteTransferRequest);
 
 app.post("/api/getTrackTransfer", (req, res) => {
     try {
-        const user_dept = req.body.dept_code;
-        db.query("Select * FROM transfer_request_merged_view WHERE transfer_to = ? ORDER BY date DESC", [user_dept])
+        const user_dept = req.body.user_id;
+        db.query("Select * FROM transfer_request_merged_view WHERE user_id = ? ORDER BY date DESC", [user_dept])
             .catch((error) => res.status(500).json({ error: "There was some Error" }))
             .then((response) => {
                 res.status(200).json({ data: response })

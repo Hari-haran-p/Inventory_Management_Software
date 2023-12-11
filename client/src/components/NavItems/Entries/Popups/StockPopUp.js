@@ -27,7 +27,6 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
       try {
         setIsLoading(true);
         e.preventDefault();
-        console.log(data.item_code);
         const result = item.filter((items) => {
           if (items.item_code == data.itemcode) return items;
         });
@@ -36,7 +35,6 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
           data.supplierId = result[0].supplier_id;
           data.inventoryValue = result[0].cost_per_item * data.stock_qty;
           data.userId = user.user_id;
-          console.log("came here", data);
           const response = await axios.post("http://localhost:4000/api/stockAdd", { ...data, user_dept_id: user.dept_code });
           if (response && response.status == 201) {
             setMessage(response.data.Data);
@@ -198,7 +196,6 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
                     Select Units
                   </option>
                   {uniqueItemNamesArray.map((item) => {
-                    console.log(item);
                     return <option value={item.itemname} key={item.itemname} >{item.itemname}</option>;
                   })}
                 </select>
