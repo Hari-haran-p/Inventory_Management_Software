@@ -6,7 +6,7 @@ import axios from "axios";
 import RejectPopup from './RejectPopup';
 
 
-const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
+const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransferData }) => {
 
   const [isLoading, setIsLoading] = useState(false)
   const [showManufacturer, setShowManufacturer] = useState(false);
@@ -17,16 +17,15 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post("http://localhost:4000/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
-        .then((response) => {
+      const response = await axios.post("/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
+        .then(async (response) => {
+          await fetchTransferData(user);
           setIsLoading(false);
           if (response && response.status == 201) {
-            onClose();
             setMessage(response.data.Data);
           }
         })
     } catch (error) {
-      onClose();
       setIsLoading(false);
       setError(error.response.data.Data)
     }
@@ -45,7 +44,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
           setIsLoading(true);
           setShowManufacturer(false);
           setRejectDesc("")
-          const response = await axios.post("http://localhost:4000/api/rejectRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc })
+          const response = await axios.post("/api/rejectRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc })
             .then((response) => {
               setIsLoading(false);
               if (response && response.status == 201) {

@@ -6,7 +6,7 @@ const getTransferData = function (req, res, next) {
     const user_dept = req.body.dept_code;
     
     if (req.body.role == 'slbincharge') {
-        db.query("SELECT * FROM transfer_request_merged_view WHERE transfered_from = ? AND status = ? ", [user_dept, "PENDING"])
+        db.query("SELECT * FROM transfer_request_merged_view WHERE transfered_from = ? AND status = ?", [user_dept, "PENDING"])
             .catch((error) => res.status(500).json({ error: "There was some Error" }))
             .then((response) => {
                 if (response.length > 0) {
@@ -16,17 +16,17 @@ const getTransferData = function (req, res, next) {
                 }
             })
     } else if (req.body.role == 'slsincharge' && user_dept == "SLBS") {
-        db.query("SELECT * FROM transfer_request_merged_view WHERE transfered_from = ? OR status = ?", [user_dept, "LABAPPROVED"])
+        db.query("SELECT * FROM transfer_request_merged_view WHERE (transfered_from = ? AND  status = ?) OR (transfered_from = ? AND status = ?)", [user_dept, "LABAPPROVED", user_dept, "PENDING"])
             .catch((error) => res.status(500).json({ error: "There was some Error" }))
             .then((response) => {
+                console.log("from now : ", response);
                 if (response.length > 0) {
                     res.status(200).json({ data: response })
                 } else {
                     res.status(200).json({ data: "No Data" })
-                }
+                }       
             })
     }
-
 }
 
 

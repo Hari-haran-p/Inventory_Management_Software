@@ -63,7 +63,7 @@ const Transfer = () => {
 
   async function fetchTransferData(data) {
     try {
-      const result = await axios.post("http://localhost:4000/api/getTransferData", data)
+      const result = await axios.post("/api/getTransferData", data)
       if (result.status == 200) {
         if (result.data.data == "No Data") {
           setNoData(true);
@@ -89,7 +89,7 @@ const Transfer = () => {
   async function fetchTrackTransferData(data) {
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/getTrackTransfer", data
+        "/api/getTrackTransfer", data
       );
       if (response.status == 200) {
         setTrackTransferData(response.data.data)
@@ -103,7 +103,7 @@ const Transfer = () => {
 
   const fetchOverallTranferedData = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/getOverallTransferedData");
+      const response = await axios.get("/api/getOverallTransferedData");
       setOverallTranferedData(response.data);
     } catch (error) {
       console.error(error);
@@ -114,7 +114,7 @@ const Transfer = () => {
 
   const fetchStockData = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/getAdminStockData");
+      const response = await axios.get("/api/getAdminStockData");
       setStockData(response.data);
     } catch (error) {
       console.error(error);
@@ -135,7 +135,7 @@ const Transfer = () => {
   const [getStock, setGetStock] = useState([]);
   async function fetchGetStock() {
     const response = await axios
-      .get("http://localhost:4000/api/getAdminStockData")
+      .get("/api/getAdminStockData")
       .catch((error) => console.log(error));
     setGetStock(response.data);
   }
@@ -143,7 +143,7 @@ const Transfer = () => {
   const [getLabDetails, setGetLabDetails] = useState([]);
   async function fetchGetLabDetails() {
     const response = await axios
-      .get("http://localhost:4000/api/getLabDetails")
+      .get("/api/getLabDetails")
       .catch((error) => console.log(error));
     setGetLabDetails(response.data);
   }
@@ -298,6 +298,7 @@ const Transfer = () => {
           <ApprovalPopup
             user={user}
             transferData={transferData}
+            fetchTransferData = {fetchTransferData}
             isVisible={showApprovalRequest}
             onClose={onClose}
             setError={setError}

@@ -27,13 +27,13 @@ const Scrap = () => {
     const [getLabDetails, setGetLabDetails] = useState([]);
     async function fetchGetLabDetails() {
       const response = await axios
-        .get("http://localhost:4000/api/getLabDetails")
+        .get("/api/getLabDetails")
         .catch((error) => console.log(error));
       setGetLabDetails(response.data);
     }
 
     async function fetchScrapData() {
-        const response = await axios.get("http://localhost:4000/api/getScrap");
+        const response = await axios.get("/api/getScrap");
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setNoData(true);
@@ -48,7 +48,7 @@ const Scrap = () => {
     }
 
     async function fetchTableData() {
-        const response = await axios.get("http://localhost:4000/api/getTableScrapData");
+        const response = await axios.get("/api/getTableScrapData");
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setNoTableData(true);
@@ -64,7 +64,7 @@ const Scrap = () => {
 
 
     async function fetchScrapTrackData(id) {
-        const response = await axios.get(`http://localhost:4000/api/getScrapData/${id}`);
+        const response = await axios.get(`/api/getScrapData/${id}`);
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setNoTrackData(true);
@@ -100,7 +100,7 @@ const Scrap = () => {
 
     const fetchStockData = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/getAdminStockData");
+            const response = await axios.get("/api/getAdminStockData");
             setStockData(response.data);
         } catch (error) {
             console.error(error);
@@ -195,7 +195,7 @@ const Scrap = () => {
                                         >
                                             Track Your Request
                                         </div>
-
+                                        {user.role == "slsincharge" && 
                                         <div
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapApprove == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                             onClick={() => {
@@ -207,6 +207,7 @@ const Scrap = () => {
                                         >
                                             Approval Request
                                         </div>
+                                        }
                                         <div
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrap == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                             onClick={() => {

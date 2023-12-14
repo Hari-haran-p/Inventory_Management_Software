@@ -61,7 +61,7 @@ const ManufcturerImport = (props) => {
                     if (sheets.length) {
                         const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
                         setRows(rows);
-                        const response = await axios.post("http://localhost:4000/api/importManufacturers", { items: rows })
+                        const response = await axios.post("/api/importManufacturers", { items: rows })
                         if (response) {
                             setIsLoading(false);
                             setMessage(response.data.Data)

@@ -358,6 +358,7 @@ function TransferRequestTable({isVisible, user, getStock ,getLabDetails,setGetLa
             setIsLoading ={setIsLoading}
             isLoading = {isLoading}
             user = {user}
+            fetchGetStock = {fetchGetStock}
           />
         </div>
       )}

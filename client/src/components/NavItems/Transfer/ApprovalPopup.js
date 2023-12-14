@@ -1,7 +1,7 @@
 import React from 'react'
 import TransferCard from './TransferCard';
 
-function ApprovalPopup({ isVisible, transferData, onClose, setError, setMessage, user, noData }) {
+function ApprovalPopup({ isVisible, transferData, onClose, setError, setMessage, user, noData, fetchTransferData }) {
     
 
     if (!isVisible) return null;
@@ -37,7 +37,7 @@ function ApprovalPopup({ isVisible, transferData, onClose, setError, setMessage,
                                         {noData ? <div>No Request Available</div> : (
                                             transferData && transferData.map((data) =>
                                                 <>
-                                                    <TransferCard setMessage={setMessage} setError={setError} data={data} user={user} onClose={onClose} />
+                                                    <TransferCard setMessage={setMessage} setError={setError} data={data} user={user} fetchTransferData={fetchTransferData} onClose={onClose} />
                                                 </>
                                             )
                                         )}

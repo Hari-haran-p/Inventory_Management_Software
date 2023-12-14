@@ -8,7 +8,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
     try {
       setIsLoading(true);
       e.preventDefault();
-      const response = await axios.post("http://localhost:4000/api/cancelTransferRequest",
+      const response = await axios.post("/api/cancelTransferRequest",
         {
           transfer_id: data.id,
           dept_id: user.dept_code
@@ -32,7 +32,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
   const handleAcknowledge = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.post("http://localhost:4000/api/acknowledgeTransfer", { ...data, ...user })
+      const response = await axios.post("/api/acknowledgeTransfer", { ...data, ...user })
       if (response) {
         setIsLoading(false);
         fetchPendingData();
@@ -56,7 +56,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "http://localhost:4000/api/deleteTransferRequest",
+        "/api/deleteTransferRequest",
         {
           transfer_id: data.id,
           dept_id: user.dept_code,
@@ -87,7 +87,6 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
     return str.join(" ")
   }
 
-  const test = "am,sdhjkamgsbdujgbawidghbkujkuhjacbugawdkuyf,sjfhhjgkhv  kiiajhdiujnakufh"
   return (
     <>
       {isLoading ? (

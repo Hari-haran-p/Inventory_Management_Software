@@ -16,7 +16,7 @@ const SupplierPopUp = ({ isVisible, onClose, setMessage, setError, setIsLoading 
     try {
       setIsLoading(true);
       e.preventDefault();
-      const response = await axios.post("http://localhost:4000/api/supplierAdd", data)
+      const response = await axios.post("/api/supplierAdd", data)
       if(response && response.status == 201){
         setMessage(response.data.Data);
         setIsLoading(false);

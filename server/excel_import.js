@@ -206,8 +206,11 @@ const importItems = async function (req, res, next) {
 
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
-            if (itemTableData.find((i) => i.item_name.toUpperCase() === item.item_name.toUpperCase() && i.item_subname.toUpperCase() === item.item_subname.toUpperCase())) {
-                res.status(401).json({ Data: `Item subname duplicate entry at row ${i + 1}` })
+            const result = itemTableData.find((ite) => ite.item_name.toUpperCase() === item.item_name.toUpperCase() && ite.item_subname.toUpperCase() === item.item_subname.toUpperCase())
+            if (result) {
+                // console.log("from import : ", i , result);
+                res.status(401).json({ Data: `Item subname duplicate entry at row ${i + 1} : ${result}` })
+                return;
             }
             if (itemTypeSet.has(item.item_type)) {
             } else {

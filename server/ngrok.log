@@ -1,1 +1,10 @@
 nohup: ignoring input
+panic: send on closed channel
+
+goroutine 16373 [running]:
+golang.ngrok.com/ngrok/internal/tunnel/client.(*rawSession).onHeartbeat(0xc000bb8050, 0x3ea45bee7, 0x3?)
+	golang.ngrok.com/ngrok@v1.3.1/internal/tunnel/client/raw_session.go:269 +0x125
+golang.ngrok.com/muxado/v2.(*Heartbeat).check(0xc000bb80a0, 0xc00053e480)
+	golang.ngrok.com/muxado/v2@v2.0.0/heartbeat.go:145 +0xe7
+created by golang.ngrok.com/muxado/v2.(*Heartbeat).Start
+	golang.ngrok.com/muxado/v2@v2.0.0/heartbeat.go:132 +0xd9

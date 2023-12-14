@@ -12,6 +12,7 @@ function TransferEdit({
   setError,
   setIsLoading,
   isLoading,
+  fetchGetStock
 }) {
   const [formData, setFormData] = useState({
     item_code: "",
@@ -47,10 +48,10 @@ function TransferEdit({
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "http://localhost:4000/api/transferRequest", { items: formData, user_id: user }
+        "/api/transferRequest", { items: formData, user_id: user }
       );
       if (response.status == 200) {
-        console.log(response.data);
+        fetchGetStock()
         setMessage(response.data.Data);
         onClose();
         setIsLoading(false);

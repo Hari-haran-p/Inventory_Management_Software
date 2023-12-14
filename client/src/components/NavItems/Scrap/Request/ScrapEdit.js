@@ -47,7 +47,7 @@ function ScrapEdit({
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "http://localhost:4000/api/scrapRequest", { items: formData, user: user }
+        "/api/scrapRequest", { items: formData, user: user }
       );
       if (response.status == 200) {
         console.log(response.data);
