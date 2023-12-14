@@ -131,7 +131,7 @@ const importItems = async function (req, res, next) {
         connection = await db.getConnection();
         await connection.beginTransaction();
         const data = req.body.items;
-console.log(data);
+
         const itemTableData = await new Promise((resolve, reject) => {
             connection.query("SELECT * FROM itemtable", (error, result) => {
                 if (error) {
@@ -208,7 +208,8 @@ console.log(data);
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
             if (itemTableData.find((i) => i.item_name.toUpperCase() === item.item_name.toUpperCase() && i.item_subname.toUpperCase() === item.item_subname.toUpperCase())) {
-                res.status(401).json({ Data: `Item subname duplicate entry at row ${i + 1}` })
+                res.status(401).json({ Data: `Item subname duplicate entry at row ${i + 1}` });
+                return;
             }
             if (itemTypeSet.has(item.item_type)) {
             } else {

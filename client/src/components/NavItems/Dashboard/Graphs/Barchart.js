@@ -1,19 +1,48 @@
-import { React, useEffect, useState } from "react";
-
-import axios from 'axios';
+import React, { useState } from 'react';
 import {
-    BarChart,
-    Bar,
-    Brush,
-    ReferenceLine,
-    XAxis,
-    YAxis,
-    CartesianGrid,
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
     Tooltip,
-    Cell,
     Legend,
-    ResponsiveContainer,
-} from 'recharts';
+} from 'chart.js';
+import { Bar,Line } from 'react-chartjs-2';
+
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+);
+
+export const options = {
+    responsive: true,
+    plugins: {
+        legend: {
+            position: 'top',
+        },
+        title: {
+            // display: true,
+        },
+    },
+    scales: {
+        x: {
+            ticks: {
+                autoSkip: false, // Disable autoSkip to show all ticks
+                callback: function (value, index, values) {
+                    // Only show ticks without labels
+                    return '';
+                },
+            },
+        },
+    },
+};
+
 
 
 
@@ -21,147 +50,73 @@ import {
 function Barchart({ open, setOpen, categories, labname, labsStock }) {
 
 
-
     const [selectedLab, setSelectedLab] = useState("all");
     const [filteredData, setFilteredData] = useState(categories);
 
-    const [isStockFullScreen, setisStockFullScreen] = useState(false);
 
-    const toggleStockFullScreen = () => {
-        setisStockFullScreen(!isStockFullScreen);
 
-    };
 
-    const colors = ['#4287f5', '#67cc52', '#f5d142', '#a142f5', '#33ff88', '#f542d1', '#8833ff', '#ff8833', '#33ff33', '#ff33ff', '#33ffff', '#ffff33', '#3333ff'];
-
-    const handleFilter = () => {
-
-        if (selectedLab === "all") {
+    const handleFilter = (lab) => {
+        setSelectedLab(lab)
+        if (lab === "all") {
             setFilteredData(categories);
         } else {
-            const filtered = labsStock.filter((category) => category.labname === selectedLab);
-
+            const filtered = labsStock.filter((category) => category.labname === lab);
             setFilteredData(filtered);
 
         }
     };
 
-    const CustomTooltip = ({ active, payload }) => {
-        if (active && payload && payload.length) {
-            const dataPoint = payload[0].payload;
-            const stockValue = dataPoint.Stock;
-            const yAxisName = dataPoint.name;
 
-            return (
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "white", padding: "15px" }}>
-                    <span>{yAxisName}</span>
-                    <span style={{ color: "#fc03ca" }}>Stock: {stockValue} nos</span>
-                </div>
-            );
-        }
+    const labels = filteredData.map((fi) => fi.name);
 
-        return null;
+    const data = {
+        labels,
+        datasets: [
+            {
+                label: 'Dataset 1',
+                data: filteredData.map((fi) => fi.stock),
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            },
+        ],
     };
 
     return (
         <>
-            <div className="bar animate2" style={{ backgroundColor: "#F4F4F4", width: "44%" }} >
+            <div className="bar animate2 h-auto " style={{ backgroundColor: "#F4F4F4", width: "44%" }} >
                 <div
-                    className={` barh shadow-2xl p-10 bg-white rounded-2xl  shadow ${isStockFullScreen ? 'fixed top-0 left-0  z-50 full-screen  ' : ''
-                        }`}
-                    style={{
-                        width: isStockFullScreen ? '100%' : '100%',
-                        height: isStockFullScreen ? '100%' : '500px',
-
-                    }}
+                    className={` barh shadow-2xl bg-white p-5 lg:p-10 h-96 rounded-2xl`}
                 >
-                    <div
-                        style={{
 
-                            borderBottom: '1px solid gray',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: "center"
-                        }}
-
-                    >
-                        <div className=" flex flex-wrap gap-2">
+                        <div className=" flex flex-wrap justify-between border-b-2 border-black">
                             <h4 style={{ fontFamily: "Iceland" }} className="text-start text-3xl font-bold pb-2" >Stock Analysis</h4>
-                            <div className="flex gap-2" >
+
                                 <select
-                                    className="drop"
                                     style={{ maxWidth: "200px" }}
-                                    name="cars"
-                                    id="cars"
                                     value={selectedLab}
-                                    onChange={(e) => setSelectedLab(e.target.value)}
+                                    onChange={(e)=>handleFilter(e.target.value)}
                                 >
                                     <option value="all">All</option>
-                                    {labname.map((name) => {     
+                                    {labname.map((name) => {
                                         return (
                                             <option value={name.labname}>{name.labname}</option>
                                         )
                                     })}
                                 </select>
-
-                                <button
-
-                                    className="bg-blue-500 sm:w-auto filter animate1 cursor-pointer whitespace-nowrap hover:bg-blue-700 text-white text-sm h-10 py-2 px-4 rounded"
-                                    onClick={handleFilter}
-                                >
-                                    Ok
-                                </button>
-
                             </div>
-                        </div>
-                        <button className="icon text-start text-3xl font-bold pb-2" onClick={toggleStockFullScreen}>
-                            <i
-                                className={`bi bi-arrows-${isStockFullScreen ? 'collapse' : 'fullscreen'
-                                    }`}
-                            ></i>
-                        </button>
-                    </div>
-                    <br />
 
-                    {filteredData.length > 0 ?
-                        <ResponsiveContainer width="100%" height="80%">
-                            <BarChart
-                                width={500}
-                                height={300}
-                                data={filteredData}
-                                margin={{
-                                    top: 5,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                                <YAxis />
-                                <Tooltip content={<CustomTooltip />} />
-                                <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} />
-                                <ReferenceLine y={0} stroke="#000" />
-                                <Bar
-                                    dataKey="Stock"
-                                    barSize={60}
-                                    isAnimationActive={true}
-                                    animationDuration={1000}
-                                    fill="#fc03ca"
-                                >
-                                    {filteredData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
-                                    ))}
-                                </Bar>
-                                <Brush startIndex={0} endIndex={2} dataKey={null} height={10} stroke="#8884d8" />
-                            </BarChart>
-                        </ResponsiveContainer>
-                        : <div className="flex items-center justify-center h-96 text-3xl">No Data Available</div>}
+                    <br />
+                    <div className='h-full  w-full flex justify-center items-center'>
+                        {filteredData.length > 0 ?
+                            <Line options={options} data={data} />
+                            : <div className="flex items-center justify-center text-3xl">No Data Available</div>}
+                    </div>
                 </div>
             </div>
         </>
     )
 }
+
 
 
 export default Barchart

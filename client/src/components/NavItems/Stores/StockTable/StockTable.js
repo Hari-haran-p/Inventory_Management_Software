@@ -122,7 +122,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
   };
 
   return (
-    <div className="w-full flex justify-center pt-20 items-center">
+    <div className="w-full flex justify-center pt-10 items-center">
     <div className=" w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
     <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
         <div className="pl-4 text-2xl w-1/5 flex items-center whitespace-nowrap  text-blue-600 font-semibold">Stock Edit</div>
@@ -325,7 +325,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                       {data.stock_qty}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
-                      {data.created_at}
+                      {data.created_at.split("T")[0]}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
                       {data.dept_id}

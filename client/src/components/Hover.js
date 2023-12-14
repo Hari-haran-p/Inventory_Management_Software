@@ -1,71 +1,36 @@
-// import React, { useState } from 'react';
-// import Accordion from './Accordion';
+import React from 'react';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
 
-// const ContainerComponent = () => {
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-//   const [accordions, setAccordion] = useState([
-//     {
-//       key: 1,
-//       title: 'What is GeeksforGeeks?',
-//       data: [{a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}],
-//       isOpen: true
-//     },
-//     {
-//       key: 2,
-//       title: 'What GeeksforGeeks offer us?',
-//       data: [{a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}],
-//       isOpen: false
-//     },
-//     {
-//       key: 3,
-//       title: 'Which is the best portal to study Computer Science?',
-//       data: [{a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}],
-//       isOpen: false
-//     },{
-//       key: 4,
-//       title: 'Which is the best portal to study Computer Science?',
-//       data: [{a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}],
-//       isOpen: false
-//     },{
-//       key: 5,
-//       title: 'Which is the best portal to study Computer Science?',
-//       data: [{a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}, {a:"hi", b:"hello"}],
-//       isOpen: false
-//     },
-    
-//   ]);
+export const data = {
+  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+  datasets: [
+    {
+      label: '# of Votes',
+      data: [12, 19, 3, 5, 2, 3],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+      ],
+      borderWidth: 1,
+    },
+  ],
+};
 
-//   const toggleAccordion = (accordionkey) => {
-//     const updatedAccordions = accordions.map((accord) => {
-//       if (accord.key === accordionkey) {
-//         return { ...accord, isOpen: !accord.isOpen };
-//       } else {
-//         return { ...accord, isOpen: false };
-//       }
-//     });
-
-//     setAccordion(updatedAccordions);
-//   };
-//   return (
-
-//     <>
-//       <div>
-//         <div className="p-2 m-8">
-//           <h2 className='text-2xl mb-2 mx-auto text-green-800'>Accordion Using React and Tailwind</h2>
-//           {accordions.map((accordion) => (
-//             <Accordion
-//               key={accordion.key}
-//               title={accordion.title}
-//               data={accordion.data}
-//               isOpen={accordion.isOpen}
-//               toggleAccordion={() => toggleAccordion(accordion.key)}
-//             />
-//           ))}
-//         </div>
-//       </div>
-//     </>
-
-//   );
-// };
-
-// export default ContainerComponent;
+export function Hover() {
+  return <Doughnut data={data} />;
+}

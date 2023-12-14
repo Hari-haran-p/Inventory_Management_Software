@@ -256,68 +256,93 @@ function Table({ stockData, setStockData }) {
 
   return (
     <div className="w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
-      <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold ">
-        <div className="pl-4 text-2xl w-1/5 flex items-center whitespace-nowrap  text-blue-600 font-semibold">
+      <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center lg:justify-between font-semibold ">
+        <div
+          style={{ width: "200px" }}
+          className="pl-4 text-xl md:text-2xl flex h-auto items-center justify-center whitespace-nowrap text-blue-600 font-semibold"
+        >
           Master Table
-        </div>
-
-        <div className="flex gap-4 items-center w-4/5 justify-end">
-          <div className="flex flex-wrap justify-center items-center">
-          <div className="">
-            <input
-              name="inputQuery"
-              type="text"
-              onKeyDown={handleKeyEnter}
-              value={searchQuery}
-              onChange={(e) => {
-                setClick(false);
-                setSearchQuery(e.target.value);
-              }}
-              placeholder="Search..."
-              style={{minWidth: "70%" }}
-              className="text-black indent-2 h-9 font-medium border-2 rounded-lg border-black"
-            />
-
-            <button
-              onClick={() => setClick(true)}
-              className="cursor-pointer ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2"
-            >
-              Search
-            </button>
-          </div>
-          <div className="flex pl-3">
-          <div className="w-auto flex">
+          
+          <div className="flex pb-1 lg:hidden">
             <div
               onClick={() => {
                 setFilterButton(!filterButton);
               }}
               className="flex justify-center items-center border-blue-600 rounded-md filter-button"
             >
-              <div className="flex justify-center items-center border-2 border-blue-500 rounded-md w-auto filter-button">
-                <img
-                  className="w-8 h-8"
-                  src="./images/filter icon.png"
-                  alt=""
-                />
-                <img className="w-5 h-5" src="./images/down arrow.png" alt="" />
+              <div className="flex justify-center items-center rounded-md w-auto pl-4 filter-button">
+                <i class="bi bi-funnel text-blue-500 text-xl"></i>
+               
+              </div>
+            </div>
+            <div
+              className="px-4"
+              onClick={() => {
+                setDownloadButton(!downloadButton);
+                setFilterButton(false);
+              }}
+            >
+              <i class="bi bi-cloud-arrow-down text-blue-500 text-2xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{ width: "650px" }}
+          className="flex items-center h-auto justify-center lg:justify-end"
+        >
+          <div className="flex flex-wrap-reverse justify-center items-center">
+            <div className="flex justify-center items-center px-2">
+              <input
+                name="inputQuery"
+                type="text"
+                onKeyDown={handleKeyEnter}
+                value={searchQuery}
+                onChange={(e) => {
+                  setClick(false);
+                  setSearchQuery(e.target.value);
+                }}
+                placeholder="Search..."
+                style={{ maxWidth: "100%", width: "70%" }}
+                className="text-black indent-2 h-7 sm:h-9 font-medium border-2 rounded-md md:rounded-lg border-black"
+              />
+
+              <button
+                onClick={() => setClick(true)}
+                className="cursor-pointer ml-3 w-18 h-8 text-sm font-medium md:font-medium md:text-lg sm:w-24 rounded-md sm:h-10 py-1 px-1 text-white bg-blue-600 border-2"
+              >
+                Search
+              </button>
+            </div>
+            <div className="hidden lg:flex mb-1">
+              <div className="w-auto  flex">
+                <div
+                  onClick={() => {
+                    setFilterButton(!filterButton);
+                  }}
+                  className="flex justify-center items-center border-blue-600 rounded-md filter-button"
+                >
+                  <div className="flex justify-center items-center rounded-md w-auto filter-button">
+                    <i class="bi bi-funnel text-blue-500 text-3xl"></i>
+                    <i class="bi bi-chevron-down text-sm text-blue-500"></i>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="px-4"
+                onClick={() => {
+                  setDownloadButton(!downloadButton);
+                  setFilterButton(false);
+                }}
+              >
+                <i class="bi bi-download text-blue-500 text-3xl"></i>
               </div>
             </div>
           </div>
-          <div
-          className="px-4"
-            onClick={() => {
-              setDownloadButton(!downloadButton);
-              setFilterButton(false);
-            }}
-          >
-            <i class="bi bi-box-arrow-down text-blue-500 text-4xl"></i>
-          </div>
-          </div>
-          </div>
 
-          {downloadButton === true && (
+          {downloadButton === true && filterButton === false && (
             <>
-              <div className="h-auto w-auto flex flex-col bg-white rounded-lg border-2 absolute right-3 top-16">
+              <div className="h-auto w-auto flex flex-col bg-white rounded-lg border-2 absolute right-3 top-12 download-popup md:top-16">
                 <button
                   onClick={() => {
                     exportToExcel(filteredData);
@@ -338,7 +363,7 @@ function Table({ stockData, setStockData }) {
             </>
           )}
           {filterButton === true && (
-            <div className="h-96 w-96 absolute overflow-y-scroll rounded-lg z-20 right-4 top-16 bg-white border-2">
+            <div className="h-96 w-96 absolute filter-popup overflow-y-scroll rounded-lg z-20 lg:right-4 lg:top-16 bg-white border-2">
               <div
                 className="cursor-pointer border-2 rounded-lg w-11/12 py-2 text-center m-2 text-lg font-bold text-black"
                 type="button"

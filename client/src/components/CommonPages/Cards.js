@@ -92,7 +92,8 @@ function Cards() {
       <div className='card-container w-full h-full flex flex-col lg:flex-row gap-3 lg:w-5/6 lg:gap-8 items-center justify-center '>
         {/* <div className="items-center justify-center flex w-full h-full gap-20 mt-8 scale-90 bg-black flex-wrap tablet:scale-100"> */}
         <div
-          className=" w-11/12 h-2/5 md:h-3/5 shadow-2xl bg-white rounded-3xl cursor-pointer flex  animate1"
+          className=" w-11/12 h-2/5 md:h-3/5 shadow-2xl rounded-3xl cursor-pointer flex  animate1"
+          // style={{backgroundColor:"rgba(0, 100, 0, 0.3)", border:"3px solid green"}}
           onClick={() => setStockData(true)}
         >
           <div className="flex w-1/2 items-center justify-around">
@@ -106,7 +107,7 @@ function Cards() {
             <div className="font-bold  text-lg whitespace-nowrap sm:text-2xl">
               No of stocks
             </div>
-            <div style={{ color: "#5e9ff2"}} className=" whitespace-nowrap text-lg sm:text-2xl font-bold flex gap-2 items-center">
+            <div style={{ color: "green"}} className=" whitespace-nowrap text-lg sm:text-2xl font-bold flex gap-2 items-center">
               <div>{TotalStockValueData}</div> <div className=''>nos</div>
             </div>
           </div>
@@ -114,6 +115,7 @@ function Cards() {
         <div
           className={` w-11/12 h-2/5 md:h-3/5  shadow-2xl bg-white rounded-3xl cursor-pointer flex animate1`}
           onClick={() => setScrapData(true)}
+          // style={{backgroundColor:"rgba(255, 165, 0,0.3)" , border:"3px solid orange"}}
         >
           <div className="flex w-1/2 items-center justify-around">
             <img
@@ -126,7 +128,7 @@ function Cards() {
             <div className="font-bold  text-lg whitespace-nowrap sm:text-2xl">
               Scrap Value
             </div>
-            <div style={{ color: "#5e9ff2" }} className="card-amount-adjust whitespace-nowrap text-lg sm:text-2xl font-bold flex gap-2">
+            <div style={{ color: "orange" }} className="card-amount-adjust whitespace-nowrap text-lg sm:text-2xl font-bold flex gap-2">
               Rs {TotalScrapValueData}
             </div>
           </div>
@@ -137,6 +139,7 @@ function Cards() {
         <div
           className={` w-11/12 h-2/5 md:h-3/5 shadow-2xl bg-white rounded-3xl  cursor-pointer flex  animate1`}
           onClick={() => setInventoryData(true)}
+          // style={{backgroundColor:"rgba(255, 0, 0,0.3)" , border:"3px solid red"}}
         >
           <div className="flex w-1/2 items-center justify-around">
             <img
@@ -149,7 +152,7 @@ function Cards() {
             <div className="font-bold sm:text-2xl text-lg whitespace-nowrap ">
               Stock Value
             </div>
-            <div style={{ color: "#5e9ff2" }} className="card-amount-adjust whitespace-nowrap font-bold text-lg sm:text-2xl flex gap-2">
+            <div style={{ color: "red" }} className="card-amount-adjust whitespace-nowrap font-bold text-lg sm:text-2xl flex gap-2">
               <div>Rs</div> {TotalInventoryValueData}
             </div>
           </div>

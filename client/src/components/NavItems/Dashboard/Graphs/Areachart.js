@@ -1,94 +1,157 @@
-import { React, useEffect, useState } from "react";
 
-import axios from 'axios';
+
+import React, { useEffect, useState } from 'react'
+
 import {
-    Brush,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    AreaChart,
-    Legend,
-    Area,
-    ResponsiveContainer,
-} from 'recharts';
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
 
 
-function Areachart({ inventory }) {
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend
+);
+
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top',
+    },
+    title: {
+      display: true,
+      text: '',
+    },
+  },
+  elements: {
+    line: {
+      tension: 0.4,
+    },
+  },
+  parsing: {
+    xAxisKey: 'name',
+    yAxisKey: 'Cost',
+  },
+
+  layout: {
+    padding: {
+      left: 20,
+      right: 20,
+      top: 10,
+      bottom: 10,
+    },
+  },
+  interaction: {
+    intersect: false,
+    mode: 'index',
+  },
+  maintainAspectRatio: false,
+};
 
 
-    const [isCostFullScreen, setisCostFullScreen] = useState(false);
-
-    const toggleCostFullScreen = () => {
-        setisCostFullScreen(!isCostFullScreen);
-    };
-
-
-    const CustomTooltip = ({ active, payload }) => {
-        if (active && payload && payload.length) {
-            const dataPoint = payload[0].payload;
-            const stockValue = dataPoint.Cost;
-            const yAxisName = dataPoint.name;
-
-            return (
-                <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: "white", padding: "15px" }}>
-                    <span>{yAxisName}</span>
-                    <span>Cost: Rs {stockValue}</span>
-                </div>
-            );
-        }
-
-        return null;
-    };
-
-    return (
-        <>
-
-            <div className="flex items-center justify-center h-full" style={{paddingLeft:"5%"}}>
-                <div
-                    className={` shadow-2xl p-8  flex-col bg-white rounded-2xl ${isCostFullScreen ? 'fixed top-0 left-0 z-50 full-screen' : ''
-                        }`}
-                    style={{ width: '100%', height: isCostFullScreen ? '100%' : '100%' }}
-                >
-                    <h4 style={{ fontFamily: 'Iceland', fontWeight: "bold", borderBottom: "1px solid gray", display: "flex", justifyContent: "space-between" }} className=" text-start text-3xl pb-2">Cost Overview <button className="spin icon" onClick={toggleCostFullScreen}><i class={`bi bi-arrows-${isCostFullScreen ? 'collapse' : 'fullscreen'}`}></i></button></h4>
-                    <br />
-                    <div className=" justify-center gap-5 font-bold hidden md:flex" >
-                        <div className="text-red-600 ">
-                            <span>X-Axis : Duration<span className="text-sm">(months)</span></span>
-                        </div>
-                        <div className="text-blue-700">
-                            <span>Y-Axis : Cost<span className="text-sm">(Rs)</span></span>
-                        </div>
-                    </div>
-                    <ResponsiveContainer width="100%" height="80%">
-                        <AreaChart
-                            width={300}
-                            height={200}
-                            data={inventory}
-                            syncId="anyId"
-                            margin={{
-                                top: 10,
-                                right: 30,
-                                left: 20,
-                                bottom: 0,
-                            }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" tick={{ fill: '#00000', fontWeight: '500' }} />
-                            <YAxis tick={{ fill: '#00000', fontWeight: '500' }} />
-                            <Tooltip content={<CustomTooltip />} />
-                            <Area type="monotone" dataKey="Cost" stroke="#220129" fill="#9a07b8" isAnimationActive={true} animationDuration={2000} />
-                            <Brush startIndex={0} endIndex={10} dataKey={null} height={10} stroke="#8884d8" />
-                        </AreaChart>
-                    </ResponsiveContainer>
-
-
-                </div>
-            </div>
-        </>
-    )
-
+function getOptions() {
+  if (window.innerWidth > 1000) {
+    return {
+      ...options, scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Duration (months)',
+            color: 'rgb(238, 130, 238)',
+            font: {
+              size: 16,
+              weight: 'bold'
+            },
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Cost (Rs)',
+            color: 'rgb(238, 130, 238)',
+            font: {
+              size: 16,
+              weight: 'bold',
+            },
+          },
+          ticks: {
+            font: {
+              size: 12,
+            },
+          },
+        },
+      }
+    }
+  } else {
+    return { ...options }
+  }
 }
+
+
+const Areachart = ({ inventory }) => {
+console.log("Inventory ",inventory);
+  const labels = inventory.map((inv) => inv.name)
+  const graphdata = inventory.map((inv) => inv.Cost)
+  const data = {
+    labels,
+    datasets: [
+      {
+        fill: true,
+        label: 'Cost',
+        data: graphdata,
+        borderColor: 'rgba(154, 7, 184,0.5)',
+        backgroundColor: 'rgba(154, 7, 184, 0.6)',
+      },
+    ],
+  };
+
+  const [options, setOptions] = useState({});
+  function resize() {
+
+    const result = getOptions();
+    // console.log("i am called" , result);
+    setOptions(result);
+  }
+
+  useEffect(() => {
+
+    window.addEventListener('resize', resize());
+
+    return () => {
+      window.removeEventListener('resize', resize());
+    };
+    // resize();
+  }, [])
+
+  return (
+    <>
+      <div
+        className={`mt-10 md:mt-0 p-4 lg:p-10  flex flex-col items-center justify-center bg-white rounded-2xl `}
+        style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '90%' }}
+      >
+        <h4 style={{ fontFamily: 'Iceland', fontWeight: "bold", borderBottom: "1px solid gray", display: "flex", justifyContent: "space-between" }} className=" text-start text-3xl pb-2">Cost Overview </h4>
+
+        <Line options={options} data={data} />
+      </div>
+    </>
+  )
+}
+
 export default Areachart
 
 
