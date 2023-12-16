@@ -1,26 +1,10 @@
 import { React, useEffect, useState } from "react";
 
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
 
-import { Bar,Line, Doughnut } from 'react-chartjs-2';
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-);
 
 
 

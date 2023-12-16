@@ -84,7 +84,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
       ) : (
         <>
           <div className="card overflow-hidden max-h-xl h-60">
-            <div className="p-3 flex items-center justify-between relative z-0">
+            <div className="p-3 flex items-center justify-between">
               <div>
                 <div className="lg:text-lg">Requested LabName : {(toSentenceCase(data.req_labname))}</div>
                 <div className="lg:text-lg ">

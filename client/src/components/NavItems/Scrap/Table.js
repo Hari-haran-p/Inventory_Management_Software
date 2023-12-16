@@ -112,7 +112,7 @@ function Table({ scrapData,isVisible }) {
 
   return (
     <div className="w-full flex justify-center p-10 items-center">
-    <div className=" w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
+    <div className=" w-10/12 border-2 bg-white rounded-t-3xl h-auto">
       <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
         <div className="pl-4 text-2xl w-1/5 flex items-center whitespace-nowrap  text-blue-600 font-semibold">
           Scrap Table

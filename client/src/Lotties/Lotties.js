@@ -17,6 +17,7 @@ const Lotties = ({ height, width, animationData, click, clickData}) => {
 
   return (
     <div
+      className="relative z-1"
       onMouseEnter={() => {
         setStopped(false);
       }}

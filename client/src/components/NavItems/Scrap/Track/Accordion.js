@@ -6,18 +6,12 @@ const Accordion = (props) => {
   return (
     <div className=" rounded-lg bg-white mb-4">
       <button
-        className="w-full p-4 font-bold hover:bg-blue-600 hover:text-white text-left border-b-2 border-blue-700  
-        bg-white transition-transform duration-1000 rounded-lg"
+        className={`w-full ${props.isOpen ? "p-4" : "p-5"} font-bold flex items-center justify-between hover:bg-blue-600 hover:text-white text-left border-b-2 border-blue-700  
+        bg-white transition-transform duration-1000 rounded-lg`}
         onClick={props.toggleAccordion}
       >
         {props.title}
-        <span
-          className={`float-right transform ${
-            props.isOpen ? "rotate-180" : "rotate-0"
-          } transition-transform duration-300`}
-        >
-          &#9660;
-        </span>
+        {props.isOpen ? <span className="text-3xl">&#9662;</span> : <span className="text-sm">&#9650;</span>}
       </button>
       {props.isOpen && props.data && Array.isArray(props.data) && (
         <div

@@ -18,7 +18,7 @@ const ScrapApprove = ({ onClose, isVisible, user, setMesaage, setError, scrapDat
                             <div className="  flex flex-col">
                                 <div
                                     style={{ width: "100%", height: "30%" }}
-                                    class="relative rounded-2xl overflow-x-auto overflow-y-auto"
+                                    class=" rounded-2xl overflow-x-auto overflow-y-auto"
                                 >
                                     <div className="pt-8 flex flex-col  gap-10 ">
                                         <span className=' font-bold text-xl'>Pending request:</span>
