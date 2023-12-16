@@ -73,18 +73,12 @@ function Dashboard({ open, setOpen }) {
     fetchLabsStock();
   }, []);
 
-  console.log(categories);
   useEffect(() => {
     if (categories.length > 0 && inventory.length > 0 && labitem.length > 0 && labname.length > 0) {
       setTimeout(() => setIsLoading(), 1000)
 
     }
   }, [categories, inventory, labitem, labname])
-
-  console.log("categories : ", categories);
-  console.log("inventory : ", inventory);
-  console.log("labitem : ", labitem);
-  console.log("labname : ", labname);  
 
   return (
     <>
@@ -101,7 +95,7 @@ function Dashboard({ open, setOpen }) {
               <Cards />
             </div>
         
-            <div style={{ height:"65vh" }} className="lg:pl-28 w-11/12 animate1">
+            <div className="areah lg:pl-28 w-11/12 animate1">
               <Areachart inventory={inventory} />
             </div>
             <br /><br />

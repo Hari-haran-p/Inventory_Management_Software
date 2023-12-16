@@ -1,6 +1,6 @@
 
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   Chart as ChartJS,
@@ -47,35 +47,7 @@ export const options = {
     xAxisKey: 'name',
     yAxisKey: 'Cost',
   },
-  scales: {
-    x: {
-      title: {
-        display: true,
-        text: 'Duration (months)',
-        color:'rgb(238, 130, 238)',
-        font: {
-          size: 16,
-          weight:'bold'
-        },
-      },
-    },
-    y: {
-      title: {
-        display: true,
-        text: 'Cost (Rs)',
-        color:'rgb(238, 130, 238)',
-        font: {
-          size: 16,
-          weight:'bold', // Adjust the font size for the y-axis title
-        },
-      },
-      ticks: {
-        font: {
-          size: 12, // Adjust the font size for the y-axis ticks
-        },
-      },
-    },
-  },
+
   layout: {
     padding: {
       left: 20,
@@ -92,11 +64,49 @@ export const options = {
 };
 
 
-const Areachart = ({ inventory }) => {
+function getOptions() {
+  if (window.innerWidth > 1000) {
+    return {
+      ...options, scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Duration (months)',
+            color: 'rgb(238, 130, 238)',
+            font: {
+              size: 16,
+              weight: 'bold'
+            },
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Cost (Rs)',
+            color: 'rgb(238, 130, 238)',
+            font: {
+              size: 16,
+              weight: 'bold',
+            },
+          },
+          ticks: {
+            font: {
+              size: 12,
+            },
+          },
+        },
+      }
+    }
+  } else {
+    return { ...options }
+  }
+}
 
+
+const Areachart = ({ inventory }) => {
+console.log("Inventory ",inventory);
   const labels = inventory.map((inv) => inv.name)
   const graphdata = inventory.map((inv) => inv.Cost)
-  console.log(inventory);
   const data = {
     labels,
     datasets: [
@@ -110,8 +120,25 @@ const Areachart = ({ inventory }) => {
     ],
   };
 
+  const [options, setOptions] = useState({});
+  function resize() {
+
+    const result = getOptions();
+    // console.log("i am called" , result);
+    setOptions(result);
+  }
+
+  useEffect(() => {
+
+    window.addEventListener('resize', resize());
+
+    return () => {
+      window.removeEventListener('resize', resize());
+    };
+    // resize();
+  }, [])
+
   return (
-    // <div className="bg-white p-8 rounded-2xl h-5/6 relative">
     <>
       <div
         className={`mt-10 md:mt-0 p-4 lg:p-10  flex flex-col items-center justify-center bg-white rounded-2xl `}
@@ -122,7 +149,6 @@ const Areachart = ({ inventory }) => {
         <Line options={options} data={data} />
       </div>
     </>
-    // </div>
   )
 }
 

@@ -48,7 +48,7 @@ const Navbar = ({ location, open, setOpen, navItems, user }) => {
                 <h1
                   className={`ml-2 mb-2.5 text-2xl pt-1 ${!open && "hidden"}`}
                 >
-                  Stores_BIT {navUsed()}
+                  Stores BIT {navUsed()}
                 </h1>
               </div>
 

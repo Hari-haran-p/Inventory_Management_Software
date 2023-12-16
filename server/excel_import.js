@@ -124,6 +124,7 @@ const importSuppliers = async function (req, res, next) {
 
 const importItems = async function (req, res, next) {
 
+
     let connection;
     try {
 
@@ -209,9 +210,9 @@ const importItems = async function (req, res, next) {
             const result = itemTableData.find((ite) => ite.item_name.toUpperCase() === item.item_name.toUpperCase() && ite.item_subname.toUpperCase() === item.item_subname.toUpperCase())
             if (result) {
                 // console.log("from import : ", i , result);
-                res.status(401).json({ Data: `Item subname duplicate entry at row ${i + 1} : ${result}` })
+                res.status(401).json({ Data: `Item subname duplicate entry at row ${i + 1}`})
                 return;
-            }
+            }   
             if (itemTypeSet.has(item.item_type)) {
             } else {
                 res.status(401).json({ Data: `Item type mismatch at row ${i + 1}` });

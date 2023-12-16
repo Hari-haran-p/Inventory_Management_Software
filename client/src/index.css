@@ -284,20 +284,26 @@ input::-webkit-inner-spin-button {
 
 }
 
+@media(min-width : 1000px) {
+  .areah{
+    height: 65vh;
+  }
+}
+
 
 @media (max-width:1000px) {
-
 
   .area {
     padding-left: 50px;
   }
 
-  .barh {
-    height: 400px;
+  .areah{
+    height: 50vh;
   }
 
+
   .pieh {
-    height: 400px;
+    /* height: 400px; */
   }
   .filter-popup{
     top: 50px;
@@ -334,6 +340,13 @@ input::-webkit-inner-spin-button {
     padding: 0;
     width: 100% !important;
   }
+
+
+
+  .barh {
+    height: auto;
+  }
+
 
   .bar {
     padding: 0;

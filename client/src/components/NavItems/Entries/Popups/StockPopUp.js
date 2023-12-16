@@ -14,6 +14,7 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
     userId: "",
     labCode: "",
     apex_no: "",
+    apex_reason:""
   });
 
   const [autoForm, setAutoForm] = useState({});
@@ -27,7 +28,6 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
       try {
         setIsLoading(true);
         e.preventDefault();
-        console.log(data.item_code);
         const result = item.filter((items) => {
           if (items.item_code == data.itemcode) return items;
         });
@@ -36,8 +36,10 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
           data.supplierId = result[0].supplier_id;
           data.inventoryValue = result[0].cost_per_item * data.stock_qty;
           data.userId = user.user_id;
+
           console.log("came here", data);
           const response = await axios.post("/api/stockAdd", { ...data, user_dept_id: user.dept_code });
+
           if (response && response.status == 201) {
             setMessage(response.data.Data);
             setData({
@@ -49,6 +51,7 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
               userId: "",
               labCode: "",
               apex_no: "",
+              apex_reason:""
             })
             setIsLoading(false);
             onClose();
@@ -64,6 +67,7 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
             userId: "",
             labCode: "",
             apex_no: "",
+            apex_reason:""
           });
           setIsLoading(false);
           onClose();
@@ -81,6 +85,7 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
             userId: "",
             labCode: "",
             apex_no: "",
+            apex_reason:""
           })
           setIsLoading(false);
           onClose();
@@ -97,6 +102,7 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
         userId: "",
         labCode: "",
         apex_no: "",
+        apex_reason:""
       })
       onClose();
     }
@@ -198,7 +204,6 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
                     Select Units
                   </option>
                   {uniqueItemNamesArray.map((item) => {
-                    console.log(item);
                     return <option value={item.itemname} key={item.itemname} >{item.itemname}</option>;
                   })}
                 </select>
@@ -298,6 +303,20 @@ const StockPopUp = ({ isVisible, onClose, user, setMessage, setError, setIsLoadi
                   setData({ ...data, [e.target.name]: e.target.value })
                 }
                 value={data.stock_qty}
+                required
+                className="text-md block px-3 py-2 rounded-lg w-full 
+                bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
+              />
+            </div>
+            <div class="flex flex-wrap mt-8">
+              <span class="px-1 text-lg text-gray-600">Apex Reason</span>
+              <input
+                type="number"
+                name="apex_reason"
+                onChange={(e) =>
+                  setData({ ...data, [e.target.name]: e.target.value })
+                }
+                value={data.apex_reason}
                 required
                 className="text-md block px-3 py-2 rounded-lg w-full 
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"

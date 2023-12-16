@@ -27,7 +27,6 @@ const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoadin
 
   const handleChange = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
