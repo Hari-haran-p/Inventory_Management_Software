@@ -105,6 +105,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
                 width={50}
                 click={() => setShowManufacturer(true)}
                 clickData={data.id}
+              
               />
             </div>
           </div>
@@ -146,3 +147,5 @@ const TransferCard = ({ data, user, setMessage, setError, onClose }) => {
 };
 
 export default TransferCard;
+
+

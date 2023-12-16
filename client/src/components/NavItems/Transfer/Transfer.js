@@ -193,7 +193,7 @@ const Transfer = () => {
                   className={`transition-transform transform duration-1000 ${isNavbarVisible ? '' : 'lg:translate-x-full'}`}
                 >
                   {isNavbarVisible && (
-                    <div className="flex flex-wrap gap-5 z-50 items-center justify-between navTransfer">
+                    <div className="flex flex-wrap gap-5 items-center justify-between navTransfer">
                       <div
                         className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTable == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4 `}
                         onClick={() => {

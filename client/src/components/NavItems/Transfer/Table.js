@@ -106,7 +106,7 @@ function Table({ stockData }) {
   
 
   return (
-    <div className=" w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
+    <div className=" w-10/12 border-2 bg-white rounded-t-3xl h-auto">
       <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
         <div className="pl-4 text-2xl flex items-center whitespace-nowrap  text-blue-600 font-semibold">
           Transfer Table

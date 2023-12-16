@@ -35,6 +35,7 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
         data: pendingData.pending || [],
         isOpen: true,
         noDataMessage: "No pending data available",
+        icon:"&#9660;"
       },
       {
         key: 2,
@@ -42,6 +43,7 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
         data: pendingData.approved || [],
         isOpen: false,
         noDataMessage: "No approved data available",
+        icon:"&#9660;"
       },
       // {
       //   key: 3,
@@ -56,6 +58,7 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
         data: pendingData.rejected || [],
         isOpen: false,
         noDataMessage: "No rejected data available",
+        icon:"&#9660;"
       },
     ]);
   }, [pendingData]);
