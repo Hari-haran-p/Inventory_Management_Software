@@ -85,10 +85,10 @@ This project is used by the following institute:
 
 ## Feedback
 
-If you have any feedback, please reach out to us at ragavkavinraj@gmail.com
+If you have any feedback, please reach out to us at harichris28@gmail.com
 
 
 ## Support
 
-For support, email ragavkavinraj@gmail.com or join our Slack channel.
+For support, email harichris28@gmail.com or join our Slack channel.
 
