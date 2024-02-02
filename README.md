@@ -38,7 +38,7 @@ Analyze the amount invested and track stock trends over time.
 To deploy this project run
 
 ```bash
-  git clone "https://github.com/PrashanthSai-K/Inventory_Management_Software.git"
+  git clone "https://github.com/raj-kavin/Inventory_Management_Software.git"
 ```
 ```bash
   cd Inventory_Management_Software
