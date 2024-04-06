@@ -3,6 +3,7 @@ import axios from 'axios';
 import InventoryPopup from './commonPopups/InventoryPopup';
 import StockPopup from './commonPopups/StockPopup';
 import ScarpPopup from './commonPopups/ScarpPopup';
+import { useAuth } from '../../AuthContext';
 
 function Cards() {
 
@@ -17,10 +18,11 @@ function Cards() {
   const [getStockDatas, setGetStockDatas] = useState([]);
   const [getScrapDatas, setGetScrapDatas] = useState([]);
 
+  const {getRequest } = useAuth();
 
   const fetchTotalStockValueData = async () => {
     try {
-      const response = await axios.get('/api/getTotalStockValueData');
+      const response = await getRequest('http://localhost:4000/api/getTotalStockValueData');
       setTotalStockValueData(response.data[0].stock);
     } catch (error) {
       console.log(error)
@@ -30,7 +32,7 @@ function Cards() {
 
   const fetchscrapValueData = async () => {
     try {
-      const response = await axios.get('/api/getTotalScrapValueData');
+      const response = await getRequest('http://localhost:4000/api/getTotalScrapValueData');
       setTotalScrapValueData(response.data[0].name);
     } catch (error) {
       console.log(error)
@@ -39,7 +41,7 @@ function Cards() {
 
   const fetchTotalInventoryValueData = async () => {
     try {
-      const response = await axios.get('/api/getTotalInventoryValueData');
+      const response = await getRequest('http://localhost:4000/api/getTotalInventoryValueData');
       setTotalInventoryValueData(response.data[0].cost);
     } catch (error) {
       console.log(error)
@@ -48,7 +50,7 @@ function Cards() {
 
   const fetchgetStockDatas = async () => {
     try {
-      const response = await axios.get('/api/getOverallLabsStock');
+      const response = await getRequest('http://localhost:4000/api/getOverallLabsStock');
       setGetStockDatas(response.data);
     } catch (error) {
       console.error(error);
@@ -57,7 +59,7 @@ function Cards() {
 
   const fetchgetInventoryDatas = async () => {
     try {
-      const response = await axios.get('/api/getInventoryData');
+      const response = await getRequest('http://localhost:4000/api/getInventoryData');
       setGetInventoryDatas(response.data);
     } catch (error) {
       console.error(error);
@@ -66,13 +68,12 @@ function Cards() {
 
   const fetchgetScrapDatas = async () => {
     try {
-      const response = await axios.get('/api/getScrapData');
+      const response = await getRequest('http://localhost:4000/api/getScrapData');
       setGetScrapDatas(response.data);
     } catch (error) {
       console.error(error);
     }
   }
-
 
 
   useEffect(() => {
@@ -84,15 +85,12 @@ function Cards() {
     fetchgetScrapDatas();
   }, [])
 
-
-
-
   return (
     <>
       <div className='card-container w-full h-full flex flex-col lg:flex-row gap-3 lg:w-5/6 lg:gap-8 items-center justify-center '>
         {/* <div className="items-center justify-center flex w-full h-full gap-20 mt-8 scale-90 bg-black flex-wrap tablet:scale-100"> */}
         <div
-          className=" w-11/12 h-2/5 md:h-3/5 shadow-2xl rounded-3xl cursor-pointer flex  animate1"
+          className=" w-11/12 h-2/5 md:h-3/5 shadow-2xl rounded-3xl cursor-pointer flex  animate1 bg-white"
           // style={{backgroundColor:"rgba(0, 100, 0, 0.3)", border:"3px solid green"}}
           onClick={() => setStockData(true)}
         >

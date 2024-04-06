@@ -8,6 +8,7 @@ const {
     verifyToken,
     createSession,
     getUser,
+    authenticate,
 } = require("./auth/loginMiddleware.js");
 
 const db = require("./database/db.js");
@@ -16,7 +17,7 @@ const { itemEdit, stockEdit } = require("./edit.js");
 const { manufacturerAdd, supplierAdd, itemAdd, stockAdd } = require("./vendor.js");
 const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest, acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData } = require("./scrap.js");
 const { importItems, importStocks, importTransferItems, importManufacturers, importSuppliers } = require("./excel_import.js");
-const { log } = require("console");
+
 
 const app = express();
 app.use(cors());
@@ -31,7 +32,6 @@ app.get("/api/", (req, res) => {
 
 app.post("/api/loginUser", verifyToken, createSession, (req, res) => {
     const token = res.locals.token;
-    // console.log(token)
     res.send(token);
 });
 
@@ -49,26 +49,26 @@ app.post("/api/itemAdd", itemAdd);
 
 app.post("/api/stockAdd", stockAdd);
 
-app.get("/api/getManufacturer", (req, res) => {
+app.get("/api/getManufacturer",authenticate,  (req, res) => {
     db.query("SELECT * FROM manufacturer")
         .catch((error) => res.send(error))
         .then((response) => res.send(response))
 });
 
-app.get("/api/getCategories", (req, res) => {
+app.get("/api/getCategories", authenticate, (req, res) => {
     db.query("SELECT SUM(stock) as stock , name FROM (SELECT SUM(Stock) AS stock, NAME  FROM labs_stock_view GROUP BY  labname, NAME) AS subquery GROUP BY NAME", (error, result) => {
         res.send(result);
     });
 });
 
-app.get("/api/getInventory", (req, res) => {
+app.get("/api/getInventory", authenticate, (req, res) => {
     db.query("SELECT * FROM areachart_view", (error, result) => {
 
         res.send(result);
     });
 });
 
-app.get("/api/getLabItem", (req, res) => {
+app.get("/api/getLabItem", authenticate, (req, res) => {
     db.query("SELECT * FROM lab_item_view", (error, result) => {
 
         res.send(result);
@@ -76,16 +76,19 @@ app.get("/api/getLabItem", (req, res) => {
 });
 
 
-app.get("/api/getItems", (req, res) => {
+app.get("/api/getItems", authenticate, (req, res) => {
     db.query("SELECT * FROM itemtable", (error, result) => {
         if (error) console.log(error);
         else {
-            res.send(result);
+            if(result.length == 0 ){
+                return res.send("No Data");
+            };
+            return res.send(result);
         }
     })
 });
 
-app.get("/api/getSupplier", (req, res) => {
+app.get("/api/getSupplier",authenticate,  (req, res) => {
     db.query("SELECT * FROM supplier", (error, result) => {
         res.send(result);
     });
@@ -100,7 +103,7 @@ app.get("/api/getItems", (req, res) => {
     });
 });
 
-app.get("/api/getStock", (req, res) => {
+app.get("/api/getStock", authenticate, (req, res) => {
     db.query("SELECT * FROM stocktable WHERE stock_qty > 0 ", (error, result) => {
         if (error) console.log(error);
         else {
@@ -109,14 +112,14 @@ app.get("/api/getStock", (req, res) => {
     });
 });
 
-app.get("/api/getAdminStockData", (req, res) => {
+app.get("/api/getAdminStockData", authenticate,  (req, res) => {
     db.query("SELECT * FROM admin_stock_view", (error, result) => {
         if (error) console.log(error);
         res.send(result);
     });
 });
 
-app.get("/api/getQuantityUnits", (req, res) => {
+app.get("/api/getQuantityUnits", authenticate, (req, res) => {
     db.query("SELECT * FROM quantity_units", (error, result) => {
         if (error) console.log(error);
         else {
@@ -125,7 +128,7 @@ app.get("/api/getQuantityUnits", (req, res) => {
     })
 })
 
-app.get("/api/getTotalStockValueData", (req, res) => {
+app.get("/api/getTotalStockValueData", authenticate, (req, res) => {
     db.query("SELECT SUM(stock) AS stock FROM overall_stock_view", (error, result) => {
         if (error) console.log(error);
         else {
@@ -134,7 +137,7 @@ app.get("/api/getTotalStockValueData", (req, res) => {
     })
 })
 
-app.get("/api/getTotalScrapValueData", (req, res) => {
+app.get("/api/getTotalScrapValueData", authenticate, (req, res) => {
     db.query("SELECT SUM(scrap_value) AS name FROM overall_scrap_value", (error, result) => {
         if (error) console.log(error);
         else {
@@ -143,7 +146,7 @@ app.get("/api/getTotalScrapValueData", (req, res) => {
     })
 })
 
-app.get("/api/getTotalInventoryValueData", (req, res) => {
+app.get("/api/getTotalInventoryValueData", authenticate, (req, res) => {
     db.query("SELECT SUM(Cost) AS cost FROM inventory_view", (error, result) => {
         if (error) console.log(error);
         else {
@@ -152,54 +155,47 @@ app.get("/api/getTotalInventoryValueData", (req, res) => {
     })
 })
 
-app.get("/api/getInventoryData", (req, res) => {
-    db.query("SELECT * FROM lab_inventory_view", (error, result) => {
-        if (error) console.log(error);
-        res.send(result);
-    });
-});
-
-app.get("/api/getScrapData", (req, res) => {
+app.get("/api/getScrapData", authenticate, (req, res) => {
     db.query("SELECT * FROM overall_scrap_value", (error, result) => {
         if (error) console.log(error);
         res.send(result);
     });
 });
 
-app.get("/api/getLabDetails", (req, res) => {
+app.get("/api/getLabDetails", authenticate, (req, res) => {
     db.query("SELECT * FROM labdetails", (error, result) => {
         if (error) console.log(error);
         res.send(result);
     });
 });
 
-app.get("/api/getLabsStock", (req, res) => {
+app.get("/api/getLabsStock", authenticate, (req, res) => {
     db.query("SELECT Stock as stock, name, labname FROM labs_stock_view", (error, result) => {
         if (error) console.log(error);
         res.send(result);
     });
 });
 
-app.get("/api/getOverallLabsStock", (req, res) => {
+app.get("/api/getOverallLabsStock", authenticate, (req, res) => {
     db.query("SELECT * FROM overall_stock_view", (error, result) => {
         if (error) console.log(error);
         res.send(result);
     });
 });
 
-app.get("/api/getInventoryData", (req, res) => {
+app.get("/api/getInventoryData", authenticate, (req, res) => {
     db.query("SELECT * FROM lab_inventory_view", (error, result) => {
         if (error) console.log(error);
         res.send(result);
     });
 });
 
-app.get("/api/getLabDetails", (req, res) => {
-    db.query("SELECT * FROM labdetails", (error, result) => {
-        if (error) console.log(error);
-        res.send(result);
-    });
-});
+// app.get("/api/getLabDetails", (req, res) => {
+//     db.query("SELECT * FROM labdetails", (error, result) => {
+//         if (error) console.log(error);
+//         res.send(result);
+//     });
+// });
 
 app.get("/api/getLabsStock", (req, res) => {
     db.query("SELECT * FROM labs_stock_view", (error, result) => {
@@ -215,7 +211,7 @@ app.get("/api/getOverallLabsStock", (req, res) => {
     });
 });
 
-app.get("/api/getOverallTransferedData", (req, res) => {
+app.get("/api/getOverallTransferedData", authenticate, (req, res) => {
     db.query("SELECT * FROM transfer_request_merged_view", (error, result) => {
         if (error) console.log(error);
         res.send(result);
@@ -257,7 +253,7 @@ app.get("/api/getTransferCardData/:id", async (req, res) => {
 
 app.get("/api/getScrapCardData/:id", async (req, res) => {
 
-const user = req.params.id;
+    const user = req.params.id;
     try {
         const [
             scrapPendingResult,
@@ -293,7 +289,7 @@ app.get("/api/getStock/:id", (req, res) => {
         .catch((error) => res.send(error));
 })
 
-app.post("/api/getTransferData", getTransferData)
+app.post("/api/getTransferData",authenticate,  getTransferData)
 
 app.post("/api/transferRequest", transferRequest)
 
@@ -332,9 +328,9 @@ app.post("/api/importSuppliers", importSuppliers);
 
 app.post("/api/scrapRequest", scrapRequest);
 
-app.get("/api/getScrap", getAllScrapData);
+app.get("/api/getScrap",authenticate,  getAllScrapData);
 
-app.get("/api/getScrapData/:id", getScrapData);
+app.get("/api/getScrapData/:id", authenticate, getScrapData);
 
 app.post("/api/rejectScrapRequest", rejectScrapRequest);
 
@@ -344,7 +340,7 @@ app.post("/api/cancelScrapRequest", cancelScrapRequest);
 
 app.post("/api/deleteScrapRequest", deleteScrapRequest);
 
-app.get("/api/getTableScrapData", getTableScrapData);
+app.get("/api/getTableScrapData",authenticate, getTableScrapData);
 
 
 app.listen(4000, () => console.log("App listening on port 4000"));

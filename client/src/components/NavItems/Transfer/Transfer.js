@@ -10,7 +10,6 @@ import ApprovalPopup from "./ApprovalPopup";
 import Table from "./Table";
 import TransferImport from "./BulkTransferImport.js";
 import TransferTable from "./TransferTable.js";
-// import TransferRequestTable from "./TransferRequestTable.js";
 
 
 const Transfer = () => {
@@ -25,10 +24,10 @@ const Transfer = () => {
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [showTransferImport, setShowTransferImport] = useState(false);
-  const [showTransferTable, setshowTransferTable] = useState(false);
+  // const [showTransferTable, setshowTransferTable] = useState(false);
 
 
-
+  const {getRequest} = useAuth();
   const onClose = () => {
     setTransferPopup(false);
     setTrackTransfer(false);
@@ -60,10 +59,9 @@ const Transfer = () => {
     }
   })
 
-
   async function fetchTransferData(data) {
     try {
-      const result = await axios.post("/api/getTransferData", data)
+      const result = await axios.post("http://localhost:4000/api/getTransferData", data, {headers:{Authorization: Cookies.get("token")}})
       if (result.status == 200) {
         if (result.data.data == "No Data") {
           setNoData(true);
@@ -89,7 +87,7 @@ const Transfer = () => {
   async function fetchTrackTransferData(data) {
     try {
       const response = await axios.post(
-        "/api/getTrackTransfer", data
+        "http://localhost:4000/api/getTrackTransfer", data
       );
       if (response.status == 200) {
         setTrackTransferData(response.data.data)
@@ -103,7 +101,7 @@ const Transfer = () => {
 
   const fetchOverallTranferedData = async () => {
     try {
-      const response = await axios.get("/api/getOverallTransferedData");
+      const response = await getRequest("http://localhost:4000/api/getOverallTransferedData");
       setOverallTranferedData(response.data);
     } catch (error) {
       console.error(error);
@@ -114,7 +112,7 @@ const Transfer = () => {
 
   const fetchStockData = async () => {
     try {
-      const response = await axios.get("/api/getAdminStockData");
+      const response = await getRequest("http://localhost:4000/api/getAdminStockData");
       setStockData(response.data);
     } catch (error) {
       console.error(error);
@@ -122,7 +120,6 @@ const Transfer = () => {
   };
 
   const [showTable, setShowTable] = useState(true);
-
 
   const [isNavbarVisible, setIsNavbarVisible] = useState(false);
   const [isArrowRotated, setIsArrowRotated] = useState(false);
@@ -134,22 +131,17 @@ const Transfer = () => {
 
   const [getStock, setGetStock] = useState([]);
   async function fetchGetStock() {
-    const response = await axios
-      .get("/api/getAdminStockData")
+    const response = await getRequest("http://localhost:4000/api/getAdminStockData")
       .catch((error) => console.log(error));
     setGetStock(response.data);
   }
 
   const [getLabDetails, setGetLabDetails] = useState([]);
   async function fetchGetLabDetails() {
-    const response = await axios
-      .get("/api/getLabDetails")
+    const response = await getRequest("http://localhost:4000/api/getLabDetails")
       .catch((error) => console.log(error));
-    setGetLabDetails(response.data);
+      setGetLabDetails(response.data);
   }
-
-  // console.log(getLabDetails);
-  // const {user, getUser} = useAuth();
 
   useEffect(() => {
     fetchOverallTranferedData();
@@ -160,7 +152,7 @@ const Transfer = () => {
 
   return (
     <>
-      {"" ? (
+      {isLoading ? (
         <div className="flex flex-col justify-center items-center h-full duration-800 ">
           <span class="loader animate-bounce duration-800"></span>
           Loading

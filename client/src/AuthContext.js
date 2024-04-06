@@ -16,27 +16,46 @@ export function AuthProvider({ children }) {
   const navigate = useNavigate();
 
   async function getUser() {
-
     return new Promise(async (resolve, reject) => {
       try {
-        const token = Cookies.get("token");
+        const token = Cookies.get('token');
         // console.log(token);
-        const result = await axios.post("/api/getUser", {
+        const result = await axios.post("http://localhost:4000/api/getUser", {
           token: token,
         }).catch((error) => console.log(error));
         setUser(result.data);
         resolve(result.data);
       } catch (error) {
-        setIsLoggedIn(false);
+        Cookies.remove('token');
+        navigate('/');
         reject(error);
       }
     })
   }
 
+  async function getRequest(url){
+    try{
+      const token = Cookies.get('token');
+      if(!token){
+        navigate('/');
+      }
+      const response = await axios.get(url, {headers : {"Authorization" : token}});
+      if(response.length == 0){
+        Cookies.remove('token');
+        navigate('/');
+      }
+      return response
+    }catch(error){
+      console.log(error);
+      Cookies.remove('token');
+      navigate('/');
+    }
+  }
+
   async function login(response) {
     try {
       console.log("hiiii.....")
-      const result = await axios.post("/api/loginUser", { res: response });
+      const result = await axios.post("http://localhost:4000/api/loginUser", { res: response });
       Cookies.set("token", result.data)
       setIsLoggedIn(true)
       await getUser();  
@@ -70,7 +89,8 @@ export function AuthProvider({ children }) {
     login,
     logout,
     getUser,
-    user
+    user,
+    getRequest
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

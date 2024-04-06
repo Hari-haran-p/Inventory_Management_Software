@@ -2,15 +2,16 @@ import { React, Suspense, useEffect, useState } from "react";
 import Areachart from "./Graphs/Areachart";
 import Barchart from "./Graphs/Barchart";
 import Piechart from "./Graphs/Piechart";
-import axios from 'axios'
 import Cards from "../../CommonPages/Cards";
+import { useAuth } from "../../../AuthContext";
 
 function Dashboard({ open, setOpen }) {
+
+  const { getRequest } = useAuth();
 
   const setNavState = () => {
     setOpen(open);
   };
-
 
   const [isLoading, setIsLoading] = useState(true);
   const [inventory, setInventory] = useState([]);
@@ -22,7 +23,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchInventory = async () => {
     try {
-      const response = await axios.get('/api/getInventory'); 
+      const response = await getRequest('http://localhost:4000/api/getInventory');
       setInventory(response.data);
     } catch (error) {
       console.error(error);
@@ -31,7 +32,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('/api/getCategories');
+      const response = await getRequest('http://localhost:4000/api/getCategories');
       setCategories(response.data);
     } catch (error) {
       console.error(error);
@@ -40,7 +41,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabitem = async () => {
     try {
-      const response = await axios.get('/api/getLabItem'); 
+      const response = await getRequest('http://localhost:4000/api/getLabItem');
       setLabitem(response.data);
     } catch (error) {
       console.error(error);
@@ -49,7 +50,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabname = async () => {
     try {
-      const response = await axios.get('/api/getLabDetails'); 
+      const response = await getRequest('http://localhost:4000/api/getLabDetails');
       setLabname(response.data);
     } catch (error) {
       console.error(error);
@@ -58,12 +59,13 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabsStock = async () => {
     try {
-      const response = await axios.get('/api/getLabsStock'); 
+      const response = await getRequest('http://localhost:4000/api/getLabsStock');
       setLabsStock(response.data);
     } catch (error) {
       console.error(error);
     }
   }
+
 
   useEffect(() => {
     fetchInventory();
@@ -76,7 +78,6 @@ function Dashboard({ open, setOpen }) {
   useEffect(() => {
     if (categories.length > 0 && inventory.length > 0 && labitem.length > 0 && labname.length > 0) {
       setTimeout(() => setIsLoading(), 1000)
-
     }
   }, [categories, inventory, labitem, labname])
 
@@ -91,10 +92,10 @@ function Dashboard({ open, setOpen }) {
         <>
           <div className="" style={{ backgroundColor: "#F4F4F4" }}>
             <h1 style={{ fontWeight: "bolder", fontSize: "30px", paddingLeft: "7%" }} class={`text-start pt-4`}>Dashboard</h1>
-            <div style={{ height:"30vh" }} className="d-card flex items-center justify-center">
+            <div style={{ height: "30vh" }} className="d-card flex items-center justify-center">
               <Cards />
             </div>
-        
+
             <div className="areah lg:pl-28 w-11/12 animate1">
               <Areachart inventory={inventory} />
             </div>

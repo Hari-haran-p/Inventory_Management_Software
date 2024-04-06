@@ -2,14 +2,17 @@ import { React, useEffect, useState } from 'react'
 import ItemTable from './ItemTable/ItemTable';
 import StockTable from './StockTable/StockTable';
 import axios from 'axios';
+import { useAuth } from '../../../AuthContext';
 
 
 
 function Stores() {
 
   const [isLoading, setIsLoading] = useState(true);
+  const [itemNoData, setItemNodata] = useState(true);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
+  const { getRequest } = useAuth();
 
 
 
@@ -17,8 +20,13 @@ function Stores() {
 
   const [itemData, setItemData] = useState([]);
   async function fetchItemData() {
-    const response = await axios.get("/api/getItems");
-    setItemData(response.data);
+    const response = await getRequest("http://localhost:4000/api/getItems");
+    if (response.data == "No Data" || response.data.length <= 0) {
+      setItemNodata(true);
+    } else {
+      setItemNodata(false);
+      setItemData(response.data);
+    }
     // console.log(response.data);
   }
 
@@ -26,12 +34,11 @@ function Stores() {
 
   const [getStock, setGetStock] = useState([]);
   async function fetchGetStock() {
-    const response = await axios
-      .get("/api/getStock")
+    const response = await getRequest("http://localhost:4000/api/getStock")
       .catch((error) => console.log(error));
     setGetStock(response.data);
   }
-  
+
   useEffect(() => {
     fetchGetStock();
     fetchItemData();
@@ -52,7 +59,6 @@ function Stores() {
 
   return (
     <>
-
       {/* <-------------- Loading state -------------> */}
 
       {isLoading ? (
@@ -86,7 +92,6 @@ function Stores() {
 
           <StockTable getStock={getStock} fetchGetStock={fetchGetStock} isLoading={isLoading} setIsLoading={setIsLoading} setMessage={setMessage} setError={setError} />
           <br />
-
         </div>
       )}
     </>

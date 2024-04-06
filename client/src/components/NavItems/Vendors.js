@@ -11,20 +11,19 @@ function Vendors({ open }) {
   const [manufacturer, setManufacturer] = useState([]);
   const [supplier, setSupplier] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { getRequest} = useAuth();
 
   //<-----End of creation of required state variables------>
 
   //<------Fetching data from api to render the page------->
 
   async function fetchManufacturer() {
-    const response = await axios
-      .get("/api/getManufacturer")
+    const response = await getRequest("http://localhost:4000/api/getManufacturer")
       .catch((error) => console.log(error));
     setManufacturer(response.data);
   }
   async function fetchSupplier() {
-    const response = await axios
-      .get("/api/getSupplier")
+    const response = await getRequest("http://localhost:4000/api/getSupplier")
       .catch((error) => console.log(error));
     setSupplier(response.data);
   }

@@ -37,14 +37,15 @@ const createToken = (result) => {
           dept_code: result[0].department_code,
           role: result[0].role,
         },
-        key
+        key,
+        {expiresIn:"12h"}
       );
-      console.log(token);
+
       return  token;
     }catch(error){
       console.log(error)
     }
-    
+
 };
 
 const createSession = function (req, res, next) {
@@ -67,13 +68,27 @@ const createSession = function (req, res, next) {
     });
 };
 
+const authenticate = function(req, res, next){
+  const token = req.headers.authorization;
+  if(!token){
+    return res.status(401).send("Not Authorized");
+  }
+  try{
+    const response  = jwt.verify(token, key);
+    next();
+  }catch(error){
+    res.status(401).send("Session Expired");
+  }
+}
+
 const getUser = function (req, res, next) {
   const token = req.body.token;
   try {
     const data = jwt.verify(token, key);
-    res.send(data);
+    return res.send(data);
   } catch (error) {
-    res.status(400).json({ error: "Invalid Token" });
+    console.log("error");
+    return res.status(400).json({ error: "Invalid Token" });
   }
 };
 
@@ -81,4 +96,5 @@ module.exports = {
   verifyToken: verifyToken,
   createSession: createSession,
   getUser: getUser,
+  authenticate:authenticate,
 };

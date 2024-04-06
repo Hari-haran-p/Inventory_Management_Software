@@ -15,11 +15,12 @@ function Master() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [stockData, setStockData] = useState([]);
+  const { getRequest} = useAuth();
 
   const fetchStockData = async () => {
     try {
-      const response = await axios.get(
-        "/api/getAdminStockData"
+      const response = await getRequest(
+        "http://localhost:4000/api/getAdminStockData"
       );
       setStockData(response.data);
     } catch (error) {

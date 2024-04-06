@@ -21,19 +21,20 @@ const Scrap = () => {
     const [noData, setNoData] = useState(true);
     const [noTrackData, setNoTrackData] = useState(true);
     const [noTableData, setNoTableData] = useState(true);
+    const {getRequest} = useAuth();
 
 
     
     const [getLabDetails, setGetLabDetails] = useState([]);
     async function fetchGetLabDetails() {
-      const response = await axios
-        .get("/api/getLabDetails")
+      const response = await getRequest("http://localhost:4000/api/getLabDetails")
         .catch((error) => console.log(error));
       setGetLabDetails(response.data);
+      
     }
 
     async function fetchScrapData() {
-        const response = await axios.get("/api/getScrap");
+        const response = await getRequest("http://localhost:4000/api/getScrap");
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setNoData(true);
@@ -48,7 +49,7 @@ const Scrap = () => {
     }
 
     async function fetchTableData() {
-        const response = await axios.get("/api/getTableScrapData");
+        const response = await getRequest("http://localhost:4000/api/getTableScrapData");
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setNoTableData(true);
@@ -64,7 +65,7 @@ const Scrap = () => {
 
 
     async function fetchScrapTrackData(id) {
-        const response = await axios.get(`/api/getScrapData/${id}`);
+        const response = await getRequest(`http://localhost:4000/api/getScrapData/${id}`);
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setNoTrackData(true);
@@ -100,7 +101,7 @@ const Scrap = () => {
 
     const fetchStockData = async () => {
         try {
-            const response = await axios.get("/api/getAdminStockData");
+            const response = await getRequest("http://localhost:4000/api/getAdminStockData");
             setStockData(response.data);
         } catch (error) {
             console.error(error);
