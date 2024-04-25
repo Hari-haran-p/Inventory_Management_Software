@@ -64,6 +64,7 @@ const createSession = function (req, res, next) {
       }
     })
     .catch((error) => {
+      // console.log(error);
       res.status(400).json({ error: "There was some error" })
     });
 };

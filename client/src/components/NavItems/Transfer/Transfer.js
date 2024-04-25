@@ -243,7 +243,7 @@ const Transfer = () => {
                           setShowTable(false)
                           setTrackTransfer(false);
                           setApprovalRequest(false);
-                          setShowTransferImport(true) // Close the navbar 
+                          setShowTransferImport(true); 
                         }}
                         className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTransferImport == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                       >

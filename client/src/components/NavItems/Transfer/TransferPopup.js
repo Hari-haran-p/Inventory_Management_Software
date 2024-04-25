@@ -35,14 +35,14 @@ function TransferRequestTable({isVisible, user, getStock ,getLabDetails,setGetLa
     if (click || searchQuery == "") {
       const filteredResults = getStock.filter((item) => {
         const propertiesToSearch = [
-          "inventory_value",
-          "item_name",
-          "item_subname",
-          "item_type",
-          "item_code",
+          "cost",
+          "name",
+          "subname",
+          "type",
+          "id",
           "apex_no",
-          "item_description",
-          "stock_qty",
+          "description",
+          "qunatity",
           "dept_id",
         ];
         return propertiesToSearch.some((property) =>
@@ -60,15 +60,15 @@ function TransferRequestTable({isVisible, user, getStock ,getLabDetails,setGetLa
 
   //sort by functionality
   const [sortOrders, setSortOrders] = useState({
-    item_code: "asc",
-    item_type: "asc",
-    item_name: "asc",
-    item_subname: "asc",
-    item_description: "asc",
+    id: "asc",
+    type: "asc",
+    name: "asc",
+    subname: "asc",
+    description: "asc",
     apex_no: "asc",
-    stock_qty: "asc",
+    quantity: "asc",
     dept_id: "asc",
-    inventory_value: "asc",
+    cost: "asc",
   });
   
   const [sortedColumn, setSortedColumn] = useState("");
@@ -176,13 +176,13 @@ function TransferRequestTable({isVisible, user, getStock ,getLabDetails,setGetLa
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
                   <div className="flex">
-                    <div onClick={() => handleSort("item_code")}>
+                    <div onClick={() => handleSort("id")}>
                       Item Code
                     </div>
-                    {sortedColumn === "item_code" && (
+                    {sortedColumn === "id" && (
                       <span
                         className={`bi bi-arrow-${
-                          sortOrders.item_code === "asc" ? "up" : "down"
+                          sortOrders.id === "asc" ? "up" : "down"
                         } ml-2`}
                       />
                     )}
@@ -315,7 +315,7 @@ function TransferRequestTable({isVisible, user, getStock ,getLabDetails,setGetLa
                       {data.apex_no}
                     </td>
                     <td class="px-6 py-4 text-left whitespace-nowrap">
-                      {data.item_code}
+                      {data.id}
                     </td>
                     <td class="px-6 py-4 text-left whitespace-nowrap">
                       {data.item_name}

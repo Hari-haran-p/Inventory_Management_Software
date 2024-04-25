@@ -104,7 +104,7 @@ app.get("/api/getItems", (req, res) => {
 });
 
 app.get("/api/getStock", authenticate, (req, res) => {
-    db.query("SELECT * FROM stocktable WHERE stock_qty > 0 ", (error, result) => {
+    db.query("SELECT * FROM stocktable WHERE quantity > 0 ", (error, result) => {
         if (error) console.log(error);
         else {
             res.send(result);
@@ -212,7 +212,7 @@ app.get("/api/getOverallLabsStock", (req, res) => {
 });
 
 app.get("/api/getOverallTransferedData", authenticate, (req, res) => {
-    db.query("SELECT * FROM transfer_request_merged_view", (error, result) => {
+    db.query("SELECT * FROM transferview", (error, result) => {
         if (error) console.log(error);
         res.send(result);
     });
@@ -231,11 +231,11 @@ app.get("/api/getTransferCardData/:id", async (req, res) => {
             transferAcknowledgedResult,
             transferRejectedResult,
         ] = await Promise.all([
-            db.query("SELECT * FROM transfer_request_merged_view WHERE (status = ? OR status = ?) AND user_id = ?", ["PENDING", "CANCELED", user]),
-            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ? AND user_id = ?", ["APPROVED", user]),
-            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ? AND user_id = ?", ["LABAPPROVED", user]),
-            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ? AND user_id = ?", ["ACKNOWLEDGED", user]),
-            db.query("SELECT * FROM transfer_request_merged_view WHERE status = ? AND user_id = ?", ["REJECTED", user]),
+            db.query("SELECT * FROM transferview WHERE (current_status = ? OR current_status = ?) AND faculty_id = ?", ["INITIATED", "CANCELED", user]),
+            db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["STORESAPPROVED", user]),
+            db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["LABAPPROVED", user]),
+            db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["ACKNOWLEDGED", user]),
+            db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["REJECTED", user]), 
         ]);
 
         res.status(200).json({
@@ -300,7 +300,7 @@ app.post("/api/deleteTransferrequest", deleteTransferRequest);
 app.post("/api/getTrackTransfer", (req, res) => {
     try {
         const user_dept = req.body.user_id;
-        db.query("Select * FROM transfer_request_merged_view WHERE user_id = ? ORDER BY date DESC", [user_dept])
+        db.query("Select * FROM transferview WHERE faculty_id = ? ORDER BY created_at DESC", [user_dept])
             .catch((error) => res.status(500).json({ error: "There was some Error" }))
             .then((response) => {
                 res.status(200).json({ data: response })

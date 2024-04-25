@@ -17,7 +17,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransfer
 
     try {
       setIsLoading(true);
-      const response = await axios.post("/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
+      const response = await axios.post("http://localhost:4000/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
         .then(async (response) => {
           await fetchTransferData(user);
           setIsLoading(false);
@@ -31,7 +31,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransfer
     }
   }
 
-  console.log(data);
+  // console.log(data);
 
   const handleReject = async (e) => {
     e.preventDefault();
@@ -68,12 +68,12 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransfer
 
   }
 
-  const toSentenceCase = (str) => {
-    str = str.toLowerCase().split(" ").map(function (s) {
-      return s.charAt(0).toUpperCase() + s.slice(1)
-    })
-    return str.join(" ")
-  }
+  // const toSentenceCase = (str) => {
+  //   str = str.toLowerCase().split(" ").map(function (s) {
+  //     return s.charAt(0).toUpperCase() + s.slice(1)
+  //   })
+  //   return str.join(" ")
+  // }
 
   return (
     <>
@@ -85,9 +85,9 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransfer
         <div className="card">
           <div className="p-3 flex items-center justify-between">
             <div>
-              <div className="lg:text-lg">Requested By : {toSentenceCase(data.username)}</div>
+              <div className="lg:text-lg">Requested By : {(data.faculty_name)}</div>
               <div className="lg:text-lg ">
-                Requested for: {toSentenceCase(data.request_labname)}({data.transfer_to})
+                Requested for: {(data.to_labname)}({data.transfer_to})
               </div>
             </div>
             <div className="lg:flex gap-2">
@@ -124,7 +124,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransfer
               <div className="pt-4">Item Desc : {data.item_description}</div>
             </div>
             <div className="text-sm p-6">
-              <div>Transfer item From : {toSentenceCase(data.from_labname)}</div>
+              <div>Transfer item From : {(data.from_labname)}</div>
               <div className="pt-4">Transfer Qty : {data.transfer_qty}</div>
             </div>
           </div>
