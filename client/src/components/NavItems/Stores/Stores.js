@@ -36,16 +36,16 @@ function Stores() {
   async function fetchGetStock() {
     const response = await getRequest("http://localhost:4000/api/getStock")
       .catch((error) => console.log(error));
+      console.log(response.data);
     setGetStock(response.data);
   }
 
   useEffect(() => {
     fetchGetStock();
-    fetchItemData();
   }, []);
 
   useEffect(() => {
-    if (getStock.length > 0 && itemData.length > 0) {
+    if (getStock.length > 0) {
       setIsLoading(false);
     }
   })
@@ -86,7 +86,7 @@ function Stores() {
 
           {/* <-------------- Itemtable Rendering -------------> */}
 
-          <ItemTable itemData={itemData} fetchItemData={fetchItemData} isLoading={isLoading} setIsLoading={setIsLoading} setMessage={setMessage} setError={setError} />
+          {/* <ItemTable itemData={itemData} fetchItemData={fetchItemData} isLoading={isLoading} setIsLoading={setIsLoading} setMessage={setMessage} setError={setError} /> */}
 
           {/* <--------------Stock table Rendering-------------> */}
 

@@ -24,19 +24,17 @@ const stockEdit = async function(req, res, next){
 
         const manufacturer_id = req.body.manufacturer_id;
         const supplier_id = req.body.supplier_id;
-        const stock_qty = req.body.stock_qty;
-        const created_at = req.body.created_at;
+        const stock_qty = req.body.quantity;
         const dept_id = req.body.dept_id;
-        const inventory_value = req.body.inventory_value;
-        const user_id = req.body.user_id;
-        const item_code = req.body.item_code;
-        const stock_id = req.body.stock_id;
+        const inventory_value = req.body.cost;
+        const user_id = req.body.faculty_id;
+        const stock_id = req.body.id;
     
         db.query(
-            "UPDATE stocktable SET manufacturer_id = ?, item_code =?,supplier_id = ?, stock_qty = ?, created_at = ?, dept_id = ?, inventory_value = ?, user_id = ? WHERE stock_id = ?",
-            [manufacturer_id, item_code, supplier_id, stock_qty, created_at, dept_id, inventory_value, user_id, stock_id ]
-        ).then((response) => res.status(201).json({ Data: "Stock Updated sucessfully "}))
-        .catch((error) => res.status(400).json({Data:"Some Internal Error"}));
+            "UPDATE stocktable SET manufacturer_id = ?, supplier_id = ?, quantity = ?, dept_id = ?, cost = ?, faculty_id = ? WHERE id = ?",
+            [manufacturer_id,supplier_id, stock_qty, dept_id, inventory_value, user_id, stock_id ]
+        ).then((response) => {console.log(response);res.status(201).json({ Data: "Stock Updated sucessfully "})})
+        .catch((error) => {console.log(error);res.status(400).json({Data:"Some Internal Error"})});
 
 }
 

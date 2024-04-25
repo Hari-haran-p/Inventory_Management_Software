@@ -4,15 +4,13 @@ import axios from "axios";
 function StockEdit({ data, onClose, onSubmit, setMessage, setError, setIsLoading, isLoading }) {
 
   const [formData, setFormData] = useState({
-    item_code: "",
     manufacturer_id: "",
     supplier_id: "",
-    stock_qty: "",
-    created_at: "",
+    quantity: "",
     dept_id: "",
-    inventory_value: "",
-    user_id: "",
-    stock_id: "",
+    cost: "",
+    faculty_id: "",
+    id: "",
   });
 
   useEffect(() => {
@@ -75,17 +73,17 @@ function StockEdit({ data, onClose, onSubmit, setMessage, setError, setIsLoading
                 </span>
               </div>
               <form onSubmit={HandleSubmit} className="flex flex-col gap-3">
-                <input className="hidden" value={formData.stock_id} />
+                <input className="hidden" value={formData.id} />
                 <div className="flex flex-wrap">
                   <div className="  flex ">
-                    <label for="item_code" className="text-md pr-5 ">Item Code</label>
+                    <label for="id" className="text-md pr-5 ">Item Code</label>
                   </div>
                   <input
 
                     type="text"
-                    name="item_code"
+                    name="id"
                     onChange={handleChange}
-                    value={formData.item_code}
+                    value={formData.id}
                     disabled
                     className="text-md block px-3 py-2 rounded-lg w-full
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
@@ -119,27 +117,14 @@ function StockEdit({ data, onClose, onSubmit, setMessage, setError, setIsLoading
                 </div>
                 <div className="flex flex-wrap">
                   <div className="  flex ">
-                    <label for="stock_qty" className="text-md pr-5 ">Stock Qty</label>
+                    <label for="quantity" className="text-md pr-5 ">Stock Qty</label>
                   </div>
                   <input
                     type="text"
-                    name="stock_qty"
+                    name="quantity"
                     onChange={handleChange}
-                    value={formData.stock_qty}
+                    value={formData.quantity}
                     className="text-md block px-3 py-2 rounded-lg w-full 
-                bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
-                  />
-                </div>
-                <div className="flex flex-wrap">
-                  <div className="  flex ">
-                    <label for="created_at" className="text-md pr-5 ">Created At</label>
-                  </div>
-                  <input
-                    type="text"
-                    name="created_at"
-                    onChange={handleChange}
-                    value={formData.created_at}
-                    className="text-md block px-3 py-2 rounded-lg w-full
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
                   />
                 </div>
@@ -158,26 +143,26 @@ function StockEdit({ data, onClose, onSubmit, setMessage, setError, setIsLoading
                 </div>
                 <div className="flex flex-wrap">
                   <div className="  flex ">
-                    <label for="inventory_value" className="text-md pr-5 ">Inventory Value</label>
+                    <label for="cost" className="text-md pr-5 ">Inventory Value</label>
                   </div>
                   <input
                     type="text"
-                    name="inventory_value"
+                    name="cost"
                     onChange={handleChange}
-                    value={formData.inventory_value}
+                    value={formData.cost}
                     className="text-md block px-3 py-2 rounded-lg w-full 
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
                   />
                 </div>
                 <div className="flex flex-wrap">
                   <div className="  flex ">
-                    <label for="user_id" className="text-md pr-5 ">User Id</label>
+                    <label for="faculty_id" className="text-md pr-5 ">User Id</label>
                   </div>
                   <input
                     type="text"
-                    name="user_id"
+                    name="faculty_id"
                     onChange={handleChange}
-                    value={formData.user_id}
+                    value={formData.faculty_id}
                     className="text-md block px-3 py-2 rounded-lg w-full 
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
                   />

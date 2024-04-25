@@ -49,14 +49,14 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
     if (click || searchQuery == "") {
       const filteredResults = getStock.filter((item) => {
         const propertiesToSearch = [
-          "inventory_value",
+          "cost",
           "created_at",
-          "item_code",
-          "user_id",
+          "id",
+          "faculty_id",
           "dept_id",
           "manufacturer_id",
           "supplier_id",
-          "stock_qty",
+          "quantity",
         ];
         return propertiesToSearch.some((property) =>
           typeof item[property] === "string"
@@ -73,15 +73,15 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
 
   //sort by functionality
   const [sortOrders, setSortOrders] = useState({
-    item_code: "asc",
-    item_type: "asc",
-    item_name: "asc",
-    item_subname: "asc",
-    item_description: "asc",
+    id: "asc",
+    type: "asc",
+    name: "asc",
+    subname: "asc",
+    description: "asc",
     manufacturer_id: "asc",
     quantity_units: "asc",
     supplier_id: "asc",
-    cost_per_item: "asc",
+    cost: "asc",
   });
   
   const [sortedColumn, setSortedColumn] = useState("");
@@ -122,7 +122,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
   };
 
   return (
-    <div className="w-full flex justify-center pt-10 items-center">
+    <div className="w-full h-full flex justify-center pt-10 items-center">
     <div className=" w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
     <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
         <div className="pl-4 text-2xl w-1/5 flex items-center whitespace-nowrap  text-blue-600 font-semibold">Stock Edit</div>
@@ -150,10 +150,10 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
         </div>
       </div>
 
-      <div class="overflow-y-auto  overflow-x-auto border-gray-700 rounded-lg">
+      <div class="overlow-y-auto  overflow-x-auto border-gray-700 rounded-lg">
         <div style={{ width: "100%" }} class=" align-middle  inline-block">
           <div
-            style={{ height: "50%", maxHeight: "30vh" }}
+            style={{ height: "100%", maxHeight: "100vh" }}
             class="shadow sm:rounded-lg  h-96"
           >
           <table class="min-w-full text-sm">
@@ -170,12 +170,12 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
                   <div className="flex">
-                    <div onClick={() => handleSort("item_code")}>Item Code</div>
+                    <div onClick={() => handleSort("id")}>Item Code</div>
 
-                    {sortedColumn === "item_code" && (
+                    {sortedColumn === "id" && (
                       <span
                         className={`bi bi-arrow-${
-                          sortOrders.item_code === "asc" ? "up" : "down"
+                          sortOrders.id === "asc" ? "up" : "down"
                         } ml-2`}
                       />
                     )}
@@ -220,11 +220,11 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
                   <div className="flex">
-                    <div onClick={() => handleSort("stock_qty")}>Stock Qty</div>
-                    {sortedColumn === "stock_qty" && (
+                    <div onClick={() => handleSort("quantity")}>Stock Qty</div>
+                    {sortedColumn === "quantity" && (
                       <span
                         className={`bi bi-arrow-${
-                          sortOrders.stock_qty === "asc" ? "up" : "down"
+                          sortOrders.quantity === "asc" ? "up" : "down"
                         } ml-2`}
                       />
                     )}
@@ -265,13 +265,13 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
                   <div className="flex">
-                    <div onClick={() => handleSort("inventory_value")}>
+                    <div onClick={() => handleSort("cost")}>
                       Inventory Value
                     </div>
-                    {sortedColumn === "inventory_value" && (
+                    {sortedColumn === "cost" && (
                       <span
                         className={`bi bi-arrow-${
-                          sortOrders.inventory_value === "asc" ? "up" : "down"
+                          sortOrders.cost === "asc" ? "up" : "down"
                         } ml-2`}
                       />
                     )}
@@ -282,11 +282,11 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
                   <div className="flex">
-                    <div onClick={() => handleSort("user_id")}>User Id</div>
-                    {sortedColumn === "user_id" && (
+                    <div onClick={() => handleSort("faculty_id")}>User Id</div>
+                    {sortedColumn === "faculty_id" && (
                       <span
                         className={`bi bi-arrow-${
-                          sortOrders.user_id === "asc" ? "up" : "down"
+                          sortOrders.faculty_id === "asc" ? "up" : "down"
                         } ml-2`}
                       />
                     )}
@@ -313,7 +313,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                       {index + 1}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
-                      {data.item_code}
+                      {data.id}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
                       {data.manufacturer_id}
@@ -322,7 +322,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                       {data.supplier_id}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
-                      {data.stock_qty}
+                      {data.quantity}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
                       {data.created_at.split("T")[0]}
@@ -331,10 +331,10 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                       {data.dept_id}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
-                      {data.inventory_value}
+                      {data.cost}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
-                      {data.user_id}
+                      {data.faculty_id}
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap">
                       <i
