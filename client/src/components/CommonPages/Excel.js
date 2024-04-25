@@ -63,7 +63,7 @@ useEffect(()=>{
             if (sheets.length) {
               const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
               setMovies(rows);
-              const response = await axios.post("/api/importStocks", {items:rows, user_id:user.user_id})
+              const response = await axios.post("http://localhost:4000/api/importStocks", {items:rows, user_id:user.user_id})
               console.log(response);
               console.log(rows);
             }

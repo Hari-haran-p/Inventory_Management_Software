@@ -67,8 +67,8 @@ function Report() {
   .catch((error) => {
     console.error("Error fetching data:", error);
   });
-  
 
+  console.log("item",itemData);
 
   const handleOkClick = () => {
     if (selectedTable === "masterTable") {

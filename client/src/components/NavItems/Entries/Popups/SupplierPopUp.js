@@ -1,10 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const SupplierPopUp = ({ isVisible, onClose, setMessage, setError, setIsLoading }) => {
-
+const SupplierPopUp = ({ setMessage, setError }) => {
   const [data, setData] = useState({ name: "", address: "", contact: "" });
 
   const handleChange = (e) => {
@@ -13,52 +11,57 @@ const SupplierPopUp = ({ isVisible, onClose, setMessage, setError, setIsLoading 
   };
 
   const HandleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      setIsLoading(true);
-      e.preventDefault();
-      const response = await axios.post("/api/supplierAdd", data)
-      if(response && response.status == 201){
-        setMessage(response.data.Data);
-        setIsLoading(false);
-        onClose();
+      if (data != "") {
+        const response = await axios.post(
+          "http://localhost:4000/api/supplierAdd",
+          data
+        );
+        if (response && response.status == 201) {
+          setMessage(response.data.Data); 
+        }
+        setData({ name: "", address: "", contact: "" });
       }
-      setData({ name: "", address: "", contact: "" });
     } catch (error) {
-      if(error && error.response.status == 400){
+      if (error && error.response.status == 400) {
         setError(error.response.data.Data);
-        setIsLoading(false);
-        onClose();
       }
     }
   };
 
-  if (!isVisible) return null;
-
   return (
     <div
-    style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}
-     className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center">
+      style={{
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      className="flex w-1/2 justify-center items-center"
+    >
       <div
-      style={{height:"100%",display:"flex",alignItems:"center",justifyContent:"center",margin:"15px"}}
-       className="flex flex-col">
+        style={{
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "15px",
+        }}
+        className="flex flex-col"
+      >
         <div
-        style={{ height: "80%" }}
-          className="bg-white px-14 py-5 animate1 overflow-x-auto overflow-y-auto border-gray-700 rounded-lg"
+          style={{ height: "80%" }}
+          className="bg-white flex flex-col justify-center items-center px-14 py-5 animate1 overflow-x-auto overflow-y-auto border-gray-700 rounded-lg"
         >
-          <div className="w-full text-end">
-            <button
-              className="text-black rounded-full px-2 border-black border-2 text-3xl place-self-end"
-              onClick={() => onClose()}
-            >
-              X
-            </button>
-          </div>
+          <div className="w-full text-end"></div>
           <div className="flex flex-col justify-center items-center">
             <div class="py-1 flex  pb-5 ">
-              <span class="px-1 text-black font-medium text-2xl whitespace-nowrap">Supplier Entry</span>
+              <span class="px-1 text-black font-medium text-2xl whitespace-nowrap">
+                Supplier Entry
+              </span>
             </div>
             <form onChange={handleChange}>
-
               <div class=" flex flex-wrap mt-8">
                 <span class=" text-lg pb-1 text-gray-600 ">Supplier Name</span>
                 <input
@@ -84,7 +87,7 @@ const SupplierPopUp = ({ isVisible, onClose, setMessage, setError, setIsLoading 
                 <input
                   type="number"
                   name="contact"
-                  min ="10"
+                  min="10"
                   max="10"
                   value={data.contact}
                   className="text-md block px-3 py-2 rounded-lg w-full

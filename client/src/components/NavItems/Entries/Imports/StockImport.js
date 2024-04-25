@@ -5,7 +5,7 @@ import { read, utils, writeFile } from 'xlsx';
 
 const StockImport = (props) => {
     
-    const { user, onClose, isVisible, setError, setMessage, setIsLoading } = props
+    const { setError, setMessage } = props
 
     const [filename, setFilename] = useState("");
     const [file, setFile] = useState("");
@@ -33,7 +33,6 @@ const StockImport = (props) => {
         if (file === "") {
             setError("Kindly upload the file");
         } else {
-            setIsLoading(true);
             const files = file;
             if (files) {
                 const file = files;
@@ -61,9 +60,8 @@ const StockImport = (props) => {
                     if (sheets.length) {
                         const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
                         setRows(rows);
-                        const response = await axios.post("/api/importStocks", { items: rows })
+                        const response = await axios.post("http://localhost:4000/api/importStocks", { items: rows })
                         if (response) {
-                            setIsLoading(false);
                             setMessage(response.data.Data)
                             setFile("");
                             setFilename("Kindly select file");
@@ -71,7 +69,6 @@ const StockImport = (props) => {
                     }
                 } catch (error) {
                     if (error) {
-                        setIsLoading(false);
                         setError(error.response.data.Data);
                         setFile("");
                         setFilename("Kindly select file");
@@ -83,28 +80,21 @@ const StockImport = (props) => {
 
     };
 
-    if (!isVisible) return null;
 
     return (
 
         <div
-            style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}
-            className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm">
+            className="w-full flex justify-center items-center h-auto">
             <div
                 style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", margin: "15px", width: "80%" }}
                 className="flex  flex-col">
                 <div
                     style={{ height: "80%" }}
-                    className="bg-white w-full px-14 animate1 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center border-gray-700 rounded-lg"
+                    className="bg-white w-full px-14 justify-center animate1 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center border-gray-700 rounded-lg"
                 >
-                    <button
-                        className="text-black rounded-full border-black border-2 px-2 text-3xl place-self-end"
-                        onClick={() => onClose()}
-                    >
-                        X
-                    </button>
+
                     <div className="flex flex-col justify-center items-center w-full">
-                        <div className="py-1 flex pb-2">
+                        <div className="py-1 flex pb-7">
                             <span className="px-1 text-black font-medium text-2xl whitespace-nowrap">
                                 Upload Stocks
                             </span>

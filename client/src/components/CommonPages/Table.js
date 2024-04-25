@@ -4,7 +4,7 @@ import { exportToExcel, downloadPDF } from "../Reports/Reports";
 
 function Table({ stockData, setStockData }) {
   //For open popup
-  // console.log(itemData);
+  // console.log(stockData);
   const [openPopup, setOpenPopup] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [filterButton, setFilterButton] = useState(false);
@@ -24,9 +24,16 @@ function Table({ stockData, setStockData }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState(stockData);
   const [click, setClick] = useState(false);
+  // const [searchData,setSearchData] = useState(stockData);
+  // console.log(searchData);
+  // console.log(filteredData);
 
   useEffect(() => {
-    if (click || searchQuery == "") {
+    if(searchQuery == ""){
+      setFilteredData(stockData)
+      return
+    }
+    if (click) {
       const filteredResults = filteredData.filter((item) => {
         const propertiesToSearch = [
           "id",
@@ -60,7 +67,37 @@ function Table({ stockData, setStockData }) {
 
       setFilteredData(filteredResults);
     }
-  }, [click, filteredData, searchQuery]);
+  }, [click,stockData, filteredData, searchQuery]);
+
+  //table row filter
+  const [rowSize, setRowSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredData.length / rowSize));
+  }, [filteredData, rowSize]);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleRowSizeChange = (e) => {
+    const newSize = parseInt(e.target.value);
+    setRowSize(newSize);
+    setCurrentPage(1); 
+  };
+
+  const startIndex = (currentPage - 1) * rowSize;
+  const endIndex = Math.min(startIndex + rowSize, filteredData.length);
 
   //sort by functionality
   const [sortOrder, setSortOrder] = useState({
@@ -91,15 +128,13 @@ function Table({ stockData, setStockData }) {
       ...prevSortOrders,
       [column]: prevSortOrders[column] === "asc" ? "desc" : "asc",
     }));
-
+  
     setSortedColumn(column);
-
+    
     filteredData.sort((a, b) => {
-      const valueA =
-        typeof a[column] === "string" ? a[column].toLowerCase() : a[column];
-      const valueB =
-        typeof b[column] === "string" ? b[column].toLowerCase() : b[column];
-
+      const valueA = getValueForComparison(typeof a[column] === "string" ? a[column].toLowerCase() : a[column]);
+      const valueB = getValueForComparison(typeof b[column] === "string" ? b[column].toLowerCase() : b[column]);
+  
       if (valueA < valueB) {
         return sortOrder[column] === "asc" ? -1 : 1;
       }
@@ -108,9 +143,21 @@ function Table({ stockData, setStockData }) {
       }
       return 0;
     });
-
-    setFilteredData(filteredData);
+  
+    setFilteredData(filteredData); // Trigger re-render
   };
+  
+  const getValueForComparison = (value) => {
+    // Check if the value is a date in the format "DD-MM-YYYY"
+    const dateRegex = /^(\d{2})-(\d{2})-(\d{4})$/;
+    if (dateRegex.test(value)) {
+      // If it's a valid date, convert it to a comparable format (YYYYMMDD)
+      const [, day, month, year] = value.match(dateRegex);
+      return `${year}${month}${day}`;
+    }
+    return value;
+  };
+  
 
   const handleKeyEnter = (e) => {
     if (e.key === "Enter") {
@@ -125,7 +172,7 @@ function Table({ stockData, setStockData }) {
   const [viewColumn, setViewColumn] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState({});
   let columnNames = filteredData.length > 0 ? Object.keys(filteredData[0]) : [];
-  if (columnNames.length > 0) delete columnNames[0]
+  if (columnNames.length > 0) delete columnNames[0];
   const [downloadButton, setDownloadButton] = useState(false);
   const [previewSelectedColumn, setPreviewSelectedColumn] = useState("");
   const [filterOptionSelected, setFilterOptionSelected] = useState([]);
@@ -165,7 +212,6 @@ function Table({ stockData, setStockData }) {
       for (const key in selectedColumns) {
         if (selectedColumns[key]) {
           selectedItem[key] = item[key];
-          console.log("ulla vanthutanda");
         }
       }
       return selectedItem;
@@ -255,14 +301,18 @@ function Table({ stockData, setStockData }) {
   };
 
   return (
-    <div className="w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
+    <div className="w-10/12 relative border-2 bg-white rounded-3xl h-auto">
       <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center lg:justify-between font-semibold ">
         <div
           style={{ width: "200px" }}
           className="pl-4 text-xl md:text-2xl flex h-auto items-center justify-center whitespace-nowrap text-blue-600 font-semibold"
         >
           Master Table
-          
+          {/* <button  className="ml-4">add</button>
+          <button className="ml-4">less</button>
+          <div></div>
+          <div>{}</div>
+          <div>{}</div> */}
           <div className="flex pb-1 lg:hidden">
             <div
               onClick={() => {
@@ -272,7 +322,6 @@ function Table({ stockData, setStockData }) {
             >
               <div className="flex justify-center items-center rounded-md w-auto pl-4 filter-button">
                 <i class="bi bi-funnel text-blue-500 text-xl"></i>
-               
               </div>
             </div>
             <div
@@ -298,8 +347,8 @@ function Table({ stockData, setStockData }) {
                 type="text"
                 onKeyDown={handleKeyEnter}
                 value={searchQuery}
-                onChange={(e) => {
-                  setClick(false);
+                onClick={()=>setClick(false)}
+                onChange={(e) => {    
                   setSearchQuery(e.target.value);
                 }}
                 placeholder="Search..."
@@ -540,13 +589,13 @@ function Table({ stockData, setStockData }) {
       <div class="overflow-y-auto  overflow-x-auto border-gray-700 rounded-lg">
         <div style={{ width: "100%" }} class=" align-middle  inline-block">
           <div
-            style={{ height: "50%", maxHeight: "50vh" }}
+            style={{ height: "50%", maxHeight: "40vh" }}
             class="shadow sm:rounded-lg  h-96"
           >
             <table class="min-w-full text-sm ">
               <thead class=" text-md uppercase border-b-2 font-medium">
                 <tr className="border-r-white">
-                  <th className="px-6 py-4 text-start">s.no</th>
+                <th className="px-6 py-4 text-start">s.no</th>
                   {columnNames.map((columnName, index) => {
                     return (
                       <th
@@ -555,6 +604,7 @@ function Table({ stockData, setStockData }) {
                         scope="col"
                         className="px-6 py-3 text-left whitespace-nowrap cursor-pointer"
                       >
+                        {/* {console.log(columnName)} */}
                         <div className="flex">
                           <div>{columnName}</div>
                           {sortedColumn === columnName && (
@@ -577,32 +627,59 @@ function Table({ stockData, setStockData }) {
                 </tr>
               </thead>
               <tbody style={{ backgroundColor: "white", fontWeight: "bold" }}>
-                {filteredData.map((row, rowIndex) => (
-                  <tr key={rowIndex} className="border-b-2">
-                    <td class="pl-4">{rowIndex + 1}</td>
-                    {columnNames.map((columnName, columnIndex) => (
-                      <td
-                        key={columnIndex}
-                        className=" px-6 py-4 whitespace-nowrap"
-                      >
-                        {row[columnName]}
-                        {/* {console.log(row[columnName])} */}
-                      </td>
-                    ))}
-                    {filterButton === false && (
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <i
-                          onClick={() => handleOpenPopup(row)}
-                          className="bi bi-eye cursor-pointer"
-                        ></i>
-                      </td>
-                    )}
-                  </tr>
-                ))}
+                {filteredData
+                  .slice(startIndex, endIndex)
+                  .map((row, rowIndex) => (
+                    <tr key={startIndex + rowIndex} className="border-b-2">
+                      <td class="pl-4">{startIndex + rowIndex + 1}</td>
+                      {columnNames.map((columnName, columnIndex) => (
+                        <td
+                          key={columnIndex}
+                          className=" px-6 py-4 whitespace-nowrap"
+                        >
+                          {row[columnName]}
+                          {/* {console.log(row[columnName])} */}
+                        </td>
+                      ))}
+                      {filterButton === false && (
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <i
+                            onClick={() => handleOpenPopup(row)}
+                            className="bi bi-eye cursor-pointer"
+                          ></i>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
         </div>
+      </div>
+      <div className="w-full h-16 flex justify-between items-center rounded-3xl">
+        <button onClick={prevPage} className="border-2 rounded-md ml-7 h-10 w-20">
+          Prev
+        </button>
+
+        <select
+          onChange={handleRowSizeChange}
+          value={rowSize}
+          className="border-2 w-56 h-9 rounded-md"
+        >
+          <option
+            value={stockData.length < 10 ? stockData.length : 10}
+            className=""
+          >
+            10
+          </option>
+          <option value={stockData.length < 50 ? stockData.length : 50}>
+            50
+          </option>
+          <option value={stockData.length}>Full</option>
+        </select>
+        <button onClick={nextPage} className="border-2 rounded-md mr-7 h-10 w-20">
+          Next
+        </button>
       </div>
       {openPopup && selectedData && (
         <div className="blur-background">
