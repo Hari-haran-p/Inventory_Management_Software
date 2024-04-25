@@ -16,7 +16,7 @@ const getTransferData = function (req, res, next) {
                 }
             })
     } else if (req.body.role == 'slsincharge' && user_dept == "SLBS") {
-        db.query("SELECT * FROM transferview WHERE (current_status = ?) OR (current_status = ?)", ["LABAPPROVED", "INITIATED"])
+        db.query("SELECT * FROM transferview WHERE (current_status = ?) OR (current_status = ? AND transfered_from = ? )", ["LABAPPROVED", "INITIATED",  "SLBS"])
             .catch((error) => { return res.status(500).json({ error: "There was some Error" }) })
             .then((response) => {
                 // console.log("from now : ", response);
