@@ -1,0 +1,9 @@
+panic: send on closed channel
+
+goroutine 4435 [running]:
+golang.ngrok.com/ngrok/internal/tunnel/client.(*rawSession).onHeartbeat(0xc00091a8c0, 0x54911d0dc, 0x3?)
+	golang.ngrok.com/ngrok@v1.3.1/internal/tunnel/client/raw_session.go:269 +0x125
+golang.ngrok.com/muxado/v2.(*Heartbeat).check(0xc00091a910, 0xc0006509c0)
+	golang.ngrok.com/muxado/v2@v2.0.0/heartbeat.go:145 +0xe7
+created by golang.ngrok.com/muxado/v2.(*Heartbeat).Start
+	golang.ngrok.com/muxado/v2@v2.0.0/heartbeat.go:132 +0xd9
