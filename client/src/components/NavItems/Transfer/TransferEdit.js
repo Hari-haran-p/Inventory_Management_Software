@@ -15,7 +15,7 @@ function TransferEdit({
   fetchGetStock
 }) {
   const [formData, setFormData] = useState({
-    item_code: "",
+    id: "",
     item_type: "",
     item_name: "",
     item_subname: "",
@@ -48,7 +48,7 @@ function TransferEdit({
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "/api/transferRequest", { items: formData, user_id: user }
+        "http://localhost:4000/api/transferRequest", { items: formData, user_id: user }
       );
       if (response.status == 200) {
         fetchGetStock()
@@ -114,7 +114,7 @@ function TransferEdit({
                   name="item_code"
                   disabled
                   onChange={handleChange}
-                  value={formData.item_code}
+                  value={formData.id}
                   className="text-md block px-3 py-2 rounded-lg w-full 
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
                 />

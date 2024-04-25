@@ -16,7 +16,7 @@ const TrackTransfer = ({
   const fetchPendingData = async () => {
     try {
       const response = await axios.get(
-        `/api/getTransferCardData/${user.user_id}`
+        `http://localhost:4000/api/getTransferCardData/${user.user_id}`
       );
       setPendingData(response.data);
     } catch (error) {
@@ -99,7 +99,6 @@ const TrackTransfer = ({
               toggleAccordion={() => toggleAccordion(accordion.key)}
               noDataMessage={accordion.noDataMessage}
               fetchPendingData = {fetchPendingData}
-
             />
           ))}
         </div>

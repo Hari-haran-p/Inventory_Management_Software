@@ -18,7 +18,7 @@ function StockPopup({ data, onClose }) {
             <div className="w-36 flex justify-end font-bold mr-5 whitespace-nowrap ">
               Item Code
             </div>
-            :<div className="pl-5 whitespace-nowrap"> {data.item_code}</div>
+            :<div className="pl-5 whitespace-nowrap"> {data.id}</div>
           </div>
           <div className="w-full flex">
             <div className="w-36 flex justify-end font-bold mr-5 whitespace-nowrap ">
@@ -36,7 +36,7 @@ function StockPopup({ data, onClose }) {
             <div className="w-36 flex justify-end font-bold mr-5 whitespace-nowrap ">
             Stock Qty
             </div>
-            :<div className="pl-5 whitespace-nowrap"> {data.stock_qty}</div>
+            :<div className="pl-5 whitespace-nowrap"> {data.quantity}</div>
           </div>
           <div className="w-full flex">
             <div className="w-36 flex justify-end font-bold mr-5 whitespace-nowrap ">
@@ -54,7 +54,7 @@ function StockPopup({ data, onClose }) {
             <div className="w-36 flex justify-end font-bold mr-5 whitespace-nowrap ">
             Inventory Value
             </div>
-            :<div className="pl-5 whitespace-nowrap"> {data.inventory_value}</div>
+            :<div className="pl-5 whitespace-nowrap"> {data.cost}</div>
           </div>
           <div className="w-full flex">
             <div className="w-36 flex justify-end font-bold mr-5 whitespace-nowrap ">
@@ -62,7 +62,7 @@ function StockPopup({ data, onClose }) {
             </div>
             :
             <div className="pl-5 whitespace-nowrap">
-              {data.user_id}
+              {data.faculty_id}
             </div>
         </div>
       </div>
