@@ -31,6 +31,10 @@ import Report from "./components/ReportGeneration/Report";
 import Excel from "./components/CommonPages/Excel";
 import Scrap from "./components/NavItems/Scrap/Scrap";
 import { Hover } from "./components/Hover.js";
+import ManufacturerPopUp from "./components/NavItems/Entries/Popups/ManufacturerPopUp.js";
+import SupplierPopUp from "./components/NavItems/Entries/Popups/SupplierPopUp.js";
+import SupplierEntries from "./components/NavItems/Entries/EntriesImports/SupplierEntries.js";
+import StockEntries from "./components/NavItems/Entries/EntriesImports/StockEntries.js";
 // import TransferMain from "./components/NavItems/TransferReq/TransferMain.js";
 
 
@@ -178,6 +182,18 @@ function App() {
                   <Route
                     path="/entries"
                     element={<Entries />}
+                  />
+                  <Route
+                    path="/entries/manufacturer"
+                    element={<ManufacturerPopUp />}
+                  />
+                  <Route
+                    path="/entries/supplier"
+                    element={<SupplierEntries />}
+                  />
+                  <Route
+                    path="/entries/stock"
+                    element={<StockEntries />}
                   />
                   <Route
                     path="/unauthorized"

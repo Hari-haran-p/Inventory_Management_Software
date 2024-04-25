@@ -48,7 +48,7 @@ function TransferEdit({
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "/api/transferRequest", { items: formData, user_id: user }
+        "http://localhost:4000/api/transferRequest", { items: formData, user_id: user }
       );
       if (response.status == 200) {
         fetchGetStock()

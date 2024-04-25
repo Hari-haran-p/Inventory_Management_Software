@@ -34,6 +34,7 @@
     "react-router-dom": "^6.14.2",
     "react-scripts": "^5.0.1",
     "react-timeseries-charts": "^0.16.1",
+    "react-toastify": "^10.0.5",
     "react-tooltip": "^5.20.0",
     "recharts": "^2.7.3",
     "tailwind-merge": "^1.14.0",

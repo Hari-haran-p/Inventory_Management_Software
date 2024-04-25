@@ -2,6 +2,7 @@ const db = require("./database/db.js");
 
 
 const manufacturerAdd = async function (req, res, next) {
+    try{
     const name = req.body.name;
     db.query("INSERT INTO manufacturer (name) VALUES (?)", [name])
         .then((response) => {
@@ -9,6 +10,9 @@ const manufacturerAdd = async function (req, res, next) {
         }).catch((error) => {
             res.status(400).json({ Data: "Some internal error" });
         })
+    }catch{
+        console.log("Error Inserting the Manufacturer Name");
+    }
 }
 
 const supplierAdd = async function (req, res, next) {
