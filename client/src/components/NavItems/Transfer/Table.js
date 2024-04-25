@@ -159,7 +159,7 @@ function Table({ stockData }) {
             onClick={() => setClick(true)}
             className="cursor-pointer text-center ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2 mr-4"
           >
-            Search
+            search
           </div>
 
         </div>
