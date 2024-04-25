@@ -261,7 +261,7 @@ function Table({ stockData, setStockData }) {
           style={{ width: "200px" }}
           className="pl-4 text-xl md:text-2xl flex h-auto items-center justify-center whitespace-nowrap text-blue-600 font-semibold"
         >
-          Master Table
+          master table
           
           <div className="flex pb-1 lg:hidden">
             <div
