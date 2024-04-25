@@ -18,7 +18,6 @@ function Table({ stockData }) {
     setSelectedData(null);
   };
 
-
   // Search functionality
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -133,7 +132,6 @@ function Table({ stockData }) {
   };
 
 
-
   return (
     <div className=" w-10/12 border-2 bg-white rounded-t-3xl h-auto">
       <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
@@ -159,9 +157,8 @@ function Table({ stockData }) {
             onClick={() => setClick(true)}
             className="cursor-pointer text-center ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2 mr-4"
           >
-            search
+            Search
           </div>
-
         </div>
       </div>
       <div class="soverflow-y-auto  overflow-x-auto border-gray-700 rounded-lg">

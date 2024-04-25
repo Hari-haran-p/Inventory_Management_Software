@@ -94,7 +94,6 @@ const getTransferData = function (req, res, next) {
 // }
 
 const transferRequest = async function (req, res, next) {
-
     let connection;
     try {
         connection = await db.getConnection();
@@ -427,7 +426,6 @@ const rejectRequest = async function (req, res, next) {
 
 
 const acknowledgeTransfer = async function (req, res, next) {
-
     let connection;
     try {
         connection = await db.getConnection();

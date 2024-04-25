@@ -89,7 +89,6 @@ const Transfer = () => {
       const response = await axios.post(
         "http://localhost:4000/api/getTrackTransfer", data
       );
-
       if (response.status == 200) {
         setTrackTransferData(response.data.data)
       }
