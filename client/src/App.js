@@ -35,8 +35,7 @@ import ManufacturerPopUp from "./components/NavItems/Entries/Popups/Manufacturer
 import SupplierPopUp from "./components/NavItems/Entries/Popups/SupplierPopUp.js";
 import SupplierEntries from "./components/NavItems/Entries/EntriesImports/SupplierEntries.js";
 import StockEntries from "./components/NavItems/Entries/EntriesImports/StockEntries.js";
-// import TransferMain from "./components/NavItems/TransferReq/TransferMain.js";
-
+import Consume from "./components/NavItems/Consume/Consume.js";
 
 
 function App() {
@@ -68,22 +67,10 @@ function App() {
 
   const { user, getUser } = useAuth();
 
-  const navItems = [
-
-    { id: 1, Name: "Dashboard", iconName: "bi-speedometer", src: "/dashboard" },
-    { id: 2, Name: "Master", iconName: "bi-file-person-fill", src: "/master" },
-    { id: 3, Name: "Vendors", iconName: "bi-building", src: "/vendors" },
-    { id: 4, Name: "Entries", iconName: "bi-list-check", src: "/entries" },
-    { id: 5, Name: "Stores", iconName: "bi-shop", src: "/stores", role: "slsincharge" },
-    { id: 6, Name: "Transfer", iconName: "bi-arrow-left-right", src: "/transfer" },
-    { id: 7, Name: "Scrap", iconName: "bi-folder-x", src: "/scrap" },
-    { id: 8, Name: "Report", iconName: "bi-printer-fill", src: "/report" },
-    { id: 9, Name: "Logout", iconName: "bi-box-arrow-right" },
-
-  ];
+  const loc = ["dashboard", "master", "vendors", "transfer", "stores", "scrap", "entries", "consume"]
 
   function navUsed() {
-    return navItems.some((item) => item.src === location.pathname);
+    return loc.includes(location.pathname.split("/")[1]);
   }
 
   function CheckRole({ element, userRole, allowedRole, redirecTo }) {
@@ -97,7 +84,7 @@ function App() {
 
     return element;
   }
-  console.log(user);
+
   return (
     <>
       {isLoading ? (
@@ -111,15 +98,15 @@ function App() {
             {showNav &&
               <Navbar
                 location={location.pathname}
-                navItems={navItems}
+                loc={loc}
                 open={open}
                 setOpen={setOpen}
                 user={user}
               />
             }
-            {window.innerWidth < 800 && 
-              <div className="absolute top-0 right-0 mr-4 mt-4" onClick={() => {setShowNav((prev) => !prev);}}>
-                <i class={`bi ${showNav ?  "bi-x-circle-fill"  : "bi-list"} z-1000`}></i>
+            {window.innerWidth < 800 &&
+              <div className="absolute top-0 right-0 mr-4 mt-4" onClick={() => { setShowNav((prev) => !prev); }}>
+                <i class={`bi ${showNav ? "bi-x-circle-fill" : "bi-list"} z-1000`}></i>
               </div>
             }
             <div
@@ -143,7 +130,7 @@ function App() {
                     element={<Dashboard open={open}
                       setOpen={setOpen} />}
                   />
-                  {/* <Route path="/registerpage" element={<RegisterPage />} /> */}
+
                   <Route
                     path="/master"
                     element={<Master />}
@@ -180,6 +167,10 @@ function App() {
                     element={<Scrap />}
                   />
                   <Route
+                    path="/consume"
+                    element={<Consume />}
+                  />
+                  <Route
                     path="/entries"
                     element={<Entries />}
                   />
@@ -207,8 +198,6 @@ function App() {
                     path="/d"
                     element={<Hover />}
                   />
-
-
                 </Routes>
 
               </GoogleOAuthProvider>

@@ -88,7 +88,7 @@ const getUser = function (req, res, next) {
     const data = jwt.verify(token, key);
     return res.send(data);
   } catch (error) {
-    console.log("error");
+    console.log(error);
     return res.status(400).json({ error: "Invalid Token" });
   }
 };
