@@ -84,19 +84,12 @@ const SupplierImport = (props) => {
 
   return (
     <>
-        <div
-            style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}
-            className="w-1/2">
-            <div
-                style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", margin: "15px", width: "80%" }}
-                className="flex  flex-col">
-                <div
-                    style={{ height: "80%" }}
-                    className="bg-white w-full px-14 animate1 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center justify-center border-gray-700 rounded-lg"
-                >
-                    <div className="flex flex-col justify-center items-center w-full">
-                        <div className="py-1 flex pb-6">
-                            <span className="px-1 text-black font-medium text-2xl whitespace-nowrap">
+        <div className="w-full pt-7">
+            <div className="flex  flex-col">
+                <div className="bg-white w-full px-4 md:px-14 animate1 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center justify-center border-gray-700 rounded-lg" >
+                    <div className=" w-full">
+                        <div className="py-1 pb-6">
+                            <span className="px-1 text-black font-medium text-2xl ">
                                 Upload Suppliers
                             </span>
                         </div>

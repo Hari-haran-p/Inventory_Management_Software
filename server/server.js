@@ -9,6 +9,7 @@ const {
     createSession,
     getUser,
     authenticate,
+    credentialLogin,
 } = require("./auth/loginMiddleware.js");
 
 const db = require("./database/db.js");
@@ -31,7 +32,13 @@ app.get("/api/", (req, res) => {
 });
 
 app.post("/api/loginUser", verifyToken, createSession, (req, res) => {
+    const token = res.locals.token;  
+    res.send(token);
+});
+
+app.post('/api/credentiallogin' , credentialLogin,createSession, (req, res) => {
     const token = res.locals.token;
+    console.log(token);
     res.send(token);
 });
 

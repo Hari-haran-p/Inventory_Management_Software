@@ -31,37 +31,12 @@ const SupplierPopUp = ({ setMessage, setError }) => {
   };
 
   return (
-    <div
-      style={{
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      className="flex w-1/2 justify-center items-center"
-    >
-      <div
-        style={{
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          margin: "15px",
-        }}
-        className="flex flex-col"
-      >
-        <div
-          style={{ height: "80%" }}
-          className="bg-white flex flex-col justify-center items-center px-14 py-5 animate1 overflow-x-auto overflow-y-auto border-gray-700 rounded-lg"
-        >
-          <div className="w-full text-end"></div>
-          <div className="flex flex-col justify-center items-center">
-            <div class="py-1 flex  pb-5 ">
+    <div className="flex justify-start md:px-16 px-4 items-center w-full" >
+        <div className="bg-white py-5 border-gray-700 rounded-lg w-full" >
               <span class="px-1 text-black font-medium text-2xl whitespace-nowrap">
                 Supplier Entry
               </span>
-            </div>
-            <form onChange={handleChange}>
+            <form  onChange={handleChange}>
               <div class=" flex flex-wrap mt-8">
                 <span class=" text-lg pb-1 text-gray-600 ">Supplier Name</span>
                 <input
@@ -94,18 +69,14 @@ const SupplierPopUp = ({ setMessage, setError }) => {
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
                 />
               </div>
-              <center>
                 <button
                   className="bg-blue-500 mt-5 hover:bg-blue-700 text-white font-bold py-2 px-10 rounded mb-10"
                   onClick={HandleSubmit}
                 >
                   Submit
                 </button>
-              </center>
             </form>
           </div>
-        </div>
-      </div>
     </div>
   );
 };

@@ -32,20 +32,39 @@ export function AuthProvider({ children }) {
       }
     })
   }
+  async function handleAdminLogin(formData, setFormData, e) {
+    e.preventDefault();
+    try {
+      console.log("hiiii.....")
+      const result = await axios.post('http://localhost:4000/api/credentiallogin' ,formData);
+      Cookies.set("token", result.data)
+      setIsLoggedIn(true)
+      await getUser();
+      await setFormData({ username: "", password: "" });
+      navigate("/dashboard");
+    } catch (error) {
+      if (error && error.response.status == 401 || error.response.status == 400) {
+        navigate("/unauthorized")
+      }
+      console.log(error)
+      return;
+    }
+  }
 
-  async function getRequest(url){
-    try{
+
+  async function getRequest(url) {
+    try {
       const token = Cookies.get('token');
-      if(!token){
+      if (!token) {
         navigate('/');
       }
-      const response = await axios.get(url, {headers : {"Authorization" : token}});
-      if(response.length == 0){
+      const response = await axios.get(url, { headers: { "Authorization": token } });
+      if (response.length == 0) {
         Cookies.remove('token');
         navigate('/');
       }
       return response
-    }catch(error){
+    } catch (error) {
       console.log(error);
       Cookies.remove('token');
       navigate('/');
@@ -58,7 +77,7 @@ export function AuthProvider({ children }) {
       const result = await axios.post("http://localhost:4000/api/loginUser", { res: response });
       Cookies.set("token", result.data)
       setIsLoggedIn(true)
-      await getUser();  
+      await getUser();
       navigate("/dashboard");
     } catch (error) {
       if (error && error.response.status == 401 || error.response.status == 400) {
@@ -71,7 +90,7 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
-    if(window.confirm("Are you sure want to logout ?")){
+    if (window.confirm("Are you sure want to logout ?")) {
       setIsLoggedIn(false);
       setUser([]);
       try {
@@ -90,7 +109,8 @@ export function AuthProvider({ children }) {
     logout,
     getUser,
     user,
-    getRequest
+    getRequest,
+    handleAdminLogin
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
