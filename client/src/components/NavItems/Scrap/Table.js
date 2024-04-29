@@ -22,7 +22,11 @@ function Table({ scrapData,isVisible }) {
   const [click, setClick] = useState(false);
 
   useEffect(() => {
-    if (click || searchQuery == "") {
+    if(searchQuery == ""){
+      setFilteredData(scrapData)
+      return
+    }
+    if (click) {
       const filteredResults = scrapData.filter((item) => {
         const propertiesToSearch = [
           "id",
@@ -55,6 +59,37 @@ function Table({ scrapData,isVisible }) {
     }
   }, [click, scrapData, searchQuery]);
 
+   //table row filter
+   const [rowSize, setRowSize] = useState(10);
+   const [currentPage, setCurrentPage] = useState(1);
+   const [totalPages, setTotalPages] = useState(1);
+ 
+   useEffect(() => {
+     setTotalPages(Math.ceil(filteredData.length / rowSize));
+   }, [filteredData, rowSize]);
+ 
+   const nextPage = () => {
+     if (currentPage < totalPages) {
+       setCurrentPage(currentPage + 1);
+     }
+   };
+ 
+   const prevPage = () => {
+     if (currentPage > 1) {
+       setCurrentPage(currentPage - 1);
+     }
+   };
+ 
+   const handleRowSizeChange = (e) => {
+     const newSize = parseInt(e.target.value);
+     setRowSize(newSize);
+     setCurrentPage(1); 
+   };
+ 
+   const startIndex = (currentPage - 1) * rowSize;
+   const endIndex = Math.min(startIndex + rowSize, filteredData.length);
+ 
+
   //sort by functionality
   const [sortOrder, setSortOrder] = useState({
     id: "asc",
@@ -81,15 +116,13 @@ function Table({ scrapData,isVisible }) {
       ...prevSortOrders,
       [column]: prevSortOrders[column] === "asc" ? "desc" : "asc",
     }));
-
+  
     setSortedColumn(column);
-
+    
     filteredData.sort((a, b) => {
-      const valueA =
-        typeof a[column] === "string" ? a[column].toLowerCase() : a[column];
-      const valueB =
-        typeof b[column] === "string" ? b[column].toLowerCase() : b[column];
-
+      const valueA = getValueForComparison(typeof a[column] === "string" ? a[column].toLowerCase() : a[column]);
+      const valueB = getValueForComparison(typeof b[column] === "string" ? b[column].toLowerCase() : b[column]);
+  
       if (valueA < valueB) {
         return sortOrder[column] === "asc" ? -1 : 1;
       }
@@ -98,8 +131,18 @@ function Table({ scrapData,isVisible }) {
       }
       return 0;
     });
-
-    setFilteredData(filteredData);
+  
+    setFilteredData(filteredData); // Trigger re-render
+  };
+  const getValueForComparison = (value) => {
+    // Check if the value is a date in the format "DD-MM-YYYY"
+    const dateRegex = /^(\d{2})-(\d{2})-(\d{4})$/;
+    if (dateRegex.test(value)) {
+      // If it's a valid date, convert it to a comparable format (YYYYMMDD)
+      const [, day, month, year] = value.match(dateRegex);
+      return `${year}${month}${day}`;
+    }
+    return value;
   };
 
   const handleKeyEnter = (e) => {
@@ -112,13 +155,13 @@ function Table({ scrapData,isVisible }) {
 
   return (
     <div className="w-full flex justify-center p-10 items-center">
-    <div className=" w-10/12 border-2 bg-white rounded-t-3xl h-auto">
+    <div className=" w-10/12 border-2 bg-white rounded-3xl h-auto">
       <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
-        <div className="pl-4 text-2xl w-1/5 flex items-center whitespace-nowrap  text-blue-600 font-semibold">
+        <div className="pl-4 text-2xl flex items-center whitespace-nowrap  text-blue-600 font-semibold">
           Scrap Table
         </div>
-        <div className="flex gap-4 items-center w-4/5 justify-end pr-6">
-          <div className="flex flex-wrap justify-center items-center">
+        <div className="flex flex-wrap justify-center items-center">
+          <div className="h-auto">
             <input
               name="inputQuery"
               type="text"
@@ -130,12 +173,12 @@ function Table({ scrapData,isVisible }) {
               }}
               placeholder="Search..."
               style={{minWidth: "70%" }}
-              className="text-black indent-2 h-9 font-medium border-2 rounded-lg border-black"
+              className="text-black indent-2 font-medium w-56 sm:w-80 h-9 rounded-md border-2 border-black"
             />
           </div>
           <button
               onClick={() => setClick(true)}
-              className="cursor-pointer ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2"
+              className="cursor-pointer text-center ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2 mr-4"
             >
               Search
             </button>
@@ -404,14 +447,14 @@ function Table({ scrapData,isVisible }) {
                 </tr>
               </thead>
               <tbody style={{ backgroundColor: "white", fontWeight: "bold" }}>
-                {filteredData.map((data, index) => {
+                {filteredData.slice(startIndex,endIndex).map((data, index) => {
                   return (
                     <tr className="border-b-2">
                       <td class="pl-4">{index + 1}</td>
-                      <td class="px-6 py-4 whitespace-nowrap">
+                      <td class="px-6 py-4 whitespace-nowrap ">
                         {data.apex_no}
                       </td>
-                      <td class="flex px-6 py-4 whitespace-nowrap">
+                      <td class="px-6 py-4 whitespace-nowrap">
                         {data.id}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
@@ -463,6 +506,31 @@ function Table({ scrapData,isVisible }) {
             </table>
           </div>
         </div>
+      </div>
+      <div className="w-full h-16 flex justify-between border-t-2 items-center rounded-b-3xl">
+        <button onClick={prevPage} className="border-2 rounded-md ml-7 h-10 w-20">
+          Prev
+        </button>
+
+        <select
+          onChange={handleRowSizeChange}
+          value={rowSize}
+          className="border-2 w-56 h-10 rounded-md mx-3"
+        >
+          <option
+            value={scrapData.length < 10 ? scrapData.length : 10}
+            className=""
+          >
+            10
+          </option>
+          <option value={scrapData.length < 50 ? scrapData.length : 50}>
+            50
+          </option>
+          <option value={scrapData.length}>Full</option>
+        </select>
+        <button onClick={nextPage} className="border-2 rounded-md mr-7 h-10 w-20">
+          Next
+        </button>
       </div>
       {openPopup && selectedData && (
         <div className="blur-background">

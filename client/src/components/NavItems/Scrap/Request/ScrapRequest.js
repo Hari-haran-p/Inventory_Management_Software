@@ -58,7 +58,7 @@
 //   function resultClick(code) {
 //     // setData({ ...data, itemcode: code });
 //     const result = stock.filter((items) => {
-//       if (items.item_code == code) {
+//       if (items.id == code) {
 //         return items;
 //       }
 //     });
@@ -79,7 +79,7 @@
 //       setIsLoading(true);
 //       e.preventDefault();
 //       if (stockResult.length > 0) {
-//         // const sendItem = item.find((f) => f.item_code == data.itemcode);
+//         // const sendItem = item.find((f) => f.id == data.itemcode);
 //         const response = await axios.post(
 //           "http://localhost:4000/api/scrapRequest",
 //           {
@@ -174,13 +174,13 @@
 //                       stockResult.slice(0, 6).map((result) => {
 //                         return (
 //                           <div
-//                             key={result.item_code}
-//                             value={result.item_code}
+//                             key={result.id}
+//                             value={result.id}
 //                             className="text-md px-3 py-2 w-full border-none
 //                               bg-white border-2 focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none hover:bg-sky-100 rounded-lg"
-//                             onClick={() => resultClick(result.item_code)}
+//                             onClick={() => resultClick(result.id)}
 //                           >
-//                             {result.item_code}-{result.item_name}
+//                             {result.id}-{result.item_name}
 //                           </div>
 //                         );
 //                       }))
@@ -217,11 +217,11 @@
 //                 />
 //               </div>
 //               <div className="whitespace-nowrap">
-//                 Kindly enter the stock quantity to be scraped{" "}
+//                 Kindly enter the stock stock_qty to be scraped{" "}
 //                 <label style={{ color: "red", fontSize: "25px" }}>*</label>
 //               </div>
 //               <div class="py-1 flex flex-wrap  pb-8">
-//                 <label class="text-md mb-3 whitespace-nowrap">Scrap Quantity</label>
+//                 <label class="text-md mb-3 whitespace-nowrap">Scrap stock_qty</label>
 //                 <input
 //                   type="number"
 //                   name="stockReq"
@@ -260,7 +260,6 @@ import ScrapEdit from "./ScrapEdit";
 
 function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDetails, fetchGetStock, setMessage, setError, setIsLoading, isLoading}) {
 
-
   //for edit popup
   const [openEdit, setOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -288,14 +287,18 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
   const [click, setClick] = useState(false);
 
   useEffect(() => {
-    if (click || searchQuery == "") {
+    if(searchQuery == ""){
+      setFilteredData(getStock)
+      return
+    }
+    if (click) {
       const filteredResults = getStock.filter((item) => {
         const propertiesToSearch = [
           "inventory_value",
           "item_name",
           "item_subname",
           "item_type",
-          "item_code",
+          "id",
           "apex_no",
           "item_description",
           "stock_qty",
@@ -314,9 +317,39 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
     }
   }, [click, getStock, searchQuery]);
 
+   //table row filter
+   const [rowSize, setRowSize] = useState(10);
+   const [currentPage, setCurrentPage] = useState(1);
+   const [totalPages, setTotalPages] = useState(1);
+ 
+   useEffect(() => {
+     setTotalPages(Math.ceil(filteredData.length / rowSize));
+   }, [filteredData, rowSize]);
+ 
+   const nextPage = () => {
+     if (currentPage < totalPages) {
+       setCurrentPage(currentPage + 1);
+     }
+   };
+ 
+   const prevPage = () => {
+     if (currentPage > 1) {
+       setCurrentPage(currentPage - 1);
+     }
+   };
+ 
+   const handleRowSizeChange = (e) => {
+     const newSize = parseInt(e.target.value);
+     setRowSize(newSize);
+     setCurrentPage(1); 
+   };
+ 
+   const startIndex = (currentPage - 1) * rowSize;
+   const endIndex = Math.min(startIndex + rowSize, filteredData.length);
+
   //sort by functionality
   const [sortOrders, setSortOrders] = useState({
-    item_code: "asc",
+    id: "asc",
     item_type: "asc",
     item_name: "asc",
     item_subname: "asc",
@@ -334,16 +367,13 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
       ...prevSortOrders,
       [column]: prevSortOrders[column] === "asc" ? "desc" : "asc",
     }));
-
+  
     setSortedColumn(column);
-
     
     filteredData.sort((a, b) => {
-      const valueA =
-        typeof a[column] === "string" ? a[column].toLowerCase() : a[column];
-      const valueB =
-        typeof b[column] === "string" ? b[column].toLowerCase() : b[column];
-
+      const valueA = getValueForComparison(typeof a[column] === "string" ? a[column].toLowerCase() : a[column]);
+      const valueB = getValueForComparison(typeof b[column] === "string" ? b[column].toLowerCase() : b[column]);
+  
       if (valueA < valueB) {
         return sortOrders[column] === "asc" ? -1 : 1;
       }
@@ -352,9 +382,22 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
       }
       return 0;
     });
-
-    setFilteredData(filteredData);
+  
+    setFilteredData(filteredData); // Trigger re-render
   };
+  
+  const getValueForComparison = (value) => {
+    // Check if the value is a date in the format "DD-MM-YYYY"
+    const dateRegex = /^(\d{2})-(\d{2})-(\d{4})$/;
+    if (dateRegex.test(value)) {
+      // If it's a valid date, convert it to a comparable format (YYYYMMDD)
+      const [, day, month, year] = value.match(dateRegex);
+      return `${year}${month}${day}`;
+    }
+    return value;
+  };
+
+  console.log(getStock);
 
   // <-------------------------------search bar enter function---------------------------->
 
@@ -368,11 +411,11 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
   return (
     <div className="w-full flex justify-center pt-20 items-center">
 
-    <div className=" w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
+    <div className=" w-10/12 relative border-2 bg-white rounded-3xl h-auto">
     <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
 
-        <div className="pl-4 text-2xl w-1/5 flex items-center whitespace-nowrap  text-blue-600 font-semibold">Scrap Request</div>
-        <div className="flex gap-4 items-center w-4/5 justify-end pr-6">
+        <div className="pl-4 text-2xl flex items-center whitespace-nowrap  text-blue-600 font-semibold">Scrap Request</div>
+        <div className="flex flex-wrap justify-center items-center">
           <div className="h-auto ">
             <input
               name="inputQuery"
@@ -384,12 +427,12 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
                 setSearchQuery(e.target.value);
               }}
               placeholder="Search..."
-              className="text-black indent-2 h-9 font-medium border-2 rounded-lg border-black"
+              className="text-black indent-2 font-medium w-56 sm:w-80 h-9 rounded-md border-2 border-black"
             />
           </div>
           <div
             onClick={() => setClick(true)}
-            className="cursor-pointer ml-3 w-24 text-center rounded-md h-10 py-1 text-white bg-blue-600 border-2  "
+            className="cursor-pointer text-center ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2 mr-4"
           >
             Search
           </div>
@@ -432,13 +475,13 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
                   <div className="flex">
-                    <div onClick={() => handleSort("item_code")}>
+                    <div onClick={() => handleSort("id")}>
                       Item Code
                     </div>
-                    {sortedColumn === "item_code" && (
+                    {sortedColumn === "id" && (
                       <span
                         className={`bi bi-arrow-${
-                          sortOrders.item_code === "asc" ? "up" : "down"
+                          sortOrders.id === "asc" ? "up" : "down"
                         } ml-2`}
                       />
                     )}
@@ -557,7 +600,7 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
               </tr>
             </thead>
             <tbody style={{backgroundColor:"white" , fontWeight:"bold" ,color:"black"}}>
-              {filteredData.map((data, index) => {
+              {filteredData.slice(startIndex,endIndex).map((data, index) => {
                 return (
                   <tr
                     key={data.id}
@@ -571,7 +614,7 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
                       {data.apex_no}
                     </td>
                     <td class="px-6 py-4 text-left whitespace-nowrap">
-                      {data.item_code}
+                      {data.id}
                     </td>
                     <td class="px-6 py-4 text-left whitespace-nowrap">
                       {data.item_name}
@@ -601,6 +644,31 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
           </table>
         </div>
       </div>
+      </div>
+      <div className="w-full h-16 flex justify-between border-t-2 items-center rounded-b-3xl">
+        <button onClick={prevPage} className="border-2 rounded-md ml-7 h-10 w-20">
+          Prev
+        </button>
+
+        <select
+          onChange={handleRowSizeChange}
+          value={rowSize}
+          className="border-2 w-56 h-10 rounded-md mx-3"
+        >
+          <option
+            value={getStock.length < 10 ? getStock.length : 10}
+            className=""
+          >
+            10
+          </option>
+          <option value={getStock.length < 50 ? getStock.length : 50}>
+            50
+          </option>
+          <option value={getStock.length}>Full</option>
+        </select>
+        <button onClick={nextPage} className="border-2 rounded-md mr-7 h-10 w-20">
+          Next
+        </button>
       </div>
       {openEdit && editData && (
         <div className="blur-background">
