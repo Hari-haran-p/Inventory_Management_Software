@@ -31,6 +31,7 @@ export default function StockEntries() {
         >
           <span class="block sm:inline">{error}</span>
         </div>
+        
       ) : null}
       <StockImport setMessage={setMessage} setError={setError} />
       <StockPopUp setMessage={setMessage} setError={setError} />
