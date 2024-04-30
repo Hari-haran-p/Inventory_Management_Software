@@ -308,11 +308,6 @@ function Table({ stockData, setStockData }) {
           className="pl-4 text-xl md:text-2xl flex h-auto items-center justify-center whitespace-nowrap text-blue-600 font-semibold"
         >
           Master Table
-          {/* <button  className="ml-4">add</button>
-          <button className="ml-4">less</button>
-          <div></div>
-          <div>{}</div>
-          <div>{}</div> */}
           <div className="flex pb-1 lg:hidden">
             <div
               onClick={() => {
@@ -606,7 +601,7 @@ function Table({ stockData, setStockData }) {
                       >
                         {/* {console.log(columnName)} */}
                         <div className="flex">
-                          <div>{columnName}</div>
+                          <div>{columnName.replace("_"," ")}</div>
                           {sortedColumn === columnName && (
                             <i
                               className={`bi bi-arrow-${
@@ -656,7 +651,7 @@ function Table({ stockData, setStockData }) {
           </div>
         </div>
       </div>
-      <div className="w-full h-16 flex justify-between items-center rounded-3xl">
+      <div className="w-full h-16 flex justify-between border-t-2 items-center rounded-b-3xl">
         <button onClick={prevPage} className="border-2 rounded-md ml-7 h-10 w-20">
           Prev
         </button>
@@ -664,7 +659,7 @@ function Table({ stockData, setStockData }) {
         <select
           onChange={handleRowSizeChange}
           value={rowSize}
-          className="border-2 w-56 h-9 rounded-md"
+          className="border-2 w-56 h-10 rounded-md mx-3"
         >
           <option
             value={stockData.length < 10 ? stockData.length : 10}

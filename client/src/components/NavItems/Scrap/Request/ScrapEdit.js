@@ -215,7 +215,7 @@ function ScrapEdit({
                 />
               </div>
               <div className="flex flex-wrap">
-                <div className="  flex ">
+                <div className="flex ">
                   <label for="dept_id" className="text-md pr-5 ">
                     Lab Code
                   </label>

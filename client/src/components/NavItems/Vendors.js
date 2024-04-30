@@ -140,7 +140,7 @@ function Vendors({ open }) {
     }
     if (buttonClick) {
       const SupplierFilteredResults = supplier.filter((item) => {
-        const supplierPropertiesToSearch = ["name", "address", "contact"];
+        const supplierPropertiesToSearch = ["id","name", "address", "contact"];
         return supplierPropertiesToSearch.some((property) =>
           typeof item[property] === "string"
             ? item[property]
@@ -371,7 +371,7 @@ function Vendors({ open }) {
                   </div>
                 </div>
               </div>
-              <div className="w-full h-16 flex justify-between items-center rounded-3xl">
+              <div className="w-full h-16 flex justify-between border-t-2 items-center rounded-b-3xl">
                 <button
                   onClick={prevPage}
                   className="border-2 rounded-md ml-7 h-10 w-20"
@@ -382,7 +382,7 @@ function Vendors({ open }) {
                 <select
                   onChange={handleRowSizeChange}
                   value={rowSize}
-                  className="border-2 w-56 h-9 rounded-md"
+                  className="border-2 w-56 h-10 rounded-md mx-3"
                 >
                   <option
                     value={manufacturer.length < 10 ? manufacturer.length : 10}
@@ -556,7 +556,7 @@ function Vendors({ open }) {
                   </div>
                 </div>
               </div>
-              <div className="w-full h-16 flex justify-between items-center rounded-3xl">
+              <div className="w-full h-16 flex justify-between border-t-2 items-center rounded-b-3xl">
                 <button
                   onClick={supplierPrevPage}
                   className="border-2 rounded-md ml-7 h-10 w-20"
@@ -567,7 +567,7 @@ function Vendors({ open }) {
                 <select
                   onChange={handleSupplierRowSizeChange}
                   value={rowSizeSupplier}
-                  className="border-2 w-56 h-9 rounded-md"
+                  className="border-2 w-56 h-10 rounded-md mx-3"
                 >
                   <option
                     value={supplier.length < 10 ? supplier.length : 10}
