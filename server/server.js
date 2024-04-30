@@ -18,6 +18,7 @@ const { itemEdit, stockEdit } = require("./edit.js");
 const { manufacturerAdd, supplierAdd, itemAdd, stockAdd } = require("./vendor.js");
 const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest, acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData, getScrapCardData } = require("./scrap.js");
 const { importItems, importStocks, importTransferItems, importManufacturers, importSuppliers } = require("./excel_import.js");
+const { error } = require("console");
 const { consumeRequest, getAllConsumeData, getConsumeData, rejectConsumeRequest, acceptConsumeRequest, cancelConsumeRequest, deleteConsumeRequest, getTableConsumeData, getConsumeCardData } = require("./consume.js");
 
 
@@ -33,11 +34,11 @@ app.get("/api/", (req, res) => {
 });
 
 app.post("/api/loginUser", verifyToken, createSession, (req, res) => {
-    const token = res.locals.token;  
+    const token = res.locals.token;
     res.send(token);
 });
 
-app.post('/api/credentiallogin' , credentialLogin,createSession, (req, res) => {
+app.post('/api/credentiallogin', credentialLogin, createSession, (req, res) => {
     const token = res.locals.token;
     console.log(token);
     res.send(token);
@@ -57,7 +58,7 @@ app.post("/api/itemAdd", itemAdd);
 
 app.post("/api/stockAdd", stockAdd);
 
-app.get("/api/getManufacturer",authenticate,  (req, res) => {
+app.get("/api/getManufacturer", authenticate, (req, res) => {
     db.query("SELECT * FROM manufacturer")
         .catch((error) => res.send(error))
         .then((response) => res.send(response))
@@ -88,7 +89,7 @@ app.get("/api/getItems", authenticate, (req, res) => {
     db.query("SELECT * FROM itemtable", (error, result) => {
         if (error) console.log(error);
         else {
-            if(result.length == 0 ){
+            if (result.length == 0) {
                 return res.send("No Data");
             };
             return res.send(result);
@@ -96,7 +97,7 @@ app.get("/api/getItems", authenticate, (req, res) => {
     })
 });
 
-app.get("/api/getSupplier",authenticate,  (req, res) => {
+app.get("/api/getSupplier", authenticate, (req, res) => {
     db.query("SELECT * FROM supplier", (error, result) => {
         res.send(result);
     });
@@ -120,12 +121,49 @@ app.get("/api/getStock", authenticate, (req, res) => {
     });
 });
 
-app.get("/api/getAdminStockData", authenticate,  (req, res) => {
+app.get("/api/getAdminStockData", authenticate, (req, res) => {
     db.query("SELECT * FROM admin_stock_view", (error, result) => {
         if (error) console.log(error);
         res.send(result);
     });
 });
+
+app.get("/api/getAdminScrapStockData/:id", authenticate, (req, res) => {
+    const id = req.params.id;
+
+    try {
+        db.query(`SELECT * FROM admin_stock_view WHERE dept_id = "${id}"`, (error, result) => {
+            if (error) {
+                console.error("Error executing query:", error);
+                return res.status(500).send("Internal Server Error");
+            }
+            res.send(result);
+        });
+    } catch (err) {
+        console.error("Error in try-catch block:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+app.get("/api/getAdminTransferStockData/:id", authenticate, (req, res) => {
+    const id = req.params.id;
+
+    try {
+        db.query(`SELECT * FROM admin_stock_view WHERE dept_id != "${id}"`, (error, result) => {
+            if (error) {
+                console.error("Error executing query:", error);
+                return res.status(500).send("Internal Server Error");
+            }
+            res.send(result);
+        });
+    } catch (err) {
+        console.error("Error in try-catch block:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+
+
 
 app.get("/api/getQuantityUnits", authenticate, (req, res) => {
     db.query("SELECT * FROM quantity_units", (error, result) => {
@@ -243,7 +281,7 @@ app.get("/api/getTransferCardData/:id", async (req, res) => {
             db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["STORESAPPROVED", user]),
             db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["LABAPPROVED", user]),
             db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["ACKNOWLEDGED", user]),
-            db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["REJECTED", user]), 
+            db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["REJECTED", user]),
         ]);
 
         res.status(200).json({
@@ -297,7 +335,7 @@ app.get("/api/getStock/:id", (req, res) => {
         .catch((error) => res.send(error));
 })
 
-app.post("/api/getTransferData",authenticate,  getTransferData)
+app.post("/api/getTransferData", authenticate, getTransferData)
 
 app.post("/api/transferRequest", transferRequest)
 
@@ -338,7 +376,7 @@ app.post("/api/importSuppliers", importSuppliers);
 //Scrap Related  API's
 app.post("/api/scrapRequest", scrapRequest);
 
-app.get("/api/getScrap",authenticate,  getAllScrapData);
+app.get("/api/getScrap", authenticate, getAllScrapData);
 
 app.get("/api/getScrapData/:id", authenticate, getScrapData);
 
@@ -350,7 +388,7 @@ app.post("/api/cancelScrapRequest", cancelScrapRequest);
 
 app.post("/api/deleteScrapRequest", deleteScrapRequest);
 
-app.get("/api/getTableScrapData",authenticate, getTableScrapData);
+app.get("/api/getTableScrapData", authenticate, getTableScrapData);
 
 
 app.get("/api/getScrapCardData/:id", authenticate, getScrapCardData);

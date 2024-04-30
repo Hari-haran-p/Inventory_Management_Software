@@ -131,7 +131,7 @@ const Transfer = () => {
 
   const [getStock, setGetStock] = useState([]);
   async function fetchGetStock() {
-    const response = await getRequest("http://localhost:4000/api/getAdminStockData")
+    const response = await getRequest(`http://localhost:4000/api/getAdminTransferStockData/${user.dept_code}`)
       .catch((error) => console.log(error));
     setGetStock(response.data);
   }

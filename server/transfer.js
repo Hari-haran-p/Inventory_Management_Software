@@ -370,6 +370,7 @@ const acceptRequest = async function (req, res, next) {
 
 
 const rejectRequest = async function (req, res, next) {
+    console.log(req.body);
     let connection;
     try {
         connection = await db.getConnection();
@@ -388,7 +389,7 @@ const rejectRequest = async function (req, res, next) {
         // })
 
         const result1 = await new Promise((resolve, reject) => {
-            connection.query("UPDATE transfertable SET current_status = ? WHERE id = ?", ["REJECTED", req.body.transfer_id], async (error, result) => {
+            connection.query("UPDATE transfertable SET status = ? WHERE id = ?", ["REJECTED", req.body.transfer_id], async (error, result) => {
                 if (error) {
                     await connection.rollback();
                     return res.status(400).json({ "data": "some Error" });

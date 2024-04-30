@@ -25,7 +25,11 @@ function Table({ stockData }) {
   const [click, setClick] = useState(false);
 
   useEffect(() => {
-    if (click || searchQuery == "") {
+    if(searchQuery == ""){
+      setFilteredData(stockData)
+      return
+    }
+    if (click ) {
       const filteredResults = stockData.filter((item) => {
         const propertiesToSearch = [
           "apex_no",
@@ -68,6 +72,36 @@ function Table({ stockData }) {
     }
   }, [click, stockData, searchQuery]);
 
+  //table row filter
+  const [rowSize, setRowSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredData.length / rowSize));
+  }, [filteredData, rowSize]);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleRowSizeChange = (e) => {
+    const newSize = parseInt(e.target.value);
+    setRowSize(newSize);
+    setCurrentPage(1); 
+  };
+
+  const startIndex = (currentPage - 1) * rowSize;
+  const endIndex = Math.min(startIndex + rowSize, filteredData.length);
+
   //sort by functionality
   const [sortOrder, setSortOrder] = useState({
     apex_no: "asc",
@@ -104,15 +138,13 @@ function Table({ stockData }) {
       ...prevSortOrders,
       [column]: prevSortOrders[column] === "asc" ? "desc" : "asc",
     }));
-
+  
     setSortedColumn(column);
-
+    
     filteredData.sort((a, b) => {
-      const valueA =
-        typeof a[column] === "string" ? a[column].toLowerCase() : a[column];
-      const valueB =
-        typeof b[column] === "string" ? b[column].toLowerCase() : b[column];
-
+      const valueA = getValueForComparison(typeof a[column] === "string" ? a[column].toLowerCase() : a[column]);
+      const valueB = getValueForComparison(typeof b[column] === "string" ? b[column].toLowerCase() : b[column]);
+  
       if (valueA < valueB) {
         return sortOrder[column] === "asc" ? -1 : 1;
       }
@@ -121,8 +153,19 @@ function Table({ stockData }) {
       }
       return 0;
     });
-
-    setFilteredData(filteredData);
+  
+    setFilteredData(filteredData); // Trigger re-render
+  };
+  
+  const getValueForComparison = (value) => {
+    // Check if the value is a date in the format "DD-MM-YYYY"
+    const dateRegex = /^(\d{2})-(\d{2})-(\d{4})$/;
+    if (dateRegex.test(value)) {
+      // If it's a valid date, convert it to a comparable format (YYYYMMDD)
+      const [, day, month, year] = value.match(dateRegex);
+      return `${year}${month}${day}`;
+    }
+    return value;
   };
 
   const handleKeyEnter = (e) => {
@@ -133,7 +176,7 @@ function Table({ stockData }) {
 
 
   return (
-    <div className=" w-10/12 border-2 bg-white rounded-t-3xl h-auto">
+    <div className=" w-10/12 border-2 bg-white rounded-3xl h-auto">
       <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
         <div className="pl-4 text-2xl flex items-center whitespace-nowrap  text-blue-600 font-semibold">
           Transfer Table
@@ -150,7 +193,7 @@ function Table({ stockData }) {
                 setSearchQuery(e.target.value);
               }}
               placeholder="Search..."
-              className="text-black indent-2 font-medium w-80 h-9 rounded-md border-2 border-black"
+              className="text-black indent-2 font-medium w-56 sm:w-80 h-9 rounded-md border-2 border-black"
             />
           </div>
           <div
@@ -161,13 +204,13 @@ function Table({ stockData }) {
           </div>
         </div>
       </div>
-      <div class="soverflow-y-auto  overflow-x-auto border-gray-700 rounded-lg">
+      <div class="soverflow-y-auto rounded-3xl overflow-x-auto border-gray-700">
         <div style={{ width: "100%" }} class=" align-middle  inline-block">
           <div
             style={{ height: "50%", maxHeight: "50vh" }}
-            class="shadow sm:rounded-lg  h-96"
+            class="shadow rounded-3xl sm:rounded-lg  h-96"
           >
-            <table class="min-w-full text-sm">
+            <table class="min-w-full text-sm rounded-3xl">
               <thead class=" text-md uppercase border-b-2 font-medium">
                 <tr>
                   <th className="px-6 py-3">s.no</th>
@@ -495,11 +538,11 @@ function Table({ stockData }) {
                   </th>
                 </tr>
               </thead>
-              <tbody style={{ backgroundColor: "white", fontWeight: "bold" }}>
-                {filteredData.map((data, index) => {
+              <tbody  style={{ backgroundColor: "white", fontWeight: "bold" }}>
+                {filteredData.slice(startIndex,endIndex).map((data, index) => {
                   return (
                     <tr className="border-b-2">
-                      <td class="pl-4">{index + 1}</td>
+                      <td class="pl-4">{startIndex + index + 1}</td>
                       <td class="flex px-6 py-4 whitespace-nowrap">
                         {data.apex_no}
                       </td>
@@ -583,6 +626,31 @@ function Table({ stockData }) {
             </table>
           </div>
         </div>
+      </div>
+      <div className="w-full h-16 flex justify-between border-t-2 items-center rounded-b-3xl">
+        <button onClick={prevPage} className="border-2 rounded-md ml-7 h-10 w-20">
+          Prev
+        </button>
+
+        <select
+          onChange={handleRowSizeChange}
+          value={rowSize}
+          className="border-2 w-56 h-10 rounded-md mx-3"
+        >
+          <option
+            value={stockData.length < 10 ? stockData.length : 10}
+            className=""
+          >
+            10
+          </option>
+          <option value={stockData.length < 50 ? stockData.length : 50}>
+            50
+          </option>
+          <option value={stockData.length}>Full</option>
+        </select>
+        <button onClick={nextPage} className="border-2 rounded-md mr-7 h-10 w-20">
+          Next
+        </button>
       </div>
       {/* {openPopup && selectedData && (
         <div className="blur-background">

@@ -46,7 +46,11 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
   const [click, setClick] = useState(false);
 
   useEffect(() => {
-    if (click || searchQuery == "") {
+    if(searchQuery == ""){
+      setFilteredData(getStock)
+      return
+    }
+    if (click) {
       const filteredResults = getStock.filter((item) => {
         const propertiesToSearch = [
           "cost",
@@ -71,6 +75,36 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
     }
   }, [click, getStock, searchQuery]);
 
+   //table row filter
+   const [rowSize, setRowSize] = useState(10);
+   const [currentPage, setCurrentPage] = useState(1);
+   const [totalPages, setTotalPages] = useState(1);
+ 
+   useEffect(() => {
+     setTotalPages(Math.ceil(filteredData.length / rowSize));
+   }, [filteredData, rowSize]);
+ 
+   const nextPage = () => {
+     if (currentPage < totalPages) {
+       setCurrentPage(currentPage + 1);
+     }
+   };
+ 
+   const prevPage = () => {
+     if (currentPage > 1) {
+       setCurrentPage(currentPage - 1);
+     }
+   };
+ 
+   const handleRowSizeChange = (e) => {
+     const newSize = parseInt(e.target.value);
+     setRowSize(newSize);
+     setCurrentPage(1); 
+   };
+ 
+   const startIndex = (currentPage - 1) * rowSize;
+   const endIndex = Math.min(startIndex + rowSize, filteredData.length);
+
   //sort by functionality
   const [sortOrders, setSortOrders] = useState({
     id: "asc",
@@ -91,16 +125,13 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
       ...prevSortOrders,
       [column]: prevSortOrders[column] === "asc" ? "desc" : "asc",
     }));
-
+  
     setSortedColumn(column);
-
     
     filteredData.sort((a, b) => {
-      const valueA =
-        typeof a[column] === "string" ? a[column].toLowerCase() : a[column];
-      const valueB =
-        typeof b[column] === "string" ? b[column].toLowerCase() : b[column];
-
+      const valueA = getValueForComparison(typeof a[column] === "string" ? a[column].toLowerCase() : a[column]);
+      const valueB = getValueForComparison(typeof b[column] === "string" ? b[column].toLowerCase() : b[column]);
+  
       if (valueA < valueB) {
         return sortOrders[column] === "asc" ? -1 : 1;
       }
@@ -109,8 +140,19 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
       }
       return 0;
     });
-
-    setFilteredData(filteredData);
+  
+    setFilteredData(filteredData); // Trigger re-render
+  };
+  
+  const getValueForComparison = (value) => {
+    // Check if the value is a date in the format "DD-MM-YYYY"
+    const dateRegex = /^(\d{2})-(\d{2})-(\d{4})$/;
+    if (dateRegex.test(value)) {
+      // If it's a valid date, convert it to a comparable format (YYYYMMDD)
+      const [, day, month, year] = value.match(dateRegex);
+      return `${year}${month}${day}`;
+    }
+    return value;
   };
 
   // <-------------------------------search bar enter function---------------------------->
@@ -123,10 +165,10 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
 
   return (
     <div className="w-full h-full flex justify-center pt-10 items-center">
-    <div className=" w-10/12 relative border-2 bg-white rounded-t-3xl h-auto">
+    <div className=" w-10/12 relative border-2 bg-white rounded-3xl h-auto">
     <div className="flex flex-wrap h-auto w-full my-4 items-center justify-center md:justify-between  font-semibold">
-        <div className="pl-4 text-2xl w-1/5 flex items-center whitespace-nowrap  text-blue-600 font-semibold">Stock Edit</div>
-        <div className="flex gap-4 items-center w-4/5 justify-end pr-6">
+        <div className="pl-4 text-2xl flex items-center whitespace-nowrap  text-blue-600 font-semibold">Stock Edit</div>
+        <div className="flex flex-wrap justify-center items-center">
           <div className="h-auto">
             <input
               name="inputQuery"
@@ -138,12 +180,12 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                 setSearchQuery(e.target.value);
               }}
               placeholder="Search..."
-              className="text-black indent-2 h-9 font-medium border-2 rounded-lg border-black"
+              className="text-black indent-2 font-medium w-56 sm:w-80 h-9 rounded-md border-2 border-black"
             />
           </div>
           <div
             onClick={() => setClick(true)}
-            className="cursor-pointer ml-3 w-24 text-center rounded-md h-10 py-1 text-white bg-blue-600 border-2  "
+            className="cursor-pointer text-center ml-3 w-24 rounded-md h-10 py-1 text-white bg-blue-600 border-2 mr-4"
           >
             Search
           </div>
@@ -157,19 +199,19 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
             class="shadow sm:rounded-lg  h-96"
           >
           <table class="min-w-full text-sm">
-          <thead class=" text-md uppercase border-b-2 font-medium">
+          <thead class="text-md uppercase border-b-2 font-medium">
               <tr>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left whitespace-nowrap tracking-wider"
+                  className="px-6 py-3 text-center whitespace-nowrap tracking-wider"
                 >
                   S.No
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
+                  className="px-6 py-3 whitespace-nowrap tracking-wider cursor-pointer"
                 >
-                  <div className="flex">
+                  <div className="flex w-full justify-center"> 
                     <div onClick={() => handleSort("id")}>Item Code</div>
 
                     {sortedColumn === "id" && (
@@ -185,7 +227,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   scope="col"
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
-                  <div className="flex">
+                  <div className="flex w-full justify-center">
                     <div onClick={() => handleSort("manufacturer_id")}>
                       Manufacturer Id
                     </div>
@@ -202,7 +244,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   scope="col"
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
-                  <div className="flex">
+                  <div className="flex w-full justify-center">
                     <div onClick={() => handleSort("supplier_id")}>
                       Supplier Id
                     </div>
@@ -219,7 +261,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   scope="col"
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
-                  <div className="flex">
+                  <div className="flex w-full justify-center">
                     <div onClick={() => handleSort("quantity")}>Stock Qty</div>
                     {sortedColumn === "quantity" && (
                       <span
@@ -234,7 +276,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   scope="col"
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
-                  <div className="flex">
+                  <div className="flex w-full justify-center">
                     <div onClick={() => handleSort("created_at")}>Created At</div>
                     {sortedColumn === "created_at" && (
                       <span
@@ -249,7 +291,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   scope="col"
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
-                  <div className="flex">
+                  <div className="flex w-full justify-center">
                     <div onClick={() => handleSort("dept_id")}>Dept Id</div>
                     {sortedColumn === "dept_id" && (
                       <span
@@ -264,7 +306,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   scope="col"
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
-                  <div className="flex">
+                  <div className="flex w-full justify-center">
                     <div onClick={() => handleSort("cost")}>
                       Inventory Value
                     </div>
@@ -281,7 +323,7 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                   scope="col"
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
-                  <div className="flex">
+                  <div className="flex w-full justify-center">
                     <div onClick={() => handleSort("faculty_id")}>User Id</div>
                     {sortedColumn === "faculty_id" && (
                       <span
@@ -294,16 +336,16 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left tracking-wider"
+                  className="px-6 py-3 text-center tracking-wider"
                 ></th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left tracking-wider"
+                  className="px-6 py-3 text-center tracking-wider"
                 ></th>
               </tr>
             </thead>
             <tbody style={{backgroundColor:"white" , fontWeight:"bold" ,color:"black"}}>
-              {filteredData.map((data, index) => {
+              {filteredData.slice(startIndex,endIndex).map((data, index) => {
                 return (
                   <tr
                     key={data.id}
@@ -355,6 +397,31 @@ function StockTable({getStock , fetchGetStock, setMessage, setError, setIsLoadin
           </table>
         </div>
       </div>
+      </div>
+      <div className="w-full h-16 flex justify-between border-t-2 items-center rounded-b-3xl">
+        <button onClick={prevPage} className="border-2 rounded-md ml-7 h-10 w-20">
+          Prev
+        </button>
+
+        <select
+          onChange={handleRowSizeChange}
+          value={rowSize}
+          className="border-2 w-56 h-10 rounded-md mx-3"
+        >
+          <option
+            value={getStock.length < 10 ? getStock.length : 10}
+            className=""
+          >
+            10
+          </option>
+          <option value={getStock.length < 50 ? getStock.length : 50}>
+            50
+          </option>
+          <option value={getStock.length}>Full</option>
+        </select>
+        <button onClick={nextPage} className="border-2 rounded-md mr-7 h-10 w-20">
+          Next
+        </button>
       </div>
       {stockOpenPopup && stockSelectedData && (
         <div className="blur-background">

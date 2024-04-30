@@ -14,7 +14,7 @@ function ScrapEdit({
   isLoading,
 }) {
   const [formData, setFormData] = useState({
-    item_code: "",
+    id: "",
     item_type: "",
     item_name: "",
     item_subname: "",
@@ -104,16 +104,16 @@ function ScrapEdit({
               </div>
               <div className="flex flex-wrap">
                 <div className="  flex ">
-                  <label for="item_code" className="text-md pr-5 ">
+                  <label for="id" className="text-md pr-5 ">
                     Item Code
                   </label>
                 </div>
                 <input
                   type="text"
-                  name="item_code"
+                  name="id"
                   disabled
                   onChange={handleChange}
-                  value={formData.item_code}
+                  value={formData.id}
                   className="text-md block px-3 py-2 rounded-lg w-full 
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
                 />
@@ -215,7 +215,7 @@ function ScrapEdit({
                 />
               </div>
               <div className="flex flex-wrap">
-                <div className="  flex ">
+                <div className="flex ">
                   <label for="dept_id" className="text-md pr-5 ">
                     Lab Code
                   </label>

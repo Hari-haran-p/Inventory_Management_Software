@@ -8,6 +8,11 @@ const pool = mysql.createPool({
   password: 'Spl@765',
   database: 'LAB',
   port: 3306
+  // host: 'localhost',
+  // user: 'root',
+  // password: '',
+  // database: 'LAB',
+  // port: 3306
 });
 
 module.exports = {

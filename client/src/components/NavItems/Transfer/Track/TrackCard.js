@@ -15,16 +15,16 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
         })
       if (response) {
         setIsLoading(false);
+        fetchPendingData();
         setMessage(response.data.Data);
-        console.log(response.data)
-        // onClose();
+
       }
     } catch (error) {
       if (error) {
         setIsLoading(false);
+        fetchPendingData();
         setError(error.response.data.Data)
-        console.error(error);
-        // onClose();
+
       }
     }
   }
@@ -53,27 +53,28 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
 
   const handleDelete = async (e) => {
     try {
-      setIsLoading(true);
-      e.preventDefault();
-      const response = await axios.post(
-        "http://localhost:4000/api/deleteTransferRequest",
-        {
-          transfer_id: data.id,
-          dept_id: user.dept_code,
+      if (window.confirm("Are you sure want toi delete ?")) {
+        setIsLoading(true);
+        e.preventDefault();
+        const response = await axios.post(
+          "http://localhost:4000/api/deleteTransferRequest",
+          {
+            transfer_id: data.id,
+            dept_id: user.dept_code,
+          }
+        );
+        if (response) {
+          setIsLoading(false);
+          fetchPendingData();
+          setMessage(response.data.Data);
         }
-      );
-      if (response) {
-        setIsLoading(false);
-        setMessage(response.data.Data);
-        console.log(response.data);
-        // onClose();
       }
+
     } catch (error) {
       if (error) {
         setIsLoading(false);
+        fetchPendingData();
         setError(error.response.data.Data);
-        console.error(error);
-        // onClose();
       }
     }
   };
@@ -187,7 +188,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
               >
                 Delete
               </button>
-              
+
             ) : null}
             <div className="flex flex-wrap items-center justify-between">
               <div className={`text-lg border-2 ${data.current_status == 'INITIATED' ? "border-indigo-500 rounded-md p-1  text-indigo-700 bg-indigo-100" : data.current_status == 'CANCELED' ? "border-red-500  text-red-700 rounded-md p-1 bg-red-100" : data.status == 'LABAPPROVED' ? "border-orange-500  text-orange-700 rounded-md p-1 bg-orange-100" : data.current_status == 'STORESAPPROVED' ? "border-green-500 text-green-700  rounded-md p-1 bg-green-100" : data.current_status == "REJECTED" ? "border-red-500 text-red-700 rounded-md p-1 bg-red-100" : data.current_status == "ACKNOWLEDGED" ? "border-2 border-purple-600 text-purple-800  rounded-md p-1 bg-purple-100 " : ""} `}>Status :
