@@ -3,17 +3,17 @@ import Accordion from "./Accordion";
 import axios from "axios";
 import { useAuth } from '../../../../AuthContext';
 
-const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
+const ConsumeTrack = ({isVisible,setMessage,onClose,setError}) => {
 
   const [pendingData, setPendingData] = useState([]);
   const [accordions, setAccordions] = useState([]);
 
-  const { user, getUser, getRequest } = useAuth();
+  const { user, getUser } = useAuth();
 
 
   const fetchPendingData = async () => {
     try {
-      const response = await getRequest(
+      const response = await axios.get(
         `http://localhost:4000/api/getScrapCardData/${user.user_id}`
       );
       setPendingData(response.data);
@@ -31,10 +31,10 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
     setAccordions([
       {
         key: 1,
-        title: "Initiated",
+        title: "Pending",
         data: pendingData.pending || [],
         isOpen: true,
-        noDataMessage: "No initiated data available",
+        noDataMessage: "No pending data available",
         icon:"&#9660;"
       },
       {
@@ -102,4 +102,4 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
   )
 }
 
-export default ScrapTrack
+export default ConsumeTrack

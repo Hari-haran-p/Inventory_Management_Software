@@ -11,9 +11,6 @@ const Navbar = ({ location, open, setOpen, user, loc }) => {
 
   const { logout } = useAuth();
 
-
-  console.log(location.split("/"));
-
   if (!loc.includes(location.split("/")[1]))
     return null
 
