@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 
-const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fetchScrapTrackData, getUser }) => {
+const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fetchPendingData, getUser }) => {
 
     const handleCancel = async (e) => {
         try {
@@ -14,20 +14,20 @@ const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fe
                         dept_id: user.dept_code,
                         user_id: user.user_id
                     })
+   
                 if (response) {
                     setIsLoading(false);
-                    getUser().then((response) => fetchScrapTrackData(response.dept_code));
+                    fetchPendingData();
                     setMessage(response.data.Data);
-                    onClose();
                 }
+
             }
         } catch (error) {
             if (error) {
+                // console.log(error);
                 setIsLoading(false);
                 setError(error.response.data.Data)
-                getUser().then((response) => fetchScrapTrackData(response.dept_code));
-                onClose();
-            }
+                fetchPendingData();            }
         }
     }
 
@@ -38,26 +38,27 @@ const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fe
                 setIsLoading(true);
                 e.preventDefault();
                 const response = await axios.post(
-                    "/api/deleteScrapRequest",
+                    "http://localhost:4000/api/deleteScrapRequest",
                     {
                         scrap_id: data.id,
                         dept_id: user.dept_code,
                         user_id: user.user_id
                     }
                 );
+                
+
                 if (response) {
                     setIsLoading(false);
-                    getUser().then((response) => fetchScrapTrackData(response.dept_code));
+                    fetchPendingData();
                     setMessage(response.data.Data);
-                    onClose();
                 }
             }
         } catch (error) {
+            console.log("erroeeeeee" + error);
             if (error) {
                 setIsLoading(false);
-                getUser().then((response) => fetchScrapTrackData(response.dept_code));
+                fetchPendingData();
                 setError(error.response.data.Data);
-                onClose();
             }
         }
     };

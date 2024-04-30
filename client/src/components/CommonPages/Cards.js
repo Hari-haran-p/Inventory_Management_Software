@@ -151,7 +151,7 @@ function Cards() {
               Stock Value
             </div>
             <div style={{ color: "red" }} className="card-amount-adjust whitespace-nowrap font-bold text-lg sm:text-2xl flex gap-2">
-              <div>Rs</div> {TotalInventoryValueData}
+              <div>Rs</div> {Math.round((TotalInventoryValueData + Number.EPSILON) * 100) / 100}
             </div>
           </div>
         </div>

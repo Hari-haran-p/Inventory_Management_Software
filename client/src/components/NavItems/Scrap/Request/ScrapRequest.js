@@ -58,7 +58,7 @@
 //   function resultClick(code) {
 //     // setData({ ...data, itemcode: code });
 //     const result = stock.filter((items) => {
-//       if (items.item_code == code) {
+//       if (items.id == code) {
 //         return items;
 //       }
 //     });
@@ -79,7 +79,7 @@
 //       setIsLoading(true);
 //       e.preventDefault();
 //       if (stockResult.length > 0) {
-//         // const sendItem = item.find((f) => f.item_code == data.itemcode);
+//         // const sendItem = item.find((f) => f.id == data.itemcode);
 //         const response = await axios.post(
 //           "http://localhost:4000/api/scrapRequest",
 //           {
@@ -174,13 +174,13 @@
 //                       stockResult.slice(0, 6).map((result) => {
 //                         return (
 //                           <div
-//                             key={result.item_code}
-//                             value={result.item_code}
+//                             key={result.id}
+//                             value={result.id}
 //                             className="text-md px-3 py-2 w-full border-none
 //                               bg-white border-2 focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none hover:bg-sky-100 rounded-lg"
-//                             onClick={() => resultClick(result.item_code)}
+//                             onClick={() => resultClick(result.id)}
 //                           >
-//                             {result.item_code}-{result.item_name}
+//                             {result.id}-{result.item_name}
 //                           </div>
 //                         );
 //                       }))
@@ -295,7 +295,7 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
           "item_name",
           "item_subname",
           "item_type",
-          "item_code",
+          "id",
           "apex_no",
           "item_description",
           "stock_qty",
@@ -316,9 +316,9 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
 
   //sort by functionality
   const [sortOrders, setSortOrders] = useState({
-    item_code: "asc",
+    id: "asc",
     item_type: "asc",
-    item_name: "asc",
+    item_name: "asc", 
     item_subname: "asc",
     item_description: "asc",
     apex_no: "asc",
@@ -432,13 +432,13 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
                   className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                 >
                   <div className="flex">
-                    <div onClick={() => handleSort("item_code")}>
+                    <div onClick={() => handleSort("id")}>
                       Item Code
                     </div>
-                    {sortedColumn === "item_code" && (
+                    {sortedColumn === "id" && (
                       <span
                         className={`bi bi-arrow-${
-                          sortOrders.item_code === "asc" ? "up" : "down"
+                          sortOrders.id === "asc" ? "up" : "down"
                         } ml-2`}
                       />
                     )}
@@ -571,7 +571,7 @@ function ScrapRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDe
                       {data.apex_no}
                     </td>
                     <td class="px-6 py-4 text-left whitespace-nowrap">
-                      {data.item_code}
+                      {data.id}
                     </td>
                     <td class="px-6 py-4 text-left whitespace-nowrap">
                       {data.item_name}

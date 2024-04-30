@@ -27,11 +27,11 @@ function Table({ scrapData,isVisible }) {
         const propertiesToSearch = [
           "id",
           "apex_no",
-          "item_code",
+          "stock_id",
           "item_type",
           "item_name",
           "item_subname",
-          "cost_per_item",
+          "inventory_value",
           "manufacturer_name",
           "supplier_name",
           "scrap_qty",
@@ -59,11 +59,11 @@ function Table({ scrapData,isVisible }) {
   const [sortOrder, setSortOrder] = useState({
     id: "asc",
     apex_no:"asc",
-    item_code: "asc",
+    stock_id: "asc",
     item_type: "asc",
     item_name: "asc",
     item_subname: "asc",
-    cost_per_item: "asc",
+    inventory_value: "asc",
     manufacturer_name: "asc",
     supplier_name: "asc",
     scrap_qty: "asc",
@@ -182,15 +182,15 @@ function Table({ scrapData,isVisible }) {
                     </div>
                   </th>
                   <th
-                    onClick={() => sortData("item_code")}
+                    onClick={() => sortData("stock_id")}
                     scope="col"
                     className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                   >
                     <div className="flex">
                       <div>Item Code</div>
-                      {sortedColumn === "item_code" && (
+                      {sortedColumn === "stock_id" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.item_code === "asc" ? "up" : "down"
+                          className={`bi bi-arrow-${sortOrder.stock_id === "asc" ? "up" : "down"
                             } ml-2`}
                         ></i>
                       )}
@@ -248,12 +248,12 @@ function Table({ scrapData,isVisible }) {
                     className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
                   >
                     <div className="flex">
-                      <div onClick={() => sortData("cost_per_item")}>
-                        Cost Per Item
+                      <div onClick={() => sortData("inventory_value")}>
+                        Cost per Item
                       </div>
-                      {sortedColumn === "cost_per_item" && (
+                      {sortedColumn === "inventory_value" && (
                         <i
-                          className={`bi bi-arrow-${sortOrder.cost_per_item === "asc" ? "up" : "down"
+                          className={`bi bi-arrow-${sortOrder.inventory_value === "asc" ? "up" : "down"
                             } ml-2`}
                         ></i>
                       )}
@@ -415,7 +415,7 @@ function Table({ scrapData,isVisible }) {
                         {data.id}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        {data.item_code}
+                        {data.stock_id}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         {data.item_type}
@@ -427,7 +427,7 @@ function Table({ scrapData,isVisible }) {
                         {data.item_subname}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        {data.cost_per_item}
+                        {data.inventory_value}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         {data.manufacturer_name}
@@ -448,7 +448,7 @@ function Table({ scrapData,isVisible }) {
                         {data.req_labname}
                       </td>
                       <td class=" px-6 py-4 whitespace-nowrap">
-                        {data.reject_description}
+                        {!data.reject_description ? "-" : data.reject_description}
                       </td>
                       <td class=" px-6 py-4 whitespace-nowrap">
                         {data.status}

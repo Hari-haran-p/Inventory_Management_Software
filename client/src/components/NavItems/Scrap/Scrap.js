@@ -77,6 +77,7 @@ const Scrap = () => {
         } else {
             setNoTrackData(true);
         }
+        console.log(response.data);
     }
 
     const [showTrackScrap, setShowTrackScrap] = useState(false);
@@ -85,7 +86,7 @@ const Scrap = () => {
     const [showScrapTable, setShowScrapTable] = useState(true);
 
 
-    const [message, setMesaage] = useState(null);
+    const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
 
     const navigate = useNavigate();
@@ -101,7 +102,8 @@ const Scrap = () => {
 
     const fetchStockData = async () => {
         try {
-            const response = await getRequest("http://localhost:4000/api/getAdminStockData");
+            const response = await getRequest(`http://localhost:4000/api/getAdminScrapStockData/${user.dept_code}`);
+            console.log(response);
             setStockData(response.data);
         } catch (error) {
             console.error(error);
@@ -131,7 +133,7 @@ const Scrap = () => {
     }, [scrapData, stockData, tableData])
 
     const clearMessage = () => {
-        setMesaage(null);
+        setMessage(null);
         setError(null);
     };
 
@@ -238,17 +240,18 @@ const Scrap = () => {
                 setScrapTrackData={setScrapTrackData}
                 scrapTrackData={scrapTrackData}
                 noTrackData={noTrackData}
-                setMesaage={setMesaage}
+                setMessage={setMessage}
+                onClose={()=>setShowTrackScrap(false)}
                 setError={setError}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
                 fetchScrapTrackData={fetchScrapTrackData}
             />
-            <ScrapApprove
+            <ScrapApprove   
                 isVisible={showScrapApprove}
                 onClose={() => setShowScrapApprove(false)}
                 user={user}
-                setMesaage={setMesaage}
+                setMessage={setMessage}
                 setError={setError}
                 scrapData={scrapData}
                 fetchScrapData={fetchScrapData}
@@ -266,7 +269,7 @@ const Scrap = () => {
                 user={user}
                 isVisible={showScrap}
                 onClose={()=>setShowScrap(false)}
-                setMessage={setMesaage}
+                setMessage={setMessage}
                 setError={setError}
                 getLabDetails={getLabDetails}
                 setGetLabDetails={setGetLabDetails}

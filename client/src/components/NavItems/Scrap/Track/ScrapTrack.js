@@ -3,7 +3,7 @@ import Accordion from "./Accordion";
 import axios from "axios";
 import { useAuth } from '../../../../AuthContext';
 
-const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
+const ScrapTrack = ({isVisible,setMessage,onClose,setError,setIsLoading,isLoading,fetchScrapTrackData}) => {
 
   const [pendingData, setPendingData] = useState([]);
   const [accordions, setAccordions] = useState([]);
@@ -16,12 +16,13 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
       const response = await axios.get(
         `http://localhost:4000/api/getScrapCardData/${user.user_id}`
       );
+      console.log(response);
       setPendingData(response.data);
     } catch (error) {
       console.error(error); 
     }
   };
-
+      
   useEffect(() => {
     fetchPendingData();
   }, []);
@@ -87,10 +88,14 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError}) => {
               title={accordion.title}
               data={accordion.data}
               isOpen={accordion.isOpen}
+              getUser = {getUser}
               user={user}
               setMessage={setMessage}
+              isLoading = {isLoading}
+              setIsLoading = {setIsLoading}
               onClose={onClose}
               setError={setError}
+              fetchPendingData = {fetchPendingData}
               toggleAccordion={() => toggleAccordion(accordion.key)}
               noDataMessage={accordion.noDataMessage}
             />

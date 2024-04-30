@@ -47,7 +47,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
           const response = await axios.post("http://localhost:4000/api/rejectScrapRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc });
           if (response && response.status == 201) {
             setIsLoading(false);
-            setMessage(response.data.Data);
+            setMessage(response.data.Data); 
             onClose();
             fetchScrapData();
           }
@@ -128,17 +128,17 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
                 <div className="pt-4">Scrap Value : {data.inventory_value}</div>
               </div>
             </div>
-            < RejectPopup
-              isVisible={showManufacturer}
-              // rejectDesc={rejectDesc}
-              rejectDesc={rejectDesc}
-              setRejectDesc={setRejectDesc}
-              onClose={() => setShowManufacturer(false)}
-              setError={setError}
-              handleReject={handleReject}
-            />
-          </div>
 
+          </div>
+          < RejectPopup
+            isVisible={showManufacturer}
+            // rejectDesc={rejectDesc}
+            rejectDesc={rejectDesc}
+            setRejectDesc={setRejectDesc}
+            onClose={() => setShowManufacturer(false)}
+            setError={setError}
+            handleReject={handleReject}
+          />
         </>
       )}
 

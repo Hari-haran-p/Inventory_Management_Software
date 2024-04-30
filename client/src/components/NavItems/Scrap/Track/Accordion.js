@@ -24,10 +24,13 @@ const Accordion = (props) => {
                 key={index}
                 data={data}
                 index={index}
+                setIsLoading = {props.setIsLoading} 
                 onClose={props.onClose}
                 user={props.user}
+                getUser = {props.getUser}
                 setError={props.setError}
                 setMessage={props.setMessage}
+                fetchPendingData={props.fetchPendingData}
               />
             ))
           ) : (

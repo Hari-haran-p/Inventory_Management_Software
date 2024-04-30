@@ -210,9 +210,9 @@ const importItems = async function (req, res, next) {
             const result = itemTableData.find((ite) => ite.item_name.toUpperCase() === item.item_name.toUpperCase() && ite.item_subname.toUpperCase() === item.item_subname.toUpperCase())
             if (result) {
                 // console.log("from import : ", i , result);
-                res.status(401).json({ Data: `Item subname duplicate entry at row ${i + 1}`})
+                res.status(401).json({ Data: `Item subname duplicate entry at row ${i + 1}` })
                 return;
-            }   
+            }
             if (itemTypeSet.has(item.item_type)) {
             } else {
                 res.status(401).json({ Data: `Item type mismatch at row ${i + 1}` });
@@ -533,6 +533,7 @@ const importTransferItems = async function (req, res, next) {
         await connection.beginTransaction();
         const data = req.body.items;
 
+
         const stockTableData = await new Promise((resolve, reject) => {
             connection.query("SELECT * FROM stocktable", (error, result) => {
                 if (error) {
@@ -542,47 +543,52 @@ const importTransferItems = async function (req, res, next) {
                 }
             })
         })
-        const itemData = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM itemtable", (error, result) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(result);
-                }
-            })
-        })
+
+
 
         for (var i = 0; i < data.length; i++) {
 
             const stockResult = stockTableData.filter((f) => {
-                if (f.apex_no == data[i].apex_no && f.item_code == data[i].item_code && f.dept_id == data[i].from_lab) {
+                if (f.apexno == data[i].apex_no && f.id == data[i].stock_id && f.dept_id == data[i].transfered_from) {
                     return f;
                 }
             })
 
-            const itemResult = itemData.filter((f) => {
-                if (f.item_code == data[i].item_code) {
-                    return f;
-                }
+            const transferResult2 = await new Promise((resolve, reject) => {
+                connection.query("SELECT SUM(transfer_qty) as transfer FROM transfertable WHERE stock_id = ? AND status != ?", [data[i].stock_id, "ACKNOWLEDGED"], async (error, result) => {
+                    if (error) {
+                        await connection.rollback();
+                        return res.status(500).json({ "Data": "Some internal error" });
+                        reject(error);
+
+                    } else
+                        resolve(result);
+                });
             })
 
-            if (stockResult && itemResult) {
+            if (transferResult2.length > 0) {
+                const transfer = parseInt(transferResult2[0].transfer) + parseInt(data[i].transfer_qty);
+                if (transfer > stockResult[0].quantity) {
+                    return res.status(500).json({ "Data": `Item is in Progress at ${i + 1} row` });
+                }
+            }
 
-                if (stockResult[0].stock_qty >= data[i].transfer_qty) {
+
+            if (stockResult) {
+                if (stockResult[0].quantity >= data[i].transfer_qty) {
+
                     const update = await new Promise((resolve, reject) => {
 
                         connection.query(
-                            "INSERT INTO transfertable (apex_no, item_code, manufacturer_id, supplier_id, transfer_qty, transfer_to, transfered_from, user_id, status) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)",
+                            "INSERT INTO transfertable (apex_no, stock_id, transfer_qty, transfer_to, transfered_from, faculty_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
                             [
                                 data[i].apex_no,
-                                data[i].item_code,
-                                stockResult[0].manufacturer_id,
-                                stockResult[0].supplier_id,
+                                data[i].stock_id,
                                 data[i].transfer_qty,
-                                data[i].to_lab,
-                                data[i].from_lab,
-                                stockResult[0].user_id,
-                                "APPROVED"
+                                data[i].transfer_to,
+                                data[i].transfered_from,
+                                stockResult[0].faculty_id,
+                                "STORESAPPROVED"
                             ],
                             async (error, result) => {
                                 if (error) {
@@ -598,10 +604,44 @@ const importTransferItems = async function (req, res, next) {
                         );
                     });
 
+                    if (update.affectedRows > 0) {
+                        const transferlog = await new Promise((resolve, reject) => {
+                            connection.query("INSERT INTO transferlogs SET transfer_id = ? ,approval_status = ?, approved_by = ?",
+                                [update.insertId, "LABAPPROVED", stockResult[0].faculty_id],
+                                async (error, result) => {
+                                    if (error) {
+                                        console.log(error);
+                                        res.status(401).json({ Data: "some internal error" });
+                                        reject(error);
+                                        return
+                                    } else {
+                                        resolve(result)
+                                    }
+                                })
+                        })
+                        const transferlog1 = await new Promise((resolve, reject) => {
+                            connection.query("INSERT INTO transferlogs SET transfer_id = ? ,approval_status = ?, approved_by = ?",
+                                [update.insertId, "STORESAPPROVED", stockResult[0].faculty_id],
+                                async (error, result) => {
+                                    if (error) {
+                                        console.log(error);
+                                        res.status(401).json({ Data: "some internal error" });
+                                        reject(error);
+                                        return
+                                    } else {
+                                        resolve(result)
+                                    }
+                                })
+                        })
+                    } else {
+                        res.status(401).json({ Data: "some Internal error" })
+                    }
+
                 } else {
                     res.status(401).json({ Data: `Quantity mismatch at ${i + 1} row` });
                     return
                 }
+
             } else {
                 res.status(401).json({ Data: `Item not Found at ${i + 1} row` });
                 return
@@ -609,6 +649,7 @@ const importTransferItems = async function (req, res, next) {
         }
 
         await connection.commit();
+
         res.status(200).json({ Data: "Data sucessfully imported" });
 
     } catch (error) {
