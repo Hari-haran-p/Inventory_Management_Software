@@ -296,7 +296,7 @@ const cancelScrapRequest = async function (req, res, next) {
             res.status(200).json({ "Data": "Canceled sucessfully" });
 
         } else {
-            res.status(400).json({ "Data": "Some Internal Error" });
+            res.status(400).json({ "Data": "Some internal Error" });
             return;
         }
 
