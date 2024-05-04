@@ -277,6 +277,7 @@ const cancelScrapRequest = async function (req, res, next) {
     }
 }
 
+
 const deleteScrapRequest = async function (req, res, next) {
 
     let connection;
