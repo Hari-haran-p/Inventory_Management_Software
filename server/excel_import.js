@@ -301,32 +301,32 @@ const importStocks = async function (req, res, next) {
     const data = req.body.items;
     const user = req.body.user_id;
     let errorMessage = `Some Internal Error`;
-
+    console.log(data);
     let connection;
     try {
         let errorOccured = false;
         connection = await db.getConnection();
         await connection.beginTransaction();
 
-        const itemData = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM itemtable", (error, result) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(result);
-                }
-            })
-        })
+        // const itemData = await new Promise((resolve, reject) => {
+        //     connection.query("SELECT * FROM itemtable", (error, result) => {
+        //         if (error) {
+        //             reject(error);
+        //         } else {
+        //             resolve(result);
+        //         }
+        //     })
+        // })
 
-        const stockData = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM stocktable", (error, result) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(result);
-                }
-            })
-        })
+        // const stockData = await new Promise((resolve, reject) => {
+        //     connection.query("SELECT * FROM stocktable", (error, result) => {
+        //         if (error) {
+        //             reject(error);
+        //         } else {
+        //             resolve(result);
+        //         }
+        //     })
+        // })
 
         const manufacturerData = await new Promise((resolve, reject) => {
             connection.query("SELECT * FROM manufacturer", (error, result) => {
@@ -368,10 +368,11 @@ const importStocks = async function (req, res, next) {
             })
         })
 
-        const itemSet = new Set();
-        for (const item of itemData) {
-            itemSet.add(item.item_code);
-        }
+        // const itemSet = new Set();
+        // for (const item of itemData) {
+        //     itemSet.add(item.item_code);
+        // }
+
         const manufacturerSet = new Set();
         for (const manu of manufacturerData) {
             manufacturerSet.add(manu.id);
@@ -391,11 +392,11 @@ const importStocks = async function (req, res, next) {
 
         for (let i = 0; i < data.length; i++) {
             const stock = data[i];
-            if (itemSet.has(stock.item_code)) {
-            } else {
-                res.status(401).json({ Data: `Item code mismatch at row ${i + 1}` });
-                return;
-            }
+            // if (itemSet.has(stock.item_code)) {
+            // } else {
+            //     res.status(401).json({ Data: `Item code mismatch at row ${i + 1}` });
+            //     return;
+            // }
             if (manufacturerSet.has(stock.manufacturer_id)) {
             } else {
                 res.status(401).json({ Data: `Check for Manufacturer id at row ${i + 1}` });
@@ -407,10 +408,10 @@ const importStocks = async function (req, res, next) {
                 return;
             };
             if (stock.stock_qty < 0 || stock.stock_qty == 0) {
-                res.status(401).json({ Data: `Cost value must be vaild ${i + 1}` });
+                res.status(401).json({ Data: `Cost value must be vaild at row ${i + 1}` });
                 return;
             }
-            if (facultySet.has(stock.user_id)) {
+            if (facultySet.has(stock.faculty_id)) {
             } else {
                 res.status(401).json({ Data: `User not fount at row ${i + 1}` });
                 return;
@@ -422,24 +423,24 @@ const importStocks = async function (req, res, next) {
             }
         }
 
-        const itemDataMap = {};
-        itemData.forEach((m) => {
-            itemDataMap[m.item_code] = m;
-        });
+        // const itemDataMap = {};
+        // itemData.forEach((m) => {
+        //     itemDataMap[m.item_code] = m;
+        // });
 
-        data.forEach(async (d, index) => {
-            const m = itemDataMap[d.item_code];
-            if (m) {
-                // console.log(m.cost_per_item, "   ", d.stock_qty, "    ", d.inventory_value);
-                if (m.cost_per_item * d.stock_qty !== d.inventory_value) {
-                    await connection.rollback();
-                    errorOccured = true
-                    errorMessage = `Inventory value is not equivalent to cost of item at row ${index + 1}`
-                    // res.status(401).json({ Data: `Inventory value is not equivalent to cost of item at row ${index + 1}` });
-                    return;
-                }
-            }
-        });
+        // data.forEach(async (d, index) => {
+        //     const m = itemDataMap[d.item_code];
+        //     if (m) {
+        //         // console.log(m.cost_per_item, "   ", d.stock_qty, "    ", d.inventory_value);
+        //         if (m.cost_per_item * d.stock_qty !== d.inventory_value) {
+        //             await connection.rollback();
+        //             errorOccured = true
+        //             errorMessage = `Inventory value is not equivalent to cost of item at row ${index + 1}`
+        //             // res.status(401).json({ Data: `Inventory value is not equivalent to cost of item at row ${index + 1}` });
+        //             return;
+        //         }
+        //     }
+        // });
 
 
         const date = new Date();
@@ -448,51 +449,49 @@ const importStocks = async function (req, res, next) {
 
         const result = data.map(async (d, index) => {
 
-            if (Object.values(d).length < 10) {
+            if (Object.values(d).length < 14) {
                 await connection.rollback();
                 errorOccured = true
                 errorMessage = `Some values are missing at row ${index + 1}`
-                // res.status(401).json({ Data: `Some values are missing at row ${index + 1}` });
                 return
             };
 
-            const result = stockData.find((s) => s.item_code.toUpperCase() == d.item_code.toUpperCase() && s.dept_id.toUpperCase() == d.dept_id.toUpperCase() && s.apex_no.toUpperCase() == d.apex_no.toUpperCase())
+            // const result = stockData.find((s) => s.item_code.toUpperCase() == d.item_code.toUpperCase() && s.dept_id.toUpperCase() == d.dept_id.toUpperCase() && s.apex_no.toUpperCase() == d.apex_no.toUpperCase())
 
-            if (result) {
-                console.log("update");
-                const stockAdd = result.stock_qty + d.stock_qty;
-                const inventoryValue = result.inventory_value + d.inventory_value;
-                console.log(stockAdd, "   ", inventoryValue);
-                const update = await new Promise((resolve, reject) => {
-                    connection.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ? WHERE stock_id = ?", [stockAdd, inventoryValue, result.stock_id],
-                        async (error, result) => {
-                            if (error) {
-                                errorOccured = true;
-                                reject(error);
-                                return;
-                            } else {
-                                resolve(result);
-                            }
-                        })
-                })
-            } else {
-                console.log("insert");
-                // console.log(d, curr_date)
-                const insert = await new Promise((resolve, reject) => {
-                    connection.query("INSERT INTO stocktable (apex_no, item_code, manufacturer_id, supplier_id, stock_qty, inventory_value, user_id, created_at, dept_id, apex_reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        [d.apex_no.toUpperCase(), d.item_code.toUpperCase(), d.manufacturer_id.toUpperCase(), d.supplier_id.toUpperCase(), d.stock_qty, d.inventory_value, d.user_id.toUpperCase(), curr_date, d.dept_id.toUpperCase(), d.apex_reason.toUpperCase()],
-                        async (error, result) => {
-                            if (error) {
-                                console.log(error);
-                                errorOccured = true;
-                                reject(error);
-                                return;
-                            } else {
-                                resolve(result);
-                            }
-                        })
-                })
-            }
+            // if (result) {
+            //     console.log("update");
+            //     const stockAdd = result.stock_qty + d.stock_qty;
+            //     const inventoryValue = result.inventory_value + d.inventory_value;
+            //     console.log(stockAdd, "   ", inventoryValue);
+            //     const update = await new Promise((resolve, reject) => {
+            //         connection.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ? WHERE stock_id = ?", [stockAdd, inventoryValue, result.stock_id],
+            //             async (error, result) => {
+            //                 if (error) {
+            //                     errorOccured = true;
+            //                     reject(error);
+            //                     return;
+            //                 } else {
+            //                     resolve(result);
+            //                 }
+            //             })
+            //     })
+            // } else {
+            console.log("insert");
+            // console.log(d, curr_date)
+            const insert = await new Promise((resolve, reject) => {
+                connection.query("INSERT INTO stocktable (apexno, consumable, type, name, subname, description, quantity, cost, quantity_units, faculty_id, dept_id, apex_reason, manufacturer_id, supplier_id ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    [d.apexno.toUpperCase(), d.consumable.toUpperCase(), d.type, d.name.toUpperCase(),d.subname.toUpperCase(),d.description.toUpperCase(), d.quantity, d.cost,d.quantity_units.toUpperCase(), d.faculty_id.toUpperCase(),d.dept_id.toUpperCase(), d.apex_reason.toUpperCase(),d.manufacturer_id.toUpperCase(),d.supplier_id.toUpperCase()],
+                    async (error, result) => {
+                        if (error) {
+                            console.log(error);
+                            errorOccured = true;
+                            reject(error);
+                            return;
+                        } else {
+                            resolve(result);
+                        }
+                    })
+            })
         })
 
         await Promise.all(result).catch(async (error) => {

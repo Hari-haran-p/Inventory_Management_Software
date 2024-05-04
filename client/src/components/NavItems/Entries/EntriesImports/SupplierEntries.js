@@ -58,11 +58,7 @@ export default function SupplierEntries() {
         <div className="bg-gray-100 h-full w-full  px-14 animate1 py-5 flex flex-row-reverse  items-center justify-center rounded-lg">
           <div className=" w-full md:w-1/2 ">
             <div className="bg-white w-full md:w-10/12 shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px]  rounded-2xl ">
-              {/* <div className="   rounded-lg"> */}
-                {/* <div className="   rounded-lg p-5 flex flex-wrap flex-col justify-center items-start"> */}
-                  <SupplierImport setMessage={setMessage} setError={setError} />
-                {/* </div> */}
-              {/* </div> */}
+              <SupplierImport setMessage={setMessage} setError={setError} />
               <SupplierPopUp setMessage={setMessage} setError={setError} />
             </div>
           </div>

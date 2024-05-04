@@ -2,15 +2,15 @@ const db = require("./database/db.js");
 
 
 const manufacturerAdd = async function (req, res, next) {
-    try{
-    const name = req.body.name;
-    db.query("INSERT INTO manufacturer (name) VALUES (?)", [name])
-        .then((response) => {
-            res.status(201).json({ Data: "Manufacturer created sucessfully" })
-        }).catch((error) => {
-            res.status(400).json({ Data: "Some internal error" });
-        })
-    }catch{
+    try {
+        const name = req.body.name;
+        db.query("INSERT INTO manufacturer (name) VALUES (?)", [name])
+            .then((response) => {
+                res.status(201).json({ Data: "Manufacturer created sucessfully" })
+            }).catch((error) => {
+                res.status(400).json({ Data: "Some internal error" });
+            })
+    } catch {
         console.log("Error Inserting the Manufacturer Name");
     }
 }
@@ -103,118 +103,135 @@ const itemAdd = async function (req, res, next) {
 }
 
 const stockAdd = async function (req, res, next) {
-console.log("called");
+    console.log("called");
+    console.log(req.body);
+    try {
+        const apex_no = req.body.apexno.toUpperCase();
+        const consumable = req.body.consumable.toUpperCase();
+        const type = req.body.type;
+        const name = req.body.name.toUpperCase();
+        const subname = req.body.subname.toUpperCase();
+        const description = req.body.description.toUpperCase();
+        const qunatity = req.body.quantity;
+        const cost = parseFloat(req.body.cost);
+        const quantity_units = req.body.quantity_units;
+        const faculty_id = req.body.userId.toUpperCase();
+        const dept_id = req.body.dept_id.toUpperCase();
+        const apex_reason = req.body.apex_reason.toUpperCase();
+        const manufacturerId = req.body.manufacturerId.toUpperCase();
+        const supplierId = req.body.supplierId.toUpperCase();
 
-    const item_code = req.body.itemcode;
-    const manufacturerId = req.body.manufacturerId;
-    const supplierId = req.body.supplierId;
-    const stockQty = req.body.stock_qty;
-    const inventoryValue = req.body.inventoryValue;
-    const userId = req.body.userId.toUpperCase();
-    const labCode = req.body.labCode.toUpperCase();
-    const currDate = new Date();
-    const apex_no = req.body.apex_no.toUpperCase();
-    const userDept = req.body.user_dept_id.toLowerCase();
 
-    const selectResult = await new Promise((resolve, reject) => {
-        db.query("SELECT * FROM itemtable").catch((error) => {
-            res.status(400).json({ Data: "Some internal Error" });
-            reject(error);
-            return;
-        }).then((response) => {
-            resolve(response);
-        })
-    })
+        // const selectResult = await new Promise((resolve, reject) => {
+        //     db.query("SELECT * FROM itemtable").catch((error) => {
+        //         res.status(400).json({ Data: "Some internal Error" });
+        //         reject(error);
+        //         return;
+        //     }).then((response) => {
+        //         resolve(response);
+        //     })
+        // })
 
-    const selectResult2 = await new Promise((resolve, reject) => {
-        db.query("SELECT * FROM stocktable").catch((error) => {
-            res.status(400).json({ Data: "Some internal Error" });
-            reject(error);
-            return;
-        }).then((response) => {
-            resolve(response);
-        })
-    })
+        // const selectResult2 = await new Promise((resolve, reject) => {
+        //     db.query("SELECT * FROM stocktable").catch((error) => {
+        //         res.status(400).json({ Data: "Some internal Error" });
+        //         reject(error);
+        //         return;
+        //     }).then((response) => {
+        //         resolve(response);
+        //     })
+        // })
 
-    const findResult = selectResult2.find((f) => f.apex_no.toUpperCase() == apex_no.toUpperCase() && f.item_code.toUpperCase() == item_code.toUpperCase() && f.dept_id.toUpperCase() == labCode);
+        // const findResult = selectResult2.find((f) => f.apex_no.toUpperCase() == apex_no.toUpperCase() && f.item_code.toUpperCase() == item_code.toUpperCase() && f.dept_id.toUpperCase() == labCode);
 
-    if (selectResult.some((s) => s.item_code == item_code) && stockQty > 0) {
-        if (userDept != 'slbs' && labCode.toLowerCase() == userDept) {
-            if (findResult) {
-                const stockAdd = parseInt(findResult.stock_qty, 10) + parseInt(stockQty, 10);
-                const inventoryAdd = parseInt(findResult.inventory_value, 10) + parseInt(inventoryValue, 10)
-                db.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ?, user_id = ? WHERE stock_id = ?", [stockAdd, inventoryAdd, userId, findResult.stock_id])
-                    .then((response) => {
-                        if (response.affectedRows > 0) {
-                            res.status(201).json({ Data: "Stock value updated in existing data" });
-                        } else {
-                            res.status(400).json({ Data: "Data Not Inserted check for errors" });
-                        }
-                    })
-                    .catch((error) => res.status(400).json({ Data: "Some internal error" }));
-                return;
-            } else {
-                db.query(
-                    `INSERT INTO stocktable (apex_no, item_code, manufacturer_id, supplier_id, stock_qty, inventory_value, user_id, created_at, dept_id) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                    [apex_no, item_code, manufacturerId, supplierId, stockQty, inventoryValue, userId, currDate.toISOString().split("T")[0], labCode])
-                    .then((response) => {
-                        if (response.affectedRows > 0) {
-                            res.status(201).json({ Data: "Stock Created Sucessfully" });
-                            return;
-                        } else {
-                            res.status(400).json({ Data: "Data Not Inserted check for errors" });
-                            return;
-                        }
-                    }).catch((error) => {
+        // if (selectResult.some((s) => s.item_code == item_code) && stockQty > 0) {
+        //     if (userDept != 'slbs' && labCode.toLowerCase() == userDept) {
+        //         if (findResult) {
+        //             const stockAdd = parseInt(findResult.stock_qty, 10) + parseInt(stockQty, 10);
+        //             const inventoryAdd = parseInt(findResult.inventory_value, 10) + parseInt(inventoryValue, 10)
+        //             db.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ?, user_id = ? WHERE stock_id = ?", [stockAdd, inventoryAdd, userId, findResult.stock_id])
+        //                 .then((response) => {
+        //                     if (response.affectedRows > 0) {
+        //                         res.status(201).json({ Data: "Stock value updated in existing data" });
+        //                     } else {
+        //                         res.status(400).json({ Data: "Data Not Inserted check for errors" });
+        //                     }
+        //                 })
+        //                 .catch((error) => res.status(400).json({ Data: "Some internal error" }));
+        //             return;
+        //         } else {
+        //             db.query(
+        //                 `INSERT INTO stocktable (apex_no, item_code, manufacturer_id, supplier_id, stock_qty, inventory_value, user_id, created_at, dept_id) 
+        //                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        //                 [apex_no, item_code, manufacturerId, supplierId, stockQty, inventoryValue, userId, currDate.toISOString().split("T")[0], labCode])
+        //                 .then((response) => {
+        //                     if (response.affectedRows > 0) {
+        //                         res.status(201).json({ Data: "Stock Created Sucessfully" });
+        //                         return;
+        //                     } else {
+        //                         res.status(400).json({ Data: "Data Not Inserted check for errors" });
+        //                         return;
+        //                     }
+        //                 }).catch((error) => {
 
-                        res.status(400).json({ Data: "Some internal error" });
-                        return;
-                    });
-                return;
-            }
-        } else if (userDept == 'slbs') {
-            if (findResult) {
-                const stockAdd = parseInt(findResult.stock_qty, 10) + parseInt(stockQty, 10);
-                const inventoryAdd = parseInt(findResult.inventory_value, 10) + parseInt(inventoryValue, 10)
-                db.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ?, user_id = ? WHERE stock_id = ?", [stockAdd, inventoryAdd, userId, findResult.stock_id])
-                    .then((response) => {
-                        if (response.affectedRows > 0) {
-                            res.status(201).json({ Data: "Stock value updated in existing data" });
-                        } else {
-                            res.status(400).json({ Data: "Data Not Inserted check for errors" });
-                        }
-                    })
-                    .catch((error) => res.status(400).json({ Data: "Some internal error" }));
-                return;
-            } else {
-                db.query(
-                    `INSERT INTO stocktable (apex_no, item_code, manufacturer_id, supplier_id, stock_qty, inventory_value, user_id, created_at, dept_id) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                    [apex_no, item_code, manufacturerId, supplierId, stockQty, inventoryValue, userId, currDate.toISOString().split("T")[0], labCode])
-                    .then((response) => {
-                        if (response.affectedRows > 0) {
-                            res.status(201).json({ Data: "Stock Created Sucessfully" });
-                            return;
-                        } else {
-                            res.status(400).json({ Data: "Data Not Inserted check for errors" });
-                            return;
-                        }
-                    }).catch((error) => {
+        //                     res.status(400).json({ Data: "Some internal error" });
+        //                     return;
+        //                 });
+        //             return;
+        //         }
+        //     } else if (userDept == 'slbs') {
+        //         if (findResult) {
+        //             const stockAdd = parseInt(findResult.stock_qty, 10) + parseInt(stockQty, 10);
+        //             const inventoryAdd = parseInt(findResult.inventory_value, 10) + parseInt(inventoryValue, 10)
+        //             db.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ?, user_id = ? WHERE stock_id = ?", [stockAdd, inventoryAdd, userId, findResult.stock_id])
+        //                 .then((response) => {
+        //                     if (response.affectedRows > 0) {
+        //                         res.status(201).json({ Data: "Stock value updated in existing data" });
+        //                     } else {
+        //                         res.status(400).json({ Data: "Data Not Inserted check for errors" });
+        //                     }
+        //                 })
+        //                 .catch((error) => res.status(400).json({ Data: "Some internal error" }));
+        //             return;
+        //         } else {
+        //             db.query(
+        //                 `INSERT INTO stocktable (apex_no, item_code, manufacturer_id, supplier_id, stock_qty, inventory_value, user_id, created_at, dept_id) 
+        //                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        //                 [apex_no, item_code, manufacturerId, supplierId, stockQty, inventoryValue, userId, currDate.toISOString().split("T")[0], labCode])
+        //                 .then((response) => {
+        //                     if (response.affectedRows > 0) {
+        //                         res.status(201).json({ Data: "Stock Created Sucessfully" });
+        //                         return;
+        //                     } else {
+        //                         res.status(400).json({ Data: "Data Not Inserted check for errors" });
+        //                         return;
+        //                     }
+        //                 }).catch((error) => {
 
-                        res.status(400).json({ Data: "Some internal error" });
-                        return;
-                    });
-                return;
-            }
-        } else {
-            res.status(400).json({ Data: "Unable to create stock, check for authority" });
-            return;
-        }
+        //                     res.status(400).json({ Data: "Some internal error" });
+        //                     return;
+        //                 });
+        //             return;
+        //         }
+        // } else {
+        //     res.status(400).json({ Data: "Unable to create stock, check for authority" });
+        //     return;
+        // }
 
-    } else {
-        res.status(400).json({ Data: "Check for Itemname and stock quantity" });
-        return;
+        // } else {
+        //     res.status(400).json({ Data: "Check for Itemname and stock quantity" });
+        //     return;
+        // }
+
+        await db.query("INSERT INTO stocktable (apexno, consumable, type, name, subname, description, quantity, cost, quantity_units, faculty_id, dept_id, apex_reason, manufacturer_id, supplier_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [apex_no, consumable, type, name, subname, description, qunatity, cost, quantity_units, faculty_id, dept_id, apex_reason, manufacturerId, supplierId]).then((response) => {
+                return res.status(201).json({ Data: "Stock Created Sucessfully" });
+            })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ Data: "Some Internal Error" });
+
     }
 }
 

@@ -16,9 +16,10 @@ const db = require("./database/db.js");
 const { getTransferData, transferRequest, acceptRequest, rejectRequest, cancelTransferRequest, deleteTransferRequest, acknowledgeTransfer } = require("./transfer.js");
 const { itemEdit, stockEdit } = require("./edit.js");
 const { manufacturerAdd, supplierAdd, itemAdd, stockAdd } = require("./vendor.js");
-const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest, acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData } = require("./scrap.js");
+const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest, acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData, getScrapCardData } = require("./scrap.js");
 const { importItems, importStocks, importTransferItems, importManufacturers, importSuppliers } = require("./excel_import.js");
 const { error } = require("console");
+const { consumeRequest, getAllConsumeData, getConsumeData, rejectConsumeRequest, acceptConsumeRequest, cancelConsumeRequest, deleteConsumeRequest, getTableConsumeData, getConsumeCardData } = require("./consume.js");
 
 
 const app = express();
@@ -371,6 +372,8 @@ app.post("/api/importManufacturers", importManufacturers);
 
 app.post("/api/importSuppliers", importSuppliers);
 
+
+//Scrap Related  API's
 app.post("/api/scrapRequest", scrapRequest);
 
 app.get("/api/getScrap", authenticate, getAllScrapData);
@@ -387,5 +390,28 @@ app.post("/api/deleteScrapRequest", deleteScrapRequest);
 
 app.get("/api/getTableScrapData", authenticate, getTableScrapData);
 
+
+app.get("/api/getScrapCardData/:id", authenticate, getScrapCardData);
+
+
+
+//Consume Related API's
+app.post("/api/consumeRequest", consumeRequest);
+
+app.get("/api/getConsume",authenticate,  getAllConsumeData);
+
+app.get("/api/getConsumeData/:id", authenticate, getConsumeData);
+
+app.post("/api/rejectConsumeRequest", rejectConsumeRequest);
+
+app.post("/api/acceptConsumeRequest", acceptConsumeRequest);
+
+app.post("/api/cancelConsumeRequest", cancelConsumeRequest);
+
+app.post("/api/deleteConsumeRequest", deleteConsumeRequest);
+
+app.get("/api/getTableConsumeData",authenticate, getTableConsumeData);
+
+app.get("/api/getConsumeCardData/:id", authenticate, getConsumeCardData);
 
 app.listen(4000, () => console.log("App listening on port 4000"));

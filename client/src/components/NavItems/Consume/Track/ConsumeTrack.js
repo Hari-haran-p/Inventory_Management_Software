@@ -3,26 +3,25 @@ import Accordion from "./Accordion";
 import axios from "axios";
 import { useAuth } from '../../../../AuthContext';
 
-const ScrapTrack = ({isVisible,setMessage,onClose,setError,setIsLoading,isLoading,fetchScrapTrackData}) => {
+const ConsumeTrack = ({isVisible,setMessage,onClose,setError}) => {
 
   const [pendingData, setPendingData] = useState([]);
   const [accordions, setAccordions] = useState([]);
 
-  const { user, getUser, getRequest } = useAuth();
+  const { user, getUser } = useAuth();
 
 
   const fetchPendingData = async () => {
     try {
-      const response = await getRequest(
+      const response = await axios.get(
         `http://localhost:4000/api/getScrapCardData/${user.user_id}`
       );
-      console.log(response);
       setPendingData(response.data);
     } catch (error) {
       console.error(error); 
     }
   };
-      
+
   useEffect(() => {
     fetchPendingData();
   }, []);
@@ -32,10 +31,10 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError,setIsLoading,isLoadin
     setAccordions([
       {
         key: 1,
-        title: "Initiated",
+        title: "Pending",
         data: pendingData.pending || [],
         isOpen: true,
-        noDataMessage: "No initiated data available",
+        noDataMessage: "No pending data available",
         icon:"&#9660;"
       },
       {
@@ -88,14 +87,10 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError,setIsLoading,isLoadin
               title={accordion.title}
               data={accordion.data}
               isOpen={accordion.isOpen}
-              getUser = {getUser}
               user={user}
               setMessage={setMessage}
-              isLoading = {isLoading}
-              setIsLoading = {setIsLoading}
               onClose={onClose}
               setError={setError}
-              fetchPendingData = {fetchPendingData}
               toggleAccordion={() => toggleAccordion(accordion.key)}
               noDataMessage={accordion.noDataMessage}
             />
@@ -107,4 +102,4 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError,setIsLoading,isLoadin
   )
 }
 
-export default ScrapTrack
+export default ConsumeTrack

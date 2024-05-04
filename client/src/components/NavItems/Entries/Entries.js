@@ -137,7 +137,7 @@ function Entries() {
               style={{ width: "400px" }}
               className="entry-card shadow-2xl bg-white rounded-3xl text-2xl animate text-black flex flex-col justify-center p-4 py-10 items-center"
             >
-              <img className="w-40" src="/images/manu.png" alt="" />
+              <img className="w-40" src="/images/manufa.png" alt="" />
               <div className="flex gap-2 flex-col justify-center items-center w-full">
                 <div className="text-lg font-bold">Manufacturer Entry</div>
                 <div
