@@ -29,6 +29,7 @@ const Accordion = (props) => {
                 setError={props.setError}
                 setMessage={props.setMessage}
                 fetchPendingData = {props.fetchPendingData}
+                fetchOverallTranferedData={props.fetchOverallTranferedData}
               />
             ))
           ) : (

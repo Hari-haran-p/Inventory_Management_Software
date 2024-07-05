@@ -5,13 +5,11 @@ function ScrapEdit({
   data,
   user,
   onClose,
-  onSubmit,
-  getLabDetails,
-  setGetLabDetails,
   setMessage,
   setError,
   setIsLoading,
-  isLoading,
+  fetchPendingData,
+  fetchTableData
 }) {
   const [formData, setFormData] = useState({
     id: "",
@@ -49,10 +47,12 @@ function ScrapEdit({
       const response = await axios.post(
         "http://localhost:4000/api/scrapRequest", { items: formData, user: user }
       );
-      if (response.status == 200) {
+      if (response && response.status == 200) {
         console.log(response.data);
         setMessage(response.data.Data);
         onClose();
+        fetchTableData();
+        fetchPendingData();
         setIsLoading(false);
       }
     } catch (error) {
@@ -60,6 +60,8 @@ function ScrapEdit({
         console.log(error);
         setError(error.response.data.Data);
         onClose();
+        fetchTableData();
+        fetchPendingData();
         setIsLoading(false);
       }
     }
@@ -105,7 +107,7 @@ function ScrapEdit({
               <div className="flex flex-wrap">
                 <div className="  flex ">
                   <label for="id" className="text-md pr-5 ">
-                    Item Code
+                    Stock Id
                   </label>
                 </div>
                 <input

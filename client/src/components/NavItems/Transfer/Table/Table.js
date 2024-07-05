@@ -25,11 +25,11 @@ function Table({ stockData }) {
   const [click, setClick] = useState(false);
 
   useEffect(() => {
-    if(searchQuery == ""){
+    if (searchQuery == "") {
       setFilteredData(stockData)
       return
     }
-    if (click ) {
+    if (click) {
       const filteredResults = stockData.filter((item) => {
         const propertiesToSearch = [
           "apex_no",
@@ -96,7 +96,7 @@ function Table({ stockData }) {
   const handleRowSizeChange = (e) => {
     const newSize = parseInt(e.target.value);
     setRowSize(newSize);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const startIndex = (currentPage - 1) * rowSize;
@@ -138,13 +138,13 @@ function Table({ stockData }) {
       ...prevSortOrders,
       [column]: prevSortOrders[column] === "asc" ? "desc" : "asc",
     }));
-  
+
     setSortedColumn(column);
-    
+
     filteredData.sort((a, b) => {
       const valueA = getValueForComparison(typeof a[column] === "string" ? a[column].toLowerCase() : a[column]);
       const valueB = getValueForComparison(typeof b[column] === "string" ? b[column].toLowerCase() : b[column]);
-  
+
       if (valueA < valueB) {
         return sortOrder[column] === "asc" ? -1 : 1;
       }
@@ -153,10 +153,10 @@ function Table({ stockData }) {
       }
       return 0;
     });
-  
+
     setFilteredData(filteredData); // Trigger re-render
   };
-  
+
   const getValueForComparison = (value) => {
     // Check if the value is a date in the format "DD-MM-YYYY"
     const dateRegex = /^(\d{2})-(\d{2})-(\d{4})$/;
@@ -538,8 +538,8 @@ function Table({ stockData }) {
                   </th>
                 </tr>
               </thead>
-              <tbody  style={{ backgroundColor: "white", fontWeight: "bold" }}>
-                {filteredData.slice(startIndex,endIndex).map((data, index) => {
+              <tbody style={{ backgroundColor: "white", fontWeight: "bold" }}>
+                {filteredData.slice(startIndex, endIndex).map((data, index) => {
                   return (
                     <tr className="border-b-2">
                       <td class="pl-4">{startIndex + index + 1}</td>
@@ -568,19 +568,26 @@ function Table({ stockData }) {
                         {data.transfer_qty}
                       </td>
                       <td className="h-10 w-30 whitespace-nowrap flex items-center justify-center gap-1">
-                        <div className="relative w-6 h-6" title="Initiated">
-                          <img src={`/images/checkmark.png`} alt="" />
-                        </div>
+                        {data.current_status === "CANCELLED" ? (
+                          <div className="relative w-6 h-6" title="Cancelled">
+                            <img src={`/images/decline.png`} alt="" />
+                          </div>
+                        ) : (
+                          <div className="relative w-6 h-6" title="Initiated">
+                            <img src={`/images/checkmark.png`} alt="" />
+                          </div>
+                        )
+                        }
                         <div className="relative w-6 h-6" title="Lab Approved">
-                          {data.stage1status ? <img src={`/images/checkmark.png`} alt="" /> : data.stage4status ? <img src={`/images/decline.png`} alt="" /> : <img style={{scale:"0.61"}} src="/images/empty.png"/>
+                          {data.stage1status ? <img src={`/images/checkmark.png`} alt="" /> : data.stage4status ? <img src={`/images/decline.png`} alt="" /> : <img style={{ scale: "0.61" }} src="/images/empty.png" />
                           }
                         </div>
                         <div className="relative w-6 h-6" title="Stores Approved">
-                          {data.stage2status ? <img src={`/images/checkmark.png`} alt="" /> : data.stage4status ? <img src={`/images/decline.png`} alt="" /> : <img style={{scale:"0.61"}} src="/images/empty.png"/>
+                          {data.stage2status ? <img src={`/images/checkmark.png`} alt="" /> : data.stage4status ? <img src={`/images/decline.png`} alt="" /> : <img style={{ scale: "0.61" }} src="/images/empty.png" />
                           }
                         </div>
                         <div className="relative w-6 h-6" title="Acknowledged">
-                          {data.stage3status ? <img src={`/images/checkmark.png`} alt="" /> : data.stage4status ? <img src={`/images/decline.png`} alt="" /> : <img style={{scale:"0.61"}} src="/images/empty.png"/>
+                          {data.stage3status ? <img src={`/images/checkmark.png`} alt="" /> : data.stage4status ? <img src={`/images/decline.png`} alt="" /> : <img style={{ scale: "0.61" }} src="/images/empty.png" />
                           }
                         </div>
                       </td>

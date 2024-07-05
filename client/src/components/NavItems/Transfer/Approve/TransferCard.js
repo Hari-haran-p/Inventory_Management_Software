@@ -1,17 +1,20 @@
 import React, { useState } from "react";
-import Lotties from "../../../Lotties/Lotties";
-import Accept from "../../../Lotties/accept.json";
-import Reject from "../../../Lotties/reject.json";
+import Lotties from "../../../../Lotties/Lotties";
+import Accept from "../../../../Lotties/accept.json";
+import Reject from "../../../../Lotties/reject.json";
 import axios from "axios";
 import RejectPopup from './RejectPopup';
+import { useAuth } from "../../../../AuthContext";
 
 
-const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransferData }) => {
+const TransferCard = ({ data, setMessage, setError, fetchTransferData, fetchPendingData, fetchOverallTranferedData }) => {
 
   const [isLoading, setIsLoading] = useState(false)
   const [showManufacturer, setShowManufacturer] = useState(false);
   const [rejectDesc, setRejectDesc] = useState("");
   const [isRejected, setIsrejected] = useState(false);
+
+  const {user, getUser}= useAuth();
 
   const handleAccept = async (id) => {
 
@@ -20,18 +23,22 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransfer
       const response = await axios.post("http://localhost:4000/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
         .then(async (response) => {
           await fetchTransferData(user);
+          fetchPendingData();
+          fetchOverallTranferedData();
           setIsLoading(false);
           if (response && response.status == 201) {
             setMessage(response.data.Data);
           }
         })
     } catch (error) {
+      fetchPendingData();
+      fetchOverallTranferedData();
       setIsLoading(false);
       setError(error.response.data.Data)
     }
   }
 
-  // console.log(data);
+  console.log(rejectDesc);
 
   const handleReject = async (e) => {
     e.preventDefault();
@@ -41,22 +48,28 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransfer
       if (window.confirm("Are you sure?")) {
         //i need to wait here till he finishes filling reject form and then execute it
         try {
-          setIsLoading(true);
-          setShowManufacturer(false);
-          setRejectDesc("")
+          // setIsLoading(true);
+          // setShowManufacturer(false);
+          // setRejectDesc("")
+          console.log("hiiiiiiii");
           const response = await axios.post("http://localhost:4000/api/rejectRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc })
             .then((response) => {
               setIsLoading(false);
+              fetchPendingData();
+              fetchOverallTranferedData();
               if (response && response.status == 201) {
                 setMessage(response.data.Data);
-                onClose();
               }
             })
+            console.log("uy uo hoio hio ");
+
         } catch (error) {
+          console.log(error);
           setIsLoading(false);
+          fetchPendingData();
+          fetchOverallTranferedData();
           if (error && error.response.status == 500) {
             setError(error.response.data.Data);
-            onClose();
           }
           console.log(error);
         }
@@ -65,7 +78,6 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransfer
         setRejectDesc("");
       }
     }
-
   }
 
   // const toSentenceCase = (str) => {
@@ -104,7 +116,7 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransfer
                 width={50}
                 click={() => setShowManufacturer(true)}
                 clickData={data.id}
-              
+
               />
             </div>
           </div>
@@ -130,11 +142,9 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchTransfer
           </div>
           <RejectPopup
             isVisible={showManufacturer}
-            // rejectDesc={rejectDesc}
+            onClose={() => setShowManufacturer(false)}
             rejectDesc={rejectDesc}
             setRejectDesc={setRejectDesc}
-            onClose={() => setShowManufacturer(false)}
-            setError={setError}
             handleReject={handleReject}
           />
         </div>

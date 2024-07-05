@@ -31,20 +31,16 @@ const getScrapCardData = async function (req, res, next) {
         const [
             scrapPendingResult,
             scrapApprovedResult,
-            scrapAcknowledgedResult,
             scrapRejectedResult,
         ] = await Promise.all([
-            db.query("SELECT * FROM scrap_table_view WHERE (status = ? OR status = ?) AND user_id = ?", ["PENDING", "CANCELED", user]),
+            db.query("SELECT * FROM scrap_table_view WHERE (status = ? OR status = ?) AND user_id = ?", ["INITIATED", "CANCELLED", user]),
             db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["APPROVED", user]),
-            db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["ACKNOWLEDGED", user]),
             db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["REJECTED", user]),
         ]);
-
 
         res.status(200).json({
             pending: scrapPendingResult,
             approved: scrapApprovedResult,
-            acknowledged: scrapAcknowledgedResult,
             rejected: scrapRejectedResult,
         });
     } catch (error) {
@@ -56,35 +52,25 @@ const getScrapCardData = async function (req, res, next) {
 
 const scrapRequest = async function (req, res, next) {
     let connection;
+    console.log(req.body);
     try {
         connection = await db.getConnection();
         await connection.beginTransaction();
 
         const apex_no = req.body.items.apex_no;
-        const item_code = req.body.items.id;
-        const manufacturer_id = req.body.items.manufacturer_id;
-        const supplier_id = req.body.items.supplier_id;
-        const scrap_qty = req.body.items.required_stock;
-        const user_id = req.body.user.user_id;
+        const stock_id = req.body.items.id;
+        const scrap_qty = parseInt(req.body.items.required_stock);
+        const faculty_id = req.body.user.user_id;
         const inventory_value = Math.round((req.body.items.inventory_value / req.body.items.stock_qty) * (scrap_qty));
         const dept_id = req.body.items.dept_id;
 
-        // console.log(req.body);
-        // if (transfer_to.toUpperCase() == transfer_from.toUpperCase()) {
-        //     res.status(500).json({ Data: "Requested lab cannot be your lab" });
-        //     return;
-        // }
-
         const transferResult = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM stocktable WHERE apexno = ? AND id = ? AND dept_id = ? ", [apex_no, item_code, dept_id], async (error, result) => {
+            connection.query("SELECT * FROM stocktable WHERE id = ?", [stock_id], async (error, result) => {
                 if (error) {
                     console.log(error);
                     await connection.rollback();
-                    res.status(500).json({ "Data": "Some internal error" });
-                    return;
-                    reject(error);
+                    return res.status(500).json({ "Data": "Some internal error" });
                 } else {
-
                     resolve(result);
                 }
             });
@@ -93,13 +79,11 @@ const scrapRequest = async function (req, res, next) {
         if (transferResult.length > 0 && transferResult[0].quantity >= scrap_qty) {
             const insertResult = await new Promise((resolve, reject) => {
                 connection.query("INSERT INTO scraptable (apex_no, stock_id, scrap_qty, faculty_id, inventory_value, dept_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    [apex_no, item_code, scrap_qty, user_id, inventory_value, dept_id, "PENDING"], async (error, result) => {
+                    [apex_no, stock_id, scrap_qty, faculty_id, inventory_value, dept_id, "INITIATED"], async (error, result) => {
                         if (error) {
                             console.log(error);
                             await connection.rollback();
-                            res.status(400).json({ "Data": "Some Internal Error" });
-                            return;
-                            reject(error);
+                            return res.status(400).json({ "Data": "Some Internal Error" });
                         } else {
                             resolve(result);
                         }
@@ -140,7 +124,7 @@ const getScrapData = async function (req, res, next) {
 }
 
 const getAllScrapData = async function (req, res, next) {
-    db.query("SELECT * FROM scrap_table_view WHERE status = ?  ", ["PENDING"])
+    db.query("SELECT * FROM scrap_table_view WHERE status = ?  ", ["INITIATED"])
         .then((response) => {
             if (response.length > 0) {
                 res.status(200).json({ Data: response });
@@ -154,7 +138,7 @@ const getAllScrapData = async function (req, res, next) {
 }
 
 const getTableScrapData = async function (req, res, next) {
-    db.query("SELECT * FROM scrap_table_view")
+    db.query("SELECT * FROM scrap_table_view ORDER BY date DESC")
         .then((response) => {
             if (response.length > 0) {
                 res.status(200).json({ Data: response });
@@ -170,12 +154,8 @@ const getTableScrapData = async function (req, res, next) {
 
 
 const rejectScrapRequest = async function (req, res, next) {
-
-
-
     db.query("UPDATE  scraptable SET status = ?, description = ?, approved_by = ? WHERE id = ?", ["REJECTED", req.body.rejectDesc, req.body.user_id, req.body.id])
         .then((response) => res.status(201).json({ "Data": "Rejected Sucessfully" })).catch((error) => res.status(500).json({ "Data": "Some Internal Error" }))
-
 }
 
 
@@ -221,7 +201,6 @@ const acceptScrapRequest = async function (req, res, next) {
                         });
                 });
 
-
                 const UpdateResult = await new Promise((resolve, reject) => {
 
                     connection.query("UPDATE scraptable SET status = ?, approved_by= ? WHERE id = ?", ["APPROVED", req.body.user_id, req.body.id], async (error, result) => {
@@ -264,13 +243,11 @@ const cancelScrapRequest = async function (req, res, next) {
         await connection.beginTransaction();
 
         const selectResult = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM scraptable WHERE id = ? AND dept_id = ?", [req.body.scrap_id, req.body.dept_id], async (error, result) => {
+            connection.query("SELECT * FROM scraptable WHERE id = ?", [req.body.scrap_id], async (error, result) => {
                 if (error) {
                     console.log(error);
                     await connection.rollback();
-                    res.status(400).json({ "Data": "Seome internal error" });
-                    return;
-                    reject(error);
+                    return res.status(400).json({ "Data": "Seome internal error" });
                 } else
                     resolve(result);
             })
@@ -280,20 +257,17 @@ const cancelScrapRequest = async function (req, res, next) {
 
             const updateResult = await new Promise((resolve, reject) => {
                 connection.query("UPDATE scraptable SET status = ?, approved_by = ? WHERE id = ? AND dept_id = ? ",
-                    ["CANCELED", req.body.user_id, req.body.scrap_id, req.body.dept_id],
+                    ["CANCELLED", req.body.user_id, req.body.scrap_id, req.body.dept_id],
                     async (error, result) => {
                         if (error) {
-
                             await connection.rollback();
-                            res.status(400).json({ "Data": "Some Internal error" });
-                            reject(error)
+                            return res.status(400).json({ "Data": "Some Internal error" });
                         } else
                             resolve(result);
                     })
             })
-
             await connection.commit();
-            res.status(200).json({ "Data": "Canceled sucessfully" });
+            return res.status(200).json({ "Data": "Canceled sucessfully" });
 
         } else {
             res.status(400).json({ "Data": "Some internal Error" });
@@ -311,32 +285,27 @@ const cancelScrapRequest = async function (req, res, next) {
 
 
 const deleteScrapRequest = async function (req, res, next) {
-
+    console.log(req.body);
     let connection;
     try {
         connection = await db.getConnection();
         await connection.beginTransaction();
 
         const selectResult = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM scraptable WHERE id = ? AND dept_id = ?", [req.body.scrap_id, req.body.dept_id], async (error, result) => {
+            connection.query("SELECT * FROM scraptable WHERE id = ?", [req.body.scrap_id], async (error, result) => {
                 if (error) {
                     await connection.rollback();
-                    res.status(400).json({ "Data": "Some internal error" });
-                    return;
-                    reject(error);
+                    return res.status(400).json({ "Data": "Some internal error" });
                 } else
                     resolve(result);
             })
         })
 
-        console.log(selectResult);
-        console.log(req.body);
-
-        if (selectResult.length > 0 && selectResult[0].dept_id == req.body.dept_id && selectResult[0].status == "CANCELED") {
+        if (selectResult.length > 0 && selectResult[0].dept_id == req.body.dept_id && selectResult[0].status == "CANCELLED") {
 
             const deleteResult = await new Promise((resolve, reject) => {
                 connection.query("DELETE FROM scraptable WHERE id = ? AND dept_id = ? AND status = ?",
-                    [req.body.scrap_id, req.body.dept_id, "CANCELED"],
+                    [req.body.scrap_id, req.body.dept_id, "CANCELLED"],
                     async (error, result) => {
                         if (error) {
                             console.log(error)
@@ -349,7 +318,6 @@ const deleteScrapRequest = async function (req, res, next) {
             })
             await connection.commit();
             res.status(200).json({ "Data": "Deleted sucessfully" });
-
         } else {
             res.status(400).json({ "Data": "Some Internal Error" });
             return;

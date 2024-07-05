@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 import TransferCard from './TransferCard';
 import RejectPopup from './RejectPopup';
 
-const ScrapApprove = ({ onClose, isVisible, user, setMesaage, setError, scrapData, noData ,fetchScrapData}) => {
-
+const ScrapApprove = ({ onClose, isVisible, user, setMessage, setError, scrapData, noData ,fetchScrapData, fetchTableData}) => {
 
 
     // console.log(scrapData);
@@ -25,7 +24,7 @@ const ScrapApprove = ({ onClose, isVisible, user, setMesaage, setError, scrapDat
                                         {noData ? <div>No Data</div> : (
                                             scrapData && scrapData.map((data) =>
                                                 <>
-                                                    <TransferCard setMessage={setMesaage} fetchScrapData={fetchScrapData} setError={setError} data={data} user={user} onClose={onClose} />
+                                                    <TransferCard setMessage={setMessage} fetchScrapData={fetchScrapData} setError={setError} data={data} user={user} onClose={onClose} fetchTableData={fetchTableData} />
                                                 </>
                                             )
                                         )}

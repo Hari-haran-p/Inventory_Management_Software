@@ -18,7 +18,7 @@ function Cards() {
   const [getStockDatas, setGetStockDatas] = useState([]);
   const [getScrapDatas, setGetScrapDatas] = useState([]);
 
-  const {getRequest } = useAuth();
+  const { getRequest } = useAuth();
 
   const fetchTotalStockValueData = async () => {
     try {
@@ -75,7 +75,6 @@ function Cards() {
     }
   }
 
-
   useEffect(() => {
     fetchTotalStockValueData();
     fetchscrapValueData();
@@ -88,10 +87,8 @@ function Cards() {
   return (
     <>
       <div className='card-container w-full h-full flex flex-col lg:flex-row gap-3 lg:w-5/6 lg:gap-8 items-center justify-center '>
-        {/* <div className="items-center justify-center flex w-full h-full gap-20 mt-8 scale-90 bg-black flex-wrap tablet:scale-100"> */}
         <div
           className=" w-11/12 h-2/5 md:h-3/5 shadow-2xl rounded-3xl cursor-pointer flex  animate1 bg-white"
-          // style={{backgroundColor:"rgba(0, 100, 0, 0.3)", border:"3px solid green"}}
           onClick={() => setStockData(true)}
         >
           <div className="flex w-1/2 items-center justify-around">
@@ -105,15 +102,15 @@ function Cards() {
             <div className="font-bold  text-lg whitespace-nowrap sm:text-2xl">
               No of stocks
             </div>
-            <div style={{ color: "green"}} className=" whitespace-nowrap text-lg sm:text-2xl font-bold flex gap-2 items-center">
+            <div style={{ color: "green" }} className=" whitespace-nowrap text-lg sm:text-2xl font-bold flex gap-2 items-center">
               <div>{TotalStockValueData}</div> <div className=''>nos</div>
             </div>
           </div>
         </div>
         <div
           className={` w-11/12 h-2/5 md:h-3/5  shadow-2xl bg-white rounded-3xl cursor-pointer flex animate1`}
+          popovertarget="myheader"
           onClick={() => setScrapData(true)}
-          // style={{backgroundColor:"rgba(255, 165, 0,0.3)" , border:"3px solid orange"}}
         >
           <div className="flex w-1/2 items-center justify-around">
             <img
@@ -131,13 +128,9 @@ function Cards() {
             </div>
           </div>
         </div>
-        {/* <div
-      // className="w-80 h-36 shadow-2xl bg-white rounded-3xl cursor-pointer flex tablet:h-40 animate1"
-      > */}
         <div
           className={` w-11/12 h-2/5 md:h-3/5 shadow-2xl bg-white rounded-3xl  cursor-pointer flex  animate1`}
           onClick={() => setInventoryData(true)}
-          // style={{backgroundColor:"rgba(255, 0, 0,0.3)" , border:"3px solid red"}}
         >
           <div className="flex w-1/2 items-center justify-around">
             <img
@@ -155,14 +148,12 @@ function Cards() {
             </div>
           </div>
         </div>
-        {/* </div> */}
-
-        {/* </div> */}
-
       </div>
+
       <StockPopup isVisible={StockData} onClose={() => setStockData(false)} data={getStockDatas} />
       <InventoryPopup isVisible={InventoryData} onClose={() => setInventoryData(false)} data={getInventoryDatas} />
       <ScarpPopup isVisible={scrapData} onClose={() => setScrapData(false)} data={getScrapDatas} />
+
     </>
   )
 }

@@ -1,48 +1,22 @@
 const { response } = require("express");
 const db = require("./database/db.js");
 
-
-// const scrapRequest = async function (req, res, next) {
-
-//     const formData = req.body.formData;
-//     const resultData = req.body.resultData[0];
-
-//     if (formData.stockReq > resultData.stock_qty) {
-//         res.status(500).json({ Data: "Check for entered stock quantity" });
-//         return;
-//     }
-
-//     db.query("INSERT INTO scraptable (item_code, manufacturer_id, supplier_id, scrap_qty, user_id, inventory_value, dept_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-//         [formData.itemcode, resultData.manufacturer_id, resultData.supplier_id, formData.stockReq, req.body.user_id, formData.stockReq * resultData.cost_per_item, req.body.dept_id]
-//     ).then((response) => {
-//         res.status(200).json({ Data: "Request sucessfully Initiated" });
-//     }).catch((error) => {
-//         res.status(500).json({ Data: "Some internal Error" });
-//     })
-
-// }
-
-
 const getConsumeCardData = async function (req, res, next) {
-
     const user = req.params.id;
     try {
         const [
             scrapPendingResult,
             scrapApprovedResult,
-            scrapAcknowledgedResult,
             scrapRejectedResult,
         ] = await Promise.all([
-            db.query("SELECT * FROM consume_table_view WHERE (status = ? OR status = ?) AND user_id = ?", ["INITIATED", "CANCELED", user]),
+            db.query("SELECT * FROM consume_table_view WHERE (status = ? OR status = ?) AND user_id = ?", ["INITIATED", "CANCELLED", user]),
             db.query("SELECT * FROM consume_table_view WHERE status = ? AND user_id = ?", ["APPROVED", user]),
-            db.query("SELECT * FROM consume_table_view WHERE status = ? AND user_id = ?", ["ACKNOWLEDGED", user]),
+            // db.query("SELECT * FROM consume_table_view WHERE status = ? AND user_id = ?", ["ACKNOWLEDGED", user]),
             db.query("SELECT * FROM consume_table_view WHERE status = ? AND user_id = ?", ["REJECTED", user]),
         ]);
-
         res.status(200).json({
             pending: scrapPendingResult,
             approved: scrapApprovedResult,
-            acknowledged: scrapAcknowledgedResult,
             rejected: scrapRejectedResult,
         });
     } catch (error) {
@@ -52,7 +26,6 @@ const getConsumeCardData = async function (req, res, next) {
 }
 
 const consumeRequest = async function (req, res, next) {
-console.log(req.body);
     let connection;
     try {
         connection = await db.getConnection();
@@ -63,14 +36,7 @@ console.log(req.body);
         const consume_qty = req.body.items.required_stock;
         const user_id = req.body.user.user_id;
         const inventory_value = req.body.items.required_stock * (req.body.items.inventory_value / req.body.items.stock_qty);
-        console.log("this is the inventory value : "+ inventory_value);
         const dept_id = req.body.items.dept_id;
-
-        // console.log(req.body);
-        // if (transfer_to.toUpperCase() == transfer_from.toUpperCase()) {
-        //     res.status(500).json({ Data: "Requested lab cannot be your lab" });
-        //     return;
-        // }
 
         const transferResult = await new Promise((resolve, reject) => {
             connection.query("SELECT * FROM stocktable WHERE id = ?", [stock_id], async (error, result) => {
@@ -85,13 +51,11 @@ console.log(req.body);
             });
         })
 
-        console.log(transferResult[0]);
         if (transferResult.length > 0 && transferResult[0].quantity >= consume_qty) {
             const insertResult = await new Promise((resolve, reject) => {
                 connection.query("INSERT INTO consumetable (apex_no, stock_id, consume_qty, faculty_id, created_at, inventory_value, dept_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                    [apex_no, stock_id, consume_qty, user_id,null,  inventory_value, dept_id, "INITIATED"], async (error, result) => {
+                    [apex_no, stock_id, consume_qty, user_id, null, inventory_value, dept_id, "INITIATED"], async (error, result) => {
                         if (error) {
-                            console.log(error);
                             await connection.rollback();
                             res.status(400).json({ "Data": "Some Internal Error" });
                             return;
@@ -101,7 +65,7 @@ console.log(req.body);
                         }
                     })
             })
-            
+
         } else {
             res.status(400).json({ "Data": "Stock quantity not available" });
             return;
@@ -119,13 +83,12 @@ console.log(req.body);
             connection.release();
 
     }
-
 }
 
 
 const getConsumeData = async function (req, res, next) {
     const id = req.params.id;
-    db.query("SELECT * FROM consume_table_view WHERE dept_id = ? ORDER BY creayed_at DESC", [id])
+    db.query("SELECT * FROM consume_table_view WHERE req_labcode = ? ORDER BY date DESC", [id])
         .then((response) => {
             if (response.length > 0) {
                 res.status(200).json({ Data: response })
@@ -133,11 +96,13 @@ const getConsumeData = async function (req, res, next) {
                 res.status(200).json({ Data: "No Data" });
             }
         })
-        .catch((error) => res.status(500).json({ Data: "Some internal error" }));
+        .catch((error) => {
+            res.status(500).json({ Data: "Some internal error" })
+        });
 }
 
 const getAllConsumeData = async function (req, res, next) {
-    db.query("SELECT * FROM scrap_table_view WHERE status = ?  ", ["INITIATED"])
+    db.query("SELECT * FROM consume_table_view WHERE status = ?  ORDER BY date ASC", ["INITIATED"])
         .then((response) => {
             if (response.length > 0) {
                 res.status(200).json({ Data: response });
@@ -151,7 +116,22 @@ const getAllConsumeData = async function (req, res, next) {
 }
 
 const getTableConsumeData = async function (req, res, next) {
-    db.query("SELECT * FROM consume_table_view")
+    db.query("SELECT * FROM consume_table_view ORDER BY date DESC")
+        .then((response) => {
+            if (response.length > 0) {
+                res.status(200).json({ Data: response });
+                return;
+            } else {
+                res.status(200).json({ Data: "No Data" });
+                return;
+            }
+        }).catch((error) => {
+            res.status(500).json({ Data: "Some Internal Error" });
+        })
+}
+
+const getRequestTableData = async function (req, res, next) {
+    db.query("SELECT * FROM admin_stock_view WHERE dept_id = ?", [req.params.id])
         .then((response) => {
             if (response.length > 0) {
                 res.status(200).json({ Data: response });
@@ -167,7 +147,6 @@ const getTableConsumeData = async function (req, res, next) {
 
 
 const rejectConsumeRequest = async function (req, res, next) {
-
     db.query("UPDATE  consumetable SET status = ?, description = ?, approved_by = ? WHERE id = ?", ["REJECTED", req.body.rejectDesc, req.body.user_id, req.body.id])
         .then((response) => res.status(201).json({ "Data": "Rejected Sucessfully" })).catch((error) => res.status(500).json({ "Data": "Some Internal Error" }))
 
@@ -181,61 +160,56 @@ const acceptConsumeRequest = async function (req, res, next) {
         connection = await db.getConnection();
         await connection.beginTransaction();
 
-        if (req.body.role == "slsincharge") {
-            const fromDataResult = await new Promise((resolve, reject) => {
-                connection.query("SELECT * FROM stocktable WHERE dept_id = ? AND id = ?", [req.body.req_labcode, req.body.stock_id], async (error, result) => {
+        if (req.body.role != "slsincharge") {
+            await connection.rollback();
+            return res.status(500).json({ "Data": "Not Authorized" });
+        }
+
+        const fromDataResult = await new Promise((resolve, reject) => {
+            connection.query("SELECT * FROM stocktable WHERE id = ?", [req.body.stock_id], async (error, result) => {
+                if (error) {
+                    await connection.rollback();
+                    return res.status(400).json({ "Data": "some Error" });
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+
+        if (!(fromDataResult.length > 0 && fromDataResult[0].quantity >= req.body.consume_qty)) {
+            await connection.rollback();
+            return res.status(500).json({ "Data": "Stock Not Found" });
+        }
+
+        const stockMinus = fromDataResult[0].quantity - req.body.consume_qty;
+        const inventoryMinus = fromDataResult[0].cost - req.body.inventory_value;
+
+        const fromUpdateResult = await new Promise((resolve, reject) => {
+            connection.query("UPDATE stocktable SET quantity = ?, cost = ? WHERE id = ?",
+                [stockMinus, inventoryMinus, req.body.stock_id],
+                async (error, result) => {
                     if (error) {
                         await connection.rollback();
-                        res.status(400).json({ "Data": "some Error" });
-                        return;
-                        reject(error);
+                        return res.status(400).json({ "Data": "some Error" });
                     } else {
                         resolve(result);
                     }
                 });
-            });
+        });
 
-            if (fromDataResult.length > 0 && fromDataResult[0].stock_qty >= req.body.scrap_qty) {
-                const stockMinus = fromDataResult[0].stock_qty - req.body.consume_qty;
-                const inventoryMinus = fromDataResult[0].inventory_value - req.body.cost_per_item * req.body.consume_qty;
+        const UpdateResult = await new Promise((resolve, reject) => {
+            connection.query("UPDATE consumetable SET status = ?, approved_by = ? WHERE id = ?", ["APPROVED", req.body.user_id, req.body.id], async (error, result) => {
+                if (error) {
+                    await connection.rollback();
+                    return res.status(500).json({ "Data": "some Error" });
+                } else {
+                    resolve(result);
+                }
+            })
+        });
 
-                const fromUpdateResult = await new Promise((resolve, reject) => {
-                    connection.query("UPDATE stocktable SET stock_qty = ?, inventory_value = ? WHERE dept_id = ?  and item_code = ?",
-                        [stockMinus, inventoryMinus, req.body.req_labcode.toUpperCase(), req.body.item_code],
-                        async (error, result) => {
-                            if (error) {
-                                await connection.rollback();
-                                res.status(400).json({ "Data": "some Error" });
-                                return;
-                                reject(error);
-                            } else {
-                                resolve(result);
-                            }
-                        });
-                });
-
-
-                const UpdateResult = await new Promise((resolve, reject) => {
-
-                    connection.query("UPDATE scraptable SET status = ?, approved_by = ? WHERE id = ?", ["APPROVED", req.body.user_id, req.body.id], async (error, result) => {
-                        if (error) {
-                            await connection.rollback();
-                            res.status(500).json({ "Data": "some Error" });
-                            return;
-                            reject(error);
-                        } else {
-                            resolve(result);
-                        }
-                    })
-                });
-                res.status(201).json({ "Data": "Approved Successfully" })
-                await connection.commit();
-            } else {
-                await connection.rollback();
-                res.status(500).json({ "Data": "Stock Not Found" });
-            }
-        }
-
+        res.status(201).json({ "Data": "Approved Successfully" })
+        await connection.commit();
     } catch (error) {
         if (connection) {
             await connection.rollback();
@@ -255,12 +229,11 @@ const cancelConsumeRequest = async function (req, res, next) {
         await connection.beginTransaction();
 
         const selectResult = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM consumetable WHERE id = ? AND dept_id = ?", [req.body.consume_id, req.body.dept_id], async (error, result) => {
+            connection.query("SELECT * FROM consumetable WHERE id = ?", [req.body.consume_id], async (error, result) => {
                 if (error) {
                     await connection.rollback();
                     res.status(400).json({ "Data": "Some internal error" });
                     return;
-                    reject(error);
                 } else
                     resolve(result);
             })
@@ -268,8 +241,8 @@ const cancelConsumeRequest = async function (req, res, next) {
 
         if (selectResult.length > 0 && selectResult[0].dept_id == req.body.dept_id) {
             const updateResult = await new Promise((resolve, reject) => {
-                connection.query("UPDATE consumetable SET status = ?, approved_by = ? WHERE id = ? AND dept_id = ? ",
-                    ["CANCELED", req.body.user_id, req.body.scrap_id, req.body.dept_id],
+                connection.query("UPDATE consumetable SET status = ?, approved_by = ? WHERE id = ?",
+                    ["CANCELLED", req.body.user_id, req.body.consume_id],
                     async (error, result) => {
                         if (error) {
                             await connection.rollback();
@@ -281,7 +254,7 @@ const cancelConsumeRequest = async function (req, res, next) {
             })
 
             await connection.commit();
-            res.status(200).json({ "Data": "Canceled sucessfully" });
+            res.status(200).json({ success: true, "Data": "Canceled sucessfully" });
 
         } else {
             res.status(400).json({ "Data": "Some Internal Error" });
@@ -298,31 +271,28 @@ const cancelConsumeRequest = async function (req, res, next) {
 }
 
 const deleteConsumeRequest = async function (req, res, next) {
-
     let connection;
     try {
         connection = await db.getConnection();
         await connection.beginTransaction();
 
         const selectResult = await new Promise((resolve, reject) => {
-            connection.query("SELECT * FROM consumetable WHERE id = ? AND dept_id = ?", [req.body.consume_id, req.body.dept_id], async (error, result) => {
+            connection.query("SELECT * FROM consumetable WHERE id = ?", [req.body.consume_id], async (error, result) => {
                 if (error) {
                     await connection.rollback();
                     res.status(400).json({ "Data": "Some internal error" });
                     return;
-                    reject(error);
                 } else
                     resolve(result);
             })
         })
 
-        if (selectResult.length > 0 && selectResult[0].dept_id == req.body.dept_id && selectResult[0].status == "CANCELED") {
+        if (selectResult.length > 0 && selectResult[0].dept_id == req.body.dept_id && selectResult[0].status == "CANCELLED") {
             const deleteResult = await new Promise((resolve, reject) => {
-                connection.query("DELETE FROM consumetable WHERE id = ? AND dept_id = ? AND status = ?",
-                    [req.body.scrap_id, req.body.dept_id, "CANCELED"],
+                connection.query("DELETE FROM consumetable WHERE id = ? AND status = ?",
+                    [req.body.consume_id, "CANCELLED"],
                     async (error, result) => {
                         if (error) {
-                            console.log(error)
                             await connection.rollback();
                             res.status(400).json({ "Data": "Some Internal error" });
                             reject(error)
@@ -335,6 +305,7 @@ const deleteConsumeRequest = async function (req, res, next) {
             res.status(200).json({ "Data": "Deleted sucessfully" });
 
         } else {
+
             res.status(400).json({ "Data": "Some Internal Error" });
             return;
         }
@@ -349,8 +320,9 @@ const deleteConsumeRequest = async function (req, res, next) {
 
 module.exports = {
     consumeRequest: consumeRequest,
-    getConsumeCardData:getConsumeCardData,  
+    getConsumeCardData: getConsumeCardData,
     getConsumeData: getConsumeData,
+    getRequestTableData: getRequestTableData,
     getAllConsumeData: getAllConsumeData,
     rejectConsumeRequest: rejectConsumeRequest,
     acceptConsumeRequest: acceptConsumeRequest,

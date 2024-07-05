@@ -5,13 +5,11 @@ function ConsumeEdit({
   data,
   user,
   onClose,
-  onSubmit,
-  getLabDetails,
-  setGetLabDetails,
   setMessage,
   setError,
   setIsLoading,
-  isLoading,
+  fetchTableData,
+  fetchPendingData
 }) {
   const [formData, setFormData] = useState({
     id: "",
@@ -55,6 +53,8 @@ function ConsumeEdit({
         console.log("tis is data: "+response.data);
         setMessage(response.data.Data);
         onClose();
+        fetchTableData();
+        fetchPendingData();
         setIsLoading(false);
       }
     } catch (error) {
@@ -62,6 +62,8 @@ function ConsumeEdit({
         console.log(error);
         setError(error.response.data.Data);
         onClose();
+        fetchTableData();
+        fetchPendingData();
         setIsLoading(false);
       }
     }

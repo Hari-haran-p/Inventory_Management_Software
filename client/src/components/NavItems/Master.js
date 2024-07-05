@@ -27,6 +27,7 @@ function Master() {
       console.error(error);
     }
   };
+  
 
   useEffect(() => {
     if (!Cookies.get("token")) {

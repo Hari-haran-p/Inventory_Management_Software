@@ -1,37 +1,111 @@
 import React, { useEffect, useState } from 'react'
 import Table from './Table';
-import axios from 'axios';
 import { useAuth } from '../../../AuthContext';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import ScrapTrack from './Track/ScrapTrack';
 import ScrapApprove from './Approve/ScrapApprove';
-import ScrapRequest from './Request/ScrapRequest';
 import ScrapRequestTable from './Request/ScrapRequest';
 
 const Scrap = () => {
 
+    //<<<<------------Context get user variable and function------------------>>>>
+    const { user, getUser, getRequest } = useAuth();
+
+
+    //<<<<------------Loading , message and error state variables------------------>>>>
     const [isLoading, setIsLoading] = useState(true);
-    const [stockData, setStockData] = useState([]);
-    const [itemData, setItemData] = useState([]);
-    const [scrapData, setScrapData] = useState([]);
+
+    const [message, setMessage] = useState(null);
+
+    const [error, setError] = useState(null);
+
+
+    //<<<<------------Top navbar state variables andn function------------------>>>>
+    const [isNavbarVisible, setIsNavbarVisible] = useState(false);
+
+    const [isArrowRotated, setIsArrowRotated] = useState(false);
+
+    const toggleNavbar = () => {
+        setIsNavbarVisible((prev) => !prev);
+        setIsArrowRotated((prev) => !prev);
+    };
+
+
+    //<<<<------------Visibility state variables------------------>>>>
+    const [showTrackScrap, setShowTrackScrap] = useState(false);
+
+    const [showScrapApprove, setShowScrapApprove] = useState(false);
+
+    const [showScrap, setShowScrap] = useState(false);
+
+    const [showScrapTable, setShowScrapTable] = useState(true);
+
+
+    //<<<<-----------------Scrap main table related state variables and fetch fucntions--------------------->>>>
     const [tableData, setTableData] = useState([]);
-    const [scrapTrackData, setScrapTrackData] = useState([]);
+
+    async function fetchTableData() {
+        const response = await getRequest("http://localhost:4000/api/getTableScrapData");
+        if (response && response.status == 200) {
+            if (response.data.Data == "No Data") {
+                setIsLoading(false);
+            } else {
+                setTableData(response.data.Data);
+            }
+        }
+    }
+
+
+    //<<<<-----------------Scrap Tracking related state varibles and fetch functions--------------------->>>>
+    const [pendingData, setPendingData] = useState([]);
+
+    const fetchPendingData = async () => {
+        try {
+            const response = await getRequest(
+                `http://localhost:4000/api/getScrapCardData/${user.user_id}`
+            );
+            console.log(response);
+            setPendingData(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
+
+    //<<<<--------------------Scrap Request related variables and function----------------->>>>
+    const [stockData, setStockData] = useState([]);
+
+    const [noRequestData, setNoRequestData] = useState(true);
+
+    const fetchStockData = async () => {
+        try {
+            const response = await getRequest(`http://localhost:4000/api/getAdminScrapStockData/${user.dept_code}`);
+            if (response && response.status == 200) {
+                if (response.data.Data == "No Data") {
+                    setNoRequestData(true);
+                    setIsLoading(false);
+                } else {
+                    setNoRequestData(false);
+                    setIsLoading(false);
+                    setStockData(response.data.Data);
+                }
+            } else {
+                setIsLoading(false);
+                setNoRequestData(true);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
+
+    //<<<<------------------Scrap Approval related state variables and fetch functions--------------->>>>
+    const [scrapData, setScrapData] = useState([]);
 
     const [noData, setNoData] = useState(true);
-    const [noTrackData, setNoTrackData] = useState(true);
-    const [noTableData, setNoTableData] = useState(true);
-    const {getRequest} = useAuth();
-
-
-    
-    const [getLabDetails, setGetLabDetails] = useState([]);
-    async function fetchGetLabDetails() {
-      const response = await getRequest("http://localhost:4000/api/getLabDetails")
-        .catch((error) => console.log(error));
-      setGetLabDetails(response.data);
-      
-    }
 
     async function fetchScrapData() {
         const response = await getRequest("http://localhost:4000/api/getScrap");
@@ -48,67 +122,7 @@ const Scrap = () => {
         }
     }
 
-    async function fetchTableData() {
-        const response = await getRequest("http://localhost:4000/api/getTableScrapData");
-        if (response && response.status == 200) {
-            if (response.data.Data == "No Data") {
-                setNoTableData(true);
-                setIsLoading(false);
-            } else {
-                setNoTableData(false);
-                setTableData(response.data.Data);
-            }
-        } else {
-            setNoTableData(true);
-        }
-    }
-
-
-    async function fetchScrapTrackData(id) {
-        const response = await getRequest(`http://localhost:4000/api/getScrapData/${id}`);
-        if (response && response.status == 200) {
-            if (response.data.Data == "No Data") {
-                setNoTrackData(true);
-                setIsLoading(false);
-            } else {
-                setNoTrackData(false);
-                setScrapTrackData(response.data.Data);
-            }
-        } else {
-            setNoTrackData(true);
-        }
-        console.log(response.data);
-    }
-
-    const [showTrackScrap, setShowTrackScrap] = useState(false);
-    const [showScrapApprove, setShowScrapApprove] = useState(false);
-    const [showScrap, setShowScrap] = useState(false);
-    const [showScrapTable, setShowScrapTable] = useState(true);
-
-
-    const [message, setMessage] = useState(null);
-    const [error, setError] = useState(null);
-
     const navigate = useNavigate();
-    const [isNavbarVisible, setIsNavbarVisible] = useState(false);
-    const [isArrowRotated, setIsArrowRotated] = useState(false);
-
-    const toggleNavbar = () => {
-        setIsNavbarVisible((prev) => !prev);
-        setIsArrowRotated((prev) => !prev);
-    };
-
-    const { user, getUser } = useAuth();
-
-    const fetchStockData = async () => {
-        try {
-            const response = await getRequest(`http://localhost:4000/api/getAdminScrapStockData/${user.dept_code}`);
-            console.log(response);
-            setStockData(response.data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     useEffect(() => {
         if (!Cookies.get("token")) {
@@ -116,7 +130,6 @@ const Scrap = () => {
         } else {
             getUser();
             fetchStockData();
-            fetchGetLabDetails();
             fetchTableData();
             if (user.role == 'slsincharge') {
                 fetchScrapData();
@@ -198,18 +211,18 @@ const Scrap = () => {
                                         >
                                             Track Your Request
                                         </div>
-                                        {user.role == "slsincharge" && 
-                                        <div
-                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapApprove == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                                            onClick={() => {
-                                                setShowTrackScrap(false)
-                                                setShowScrapTable(false)
-                                                setShowScrapApprove(true)
-                                                setShowScrap(false)
-                                            }}
-                                        >
-                                            Approval Request
-                                        </div>
+                                        {user.role == "slsincharge" &&
+                                            <div
+                                                className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapApprove == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                                                onClick={() => {
+                                                    setShowTrackScrap(false)
+                                                    setShowScrapTable(false)
+                                                    setShowScrapApprove(true)
+                                                    setShowScrap(false)
+                                                }}
+                                            >
+                                                Approval Request
+                                            </div>
                                         }
                                         <div
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrap == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
@@ -229,25 +242,23 @@ const Scrap = () => {
                     </div>
                 </div>
             )}
+
             <Table
                 scrapData={tableData}
                 isVisible={showScrapTable}
             />
+
             <ScrapTrack
                 isVisible={showTrackScrap}
-                // onClose={() => setShowTrackScrap(false)}
-                user={user}
-                setScrapTrackData={setScrapTrackData}
-                scrapTrackData={scrapTrackData}
-                noTrackData={noTrackData}
                 setMessage={setMessage}
-                onClose={()=>setShowTrackScrap(false)}
                 setError={setError}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
-                fetchScrapTrackData={fetchScrapTrackData}
+                fetchPendingData={fetchPendingData}
+                pendingData={pendingData}
             />
-            <ScrapApprove   
+
+            <ScrapApprove
                 isVisible={showScrapApprove}
                 onClose={() => setShowScrapApprove(false)}
                 user={user}
@@ -256,6 +267,7 @@ const Scrap = () => {
                 scrapData={scrapData}
                 fetchScrapData={fetchScrapData}
                 noData={noData}
+                fetchTableData={fetchTableData}
             />
             {/* <ScrapRequest
                 isVisible={showScrap}
@@ -265,18 +277,19 @@ const Scrap = () => {
                 setError={setError}
                 fetchScrapTrackData={fetchScrapTrackData}
             /> */}
+
             <ScrapRequestTable
-                user={user}
                 isVisible={showScrap}
-                onClose={()=>setShowScrap(false)}
+                user={user}
                 setMessage={setMessage}
                 setError={setError}
-                getLabDetails={getLabDetails}
-                setGetLabDetails={setGetLabDetails}
-                getStock={stockData}
-                fetchGetStock={fetchStockData}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
+                fetchTableData={fetchTableData}
+                fetchPendingData={fetchPendingData}
+                getStock={stockData}
+                fetchGetStock={fetchStockData}
+                noRequestData={noRequestData}
             />
 
         </>

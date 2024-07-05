@@ -6,7 +6,7 @@ import axios from "axios";
 import RejectPopup from './RejectPopup';
 
 
-const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapData }) => {
+const TransferCard = ({ data, user, setMessage, setError, fetchScrapData, fetchTableData }) => {
 
   const [isLoading, setIsLoading] = useState(false)
   const [rejectDesc, setRejectDesc] = useState("");
@@ -21,15 +21,15 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
           setIsLoading(false);
           if (response && response.status == 201) {
             setMessage(response.data.Data);
-            onClose();
             fetchScrapData();
+            fetchTableData();
           }
         })
     } catch (error) {
       setIsLoading(false);
       setError(error.response.data.Data)
-      onClose();
       fetchScrapData();
+      fetchTableData();
     }
   }
 
@@ -47,17 +47,18 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
           const response = await axios.post("http://localhost:4000/api/rejectScrapRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc });
           if (response && response.status == 201) {
             setIsLoading(false);
-            setMessage(response.data.Data); 
-            onClose();
+            setMessage(response.data.Data);
             fetchScrapData();
+            fetchTableData();
           }
           return;
         } catch (error) {
+          console.log(error);
           setIsLoading(false);
           if (error && error.response.status == 500) {
             setError(error.response.data.Data);
-            onClose();
             fetchScrapData();
+            fetchTableData();
           }
         }
       } else {
@@ -65,7 +66,6 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
         setRejectDesc("");
       }
     }
-
   }
 
   const toSentenceCase = (str) => {
@@ -132,17 +132,13 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
           </div>
           < RejectPopup
             isVisible={showManufacturer}
-            // rejectDesc={rejectDesc}
             rejectDesc={rejectDesc}
             setRejectDesc={setRejectDesc}
             onClose={() => setShowManufacturer(false)}
-            setError={setError}
             handleReject={handleReject}
           />
         </>
       )}
-
-
     </>
   );
 };

@@ -4,7 +4,8 @@ function ScarpPopup({ isVisible, onClose, data }) {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-50">
+    <div           popover
+    id="myheader" className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-50">
       <div className="fixed inset-0 flex justify-center items-center">
         <div
           style={{

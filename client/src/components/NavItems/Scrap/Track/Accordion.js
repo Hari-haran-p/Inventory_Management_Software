@@ -25,7 +25,6 @@ const Accordion = (props) => {
                 data={data}
                 index={index}
                 setIsLoading = {props.setIsLoading} 
-                onClose={props.onClose}
                 user={props.user}
                 getUser = {props.getUser}
                 setError={props.setError}

@@ -104,7 +104,7 @@ const itemAdd = async function (req, res, next) {
 
 const stockAdd = async function (req, res, next) {
     console.log("called");
-    console.log(req.body);
+    // console.log(req.body);
     try {
         const apex_no = req.body.apexno.toUpperCase();
         const consumable = req.body.consumable.toUpperCase();
@@ -226,7 +226,7 @@ const stockAdd = async function (req, res, next) {
         await db.query("INSERT INTO stocktable (apexno, consumable, type, name, subname, description, quantity, cost, quantity_units, faculty_id, dept_id, apex_reason, manufacturer_id, supplier_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [apex_no, consumable, type, name, subname, description, qunatity, cost, quantity_units, faculty_id, dept_id, apex_reason, manufacturerId, supplierId]).then((response) => {
                 return res.status(201).json({ Data: "Stock Created Sucessfully" });
-            })
+        })
 
     } catch (error) {
         console.log(error);

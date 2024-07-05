@@ -1,63 +1,64 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import { useAuth } from '../../../../AuthContext';
 
-const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fetchScrapTrackData, getUser }) => {
+const TrackCard = ({ data, setMesaage, setError, setIsLoading, fetchPendingData }) => {
+    const { user, getUser } = useAuth();
 
     const handleCancel = async (e) => {
         try {
             if (window.confirm("Are you sure want to cancel ?")) {
                 setIsLoading(true);
                 e.preventDefault();
-                const response = await axios.post("http://localhost:4000/api/cancelScrapRequest",
+                const response = await axios.post("http://localhost:4000/api/cancelConsumeRequest",
                     {
-                        scrap_id: data.id,
+                        consume_id: data.id,
                         dept_id: user.dept_code,
                         user_id: user.user_id
                     })
-                if (response) {
+                console.log(response);
+                if (response.data.success) {
+                    console.log("responded");
                     setIsLoading(false);
-                    getUser().then((response) => fetchScrapTrackData(response.dept_code));
-                    setMessage(response.data.Data);
-                    onClose();
+                    console.log(user.dept_code);
+                    fetchPendingData();
+                    setMesaage(response.data.Data);
                 }
             }
         } catch (error) {
             if (error) {
                 setIsLoading(false);
-                setError(error.response.data.Data)
-                getUser().then((response) => fetchScrapTrackData(response.dept_code));
-                onClose();
+                console.log(error);
+                // setError(error.response.data.Data)
+                fetchPendingData();
             }
         }
     }
 
-
     const handleDelete = async (e) => {
         try {
-            if (window.confirm("Are you sure want toi delete ?")) {
+            if (window.confirm("Are you sure want to delete ?")) {
                 setIsLoading(true);
                 e.preventDefault();
                 const response = await axios.post(
-                    "/api/deleteScrapRequest",
+                    "http://localhost:4000/api/deleteConsumeRequest",
                     {
-                        scrap_id: data.id,
+                        consume_id: data.id,
                         dept_id: user.dept_code,
                         user_id: user.user_id
                     }
                 );
                 if (response) {
                     setIsLoading(false);
-                    getUser().then((response) => fetchScrapTrackData(response.dept_code));
-                    setMessage(response.data.Data);
-                    onClose();
+                    fetchPendingData();
+                    setMesaage(response.data.Data);
                 }
             }
         } catch (error) {
             if (error) {
                 setIsLoading(false);
-                getUser().then((response) => fetchScrapTrackData(response.dept_code));
+                fetchPendingData();
                 setError(error.response.data.Data);
-                onClose();
             }
         }
     };
@@ -75,9 +76,9 @@ const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fe
                 <div className="flex flex-col flex-wrap">
                     <div className="flex justify-between flex-wrap items-center pb-2">
                         <div className="flex items-center flex-wrap gap-2 ">
-                            <div className="text-lg font-bold">Item Code :</div>
+                            <div className="text-lg font-bold">Stock Id :</div>
                             <div className="font-bold text-indigo-700">
-                                {data.item_code}
+                                {data.stock_id}
                             </div>
                         </div>
 
@@ -123,9 +124,9 @@ const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fe
                         </div>
                         <div className=" lg:text-end flex flex-col gap-5">
                             <div className="flex flex-col ">
-                                <div className="text-sm ">Scrap Qty</div>
+                                <div className="text-sm ">Consume Qty</div>
                                 <div className="font-bold  text-indigo-700">
-                                    {data.scrap_qty} nos
+                                    {data.consume_qty} nos
                                 </div>
                             </div>
 
@@ -148,7 +149,7 @@ const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fe
                             </div>
                         </div>
                     }
-                    {data.status == "PENDING" ? (
+                    {data.status == "INITIATED" ? (
                         <button
                             onClick={handleCancel}
                             class="border border-red-500 h-10 bg-red-500 text-white rounded-md px-4 py-2  transition duration-500 ease select-none hover:bg-red-600 focus:outline-none focus:shadow-outline"
@@ -156,7 +157,7 @@ const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fe
                             Cancel
                         </button>
                     ) : null}
-                    {data.status == "CANCELED" ? (
+                    {data.status == "CANCELLED" ? (
                         <button
                             onClick={handleDelete}
                             class="border border-red-500 h-10 bg-red-500 text-white rounded-md px-4 py-2  transition duration-500 ease select-none hover:bg-red-600 focus:outline-none focus:shadow-outline"
@@ -165,7 +166,7 @@ const TrackCard = ({ data, user, setMessage, setError, onClose, setIsLoading, fe
                         </button>
                     ) : null}
                     <div className="flex flex-col">
-                        <div className={`text-lg border-2 ${data.status == 'PENDING' ? "border-indigo-500 rounded-md p-1  text-indigo-700 bg-indigo-100" : data.status == 'CANCELED' ? "border-red-500  text-red-700 rounded-md p-1 bg-red-100" : data.status == 'LABAPPROVED' ? "border-orange-500  text-orange-700 rounded-md p-1 bg-orange-100" : data.status == 'APPROVED' ? "border-green-500 text-green-700  rounded-md p-1 bg-green-100" : data.status == "REJECTED" ? "border-red-500 text-red-700 rounded-md p-1 bg-red-100" : ""} `}>Status :
+                        <div className={`text-lg border-2 ${data.status == 'INITIATED' ? "border-indigo-500 rounded-md p-1  text-indigo-700 bg-indigo-100" : data.status == 'CANCELLED' ? "border-red-500  text-red-700 rounded-md p-1 bg-red-100" : data.status == 'LABAPPROVED' ? "border-orange-500  text-orange-700 rounded-md p-1 bg-orange-100" : data.status == 'APPROVED' ? "border-green-500 text-green-700  rounded-md p-1 bg-green-100" : data.status == "REJECTED" ? "border-red-500 text-red-700 rounded-md p-1 bg-red-100" : ""} `}>Status :
                             <span className={`font-bold`}>
                                 {" "} {data.status}
                             </span>

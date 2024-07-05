@@ -16,7 +16,7 @@ const getTransferData = function (req, res, next) {
                 }
             })
     } else if (req.body.role == 'slsincharge' && user_dept == "SLBS") {
-        db.query("SELECT * FROM transferview WHERE (current_status = ?) OR (current_status = ? AND transfered_from = ? )", ["LABAPPROVED", "INITIATED",  "SLBS"])
+        db.query("SELECT * FROM transferview WHERE (current_status = ?) OR (current_status = ? AND transfered_from = ?)", ["LABAPPROVED", "INITIATED", "SLBS"])
             .catch((error) => { return res.status(500).json({ error: "There was some Error" }) })
             .then((response) => {
                 // console.log("from now : ", response);
@@ -176,7 +176,7 @@ const cancelTransferRequest = async function (req, res, next) {
 
     let connection;
     try {
-        console.log(req.body);
+        // console.log(req.body);
         connection = await db.getConnection();
         await connection.beginTransaction();
 
@@ -194,7 +194,7 @@ const cancelTransferRequest = async function (req, res, next) {
         if (selectResult.length > 0 && selectResult[0].transfer_to == req.body.dept_id) {
             const updateResult = await new Promise((resolve, reject) => {
                 connection.query("UPDATE transfertable SET status = ? WHERE id = ? AND transfer_to = ? ",
-                    ["CANCELED", req.body.transfer_id, req.body.dept_id],
+                    ["CANCELLED", req.body.transfer_id, req.body.dept_id],
                     async (error, result) => {
                         if (error) {
                             await connection.rollback();
@@ -224,8 +224,8 @@ const cancelTransferRequest = async function (req, res, next) {
 
 const deleteTransferRequest = async function (req, res, next) {
     let connection;
+    // console.log(req.body);
     try {
-
         connection = await db.getConnection();
         await connection.beginTransaction();
 
@@ -240,15 +240,14 @@ const deleteTransferRequest = async function (req, res, next) {
             })
         })
 
-        if (selectResult.length > 0 && selectResult[0].transfer_to == req.body.dept_id && selectResult[0].status == "CANCELED") {
+        if (selectResult.length > 0 && selectResult[0].transfer_to == req.body.dept_id && selectResult[0].status == "CANCELLED") {
             const deleteResult = await new Promise((resolve, reject) => {
                 connection.query("DELETE FROM transfertable WHERE id = ? AND transfer_to = ? AND status = ?",
-                    [req.body.transfer_id, req.body.dept_id, "CANCELED"],
+                    [req.body.transfer_id, req.body.dept_id, "CANCELLED"],
                     async (error, result) => {
                         if (error) {
                             await connection.rollback();
                             return res.status(400).json({ "Data": "Some Internal error" });
-                            reject(error)
                         } else
                             resolve(result);
                     })
@@ -268,7 +267,6 @@ const deleteTransferRequest = async function (req, res, next) {
         if (connection)
             connection.release();
     }
-
 }
 
 
@@ -370,7 +368,7 @@ const acceptRequest = async function (req, res, next) {
 
 
 const rejectRequest = async function (req, res, next) {
-    console.log(req.body);
+
     let connection;
     try {
         connection = await db.getConnection();

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-const RejectPopup = ({ isVisible, onClose, getRejectDesc, rejectDesc, setError, handleReject, setRejectDesc }) => {
-
+const RejectPopup = ({ isVisible, onClose, rejectDesc, setRejectDesc, handleReject }) => {
 
     if (!isVisible) return null;
 

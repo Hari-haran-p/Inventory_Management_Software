@@ -34,7 +34,6 @@ export default function StockEntries() {
     setSupplier(response.data);
   }
 
-
   useEffect(() => {
     fetchManufacturer();
     fetchSupplier();

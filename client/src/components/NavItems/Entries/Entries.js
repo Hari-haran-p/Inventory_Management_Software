@@ -30,7 +30,7 @@ function Entries() {
   const [showManufacturerImport, setShowManufacturerImport] = useState(false);
   const [showSupplierImport, setShowSupplierImport] = useState(false);
 
-  
+
   const [manufacturer, setManufacturer] = useState([]);
   const [supplier, setSupplier] = useState([]);
   const [quantityUnits, setQuantityUnits] = useState([]);
@@ -99,7 +99,7 @@ function Entries() {
   };
 
   useEffect(() => {
-    setTimeout(clearMessage, 4000);
+    setTimeout(clearMessage, 6000);
   }, [message, error]);
 
   return (
@@ -124,7 +124,7 @@ function Entries() {
           ) : null}
           {error ? (
             <div
-              class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded fixed top-0 z-50 "
+              class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded fixed top-0 z-50 message"
               role="alert"
             >
               <span class="block sm:inline">{error}</span>
@@ -193,13 +193,13 @@ function Entries() {
                 </div>
                 <div className="flex button-container gap-3 items-center justify-center">
                   <Link
-                  to={"/entries/supplier"}
+                    to={"/entries/supplier"}
                     class="w-11/12 md:w-32 bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-2 px-6 inline-flex items-center"
                   >
                     <span class="mx-auto text-lg">Upload</span>
                   </Link>
                   <Link
-                  to={"/entries/supplier"}
+                    to={"/entries/supplier"}
                     class="w-11/12 md:w-32 bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-blue-500 hover:border-blue-600 hover:bg-blue-500 hover:text-white shadow-md py-2 px-6 inline-flex items-center"
                   >
                     <span class="mx-auto text-lg">Entry</span>
@@ -284,13 +284,13 @@ function Entries() {
                 </div>
                 <div className="flex button-container gap-3 items-center justify-center">
                   <Link
-                  to={"/entries/stock"}
+                    to={"/entries/stock"}
                     class="w-11/12 md:w-32 bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-2 px-6 inline-flex items-center"
                   >
                     <span class="mx-auto text-lg">Upload</span>
                   </Link>
                   <Link
-                  to={"/entries/stock"}
+                    to={"/entries/stock"}
                     class=" w-11/12 md:w-32 bg-white tracking-wide text-gray-800 font-bold rounded border-b-2 border-blue-500 hover:border-blue-600 hover:bg-blue-500 hover:text-white shadow-md py-2 px-6 inline-flex items-center"
                   >
                     <span class="mx-auto text-lg">Entry</span>

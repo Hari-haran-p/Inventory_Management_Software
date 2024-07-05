@@ -3,30 +3,15 @@ import Accordion from "./Accordion";
 import axios from "axios";
 import { useAuth } from '../../../../AuthContext';
 
-const ScrapTrack = ({isVisible,setMessage,onClose,setError,setIsLoading,isLoading,fetchScrapTrackData}) => {
+const ScrapTrack = ({isVisible,setMessage,setError,setIsLoading,isLoading,fetchPendingData, pendingData}) => {
 
-  const [pendingData, setPendingData] = useState([]);
   const [accordions, setAccordions] = useState([]);
 
   const { user, getUser, getRequest } = useAuth();
 
-
-  const fetchPendingData = async () => {
-    try {
-      const response = await getRequest(
-        `http://localhost:4000/api/getScrapCardData/${user.user_id}`
-      );
-      console.log(response);
-      setPendingData(response.data);
-    } catch (error) {
-      console.error(error); 
-    }
-  };
-      
   useEffect(() => {
     fetchPendingData();
   }, []);
-
 
   useEffect(() => {
     setAccordions([
@@ -46,13 +31,6 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError,setIsLoading,isLoadin
         noDataMessage: "No approved data available",
         icon:"&#9660;"
       },
-      // {
-      //   key: 3,
-      //   title: "Acknowledged",
-      //   data: pendingData.acknowledged || [],
-      //   isOpen: false,
-      //   noDataMessage: "No acknowledged data available",
-      // },
       {
         key: 3,
         title: "Rejected",
@@ -93,7 +71,6 @@ const ScrapTrack = ({isVisible,setMessage,onClose,setError,setIsLoading,isLoadin
               setMessage={setMessage}
               isLoading = {isLoading}
               setIsLoading = {setIsLoading}
-              onClose={onClose}
               setError={setError}
               fetchPendingData = {fetchPendingData}
               toggleAccordion={() => toggleAccordion(accordion.key)}

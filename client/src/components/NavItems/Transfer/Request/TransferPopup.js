@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import TransferEdit from "./TransferEdit";
 
-function TransferRequestTable({isVisible, user, getStock ,getLabDetails,setGetLabDetails, fetchGetStock, setMessage, setError, setIsLoading, isLoading}) {
+function TransferRequestTable({isVisible, user,setMessage, setError,isLoading, setIsLoading,  getStock ,fetchGetStock, fetchPendingData, fetchOverallTranferedData }) {
 
 
   //for edit popup
@@ -14,14 +14,11 @@ function TransferRequestTable({isVisible, user, getStock ,getLabDetails,setGetLa
     setEditData(data);
   };
 
-  const handleCloseEdit = (data) => {
-    setOpenEdit(false);
-    // setEditData(null);
-    fetchGetStock();
-  };
   const onSubmit = () => {
+    setOpenEdit(false);
     fetchGetStock();
-    handleCloseEdit();
+    fetchPendingData();
+    fetchOverallTranferedData();
   };
 
   // Search functionality
@@ -415,16 +412,11 @@ function TransferRequestTable({isVisible, user, getStock ,getLabDetails,setGetLa
         <div className="blur-background">
           <TransferEdit
             data={editData}
-            getLabDetails = {getLabDetails}
-            setGetLabDetails = {setGetLabDetails}
-            onClose={handleCloseEdit}
-            onSubmit={onSubmit}
+            onClose={onSubmit}
             setMessage={setMessage}
             setError={setError}
             setIsLoading ={setIsLoading}
-            isLoading = {isLoading}
             user = {user}
-            fetchGetStock = {fetchGetStock}
           />
         </div>
       )}

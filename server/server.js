@@ -19,7 +19,7 @@ const { manufacturerAdd, supplierAdd, itemAdd, stockAdd } = require("./vendor.js
 const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest, acceptScrapRequest, cancelScrapRequest, deleteScrapRequest, getTableScrapData, getScrapCardData } = require("./scrap.js");
 const { importItems, importStocks, importTransferItems, importManufacturers, importSuppliers } = require("./excel_import.js");
 const { error } = require("console");
-const { consumeRequest, getAllConsumeData, getConsumeData, rejectConsumeRequest, acceptConsumeRequest, cancelConsumeRequest, deleteConsumeRequest, getTableConsumeData, getConsumeCardData } = require("./consume.js");
+const { consumeRequest, getAllConsumeData, getConsumeData, rejectConsumeRequest, acceptConsumeRequest, cancelConsumeRequest, deleteConsumeRequest, getTableConsumeData, getConsumeCardData, getRequestTableData } = require("./consume.js");
 
 
 const app = express();
@@ -137,7 +137,13 @@ app.get("/api/getAdminScrapStockData/:id", authenticate, (req, res) => {
                 console.error("Error executing query:", error);
                 return res.status(500).send("Internal Server Error");
             }
-            res.send(result);
+            if (result.length > 0) {
+                res.status(200).json({ Data: result });
+                return;
+            } else {
+                res.status(200).json({ Data: "No Data" });
+                return;
+            }
         });
     } catch (err) {
         console.error("Error in try-catch block:", err);
@@ -236,13 +242,6 @@ app.get("/api/getInventoryData", authenticate, (req, res) => {
     });
 });
 
-// app.get("/api/getLabDetails", (req, res) => {
-//     db.query("SELECT * FROM labdetails", (error, result) => {
-//         if (error) console.log(error);
-//         res.send(result);
-//     });
-// });
-
 app.get("/api/getLabsStock", (req, res) => {
     db.query("SELECT * FROM labs_stock_view", (error, result) => {
         if (error) console.log(error);
@@ -258,17 +257,15 @@ app.get("/api/getOverallLabsStock", (req, res) => {
 });
 
 app.get("/api/getOverallTransferedData", authenticate, (req, res) => {
-    db.query("SELECT * FROM transferview", (error, result) => {
+    db.query("SELECT * FROM transferview ORDER BY created_at DESC", (error, result) => {
         if (error) console.log(error);
         res.send(result);
     });
 });
 
 
-
 app.get("/api/getTransferCardData/:id", async (req, res) => {
-    const user = req.params.id;
-
+    const dept = req.params.id;
     try {
         const [
             transferPendingResult,
@@ -277,11 +274,11 @@ app.get("/api/getTransferCardData/:id", async (req, res) => {
             transferAcknowledgedResult,
             transferRejectedResult,
         ] = await Promise.all([
-            db.query("SELECT * FROM transferview WHERE (current_status = ? OR current_status = ?) AND faculty_id = ?", ["INITIATED", "CANCELED", user]),
-            db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["STORESAPPROVED", user]),
-            db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["LABAPPROVED", user]),
-            db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["ACKNOWLEDGED", user]),
-            db.query("SELECT * FROM transferview WHERE current_status = ? AND faculty_id = ?", ["REJECTED", user]),
+            db.query("SELECT * FROM transferview WHERE (current_status = ? OR current_status = ?) AND transfer_to = ?", ["INITIATED", "CANCELLED", dept]),
+            db.query("SELECT * FROM transferview WHERE current_status = ? AND transfer_to = ?", ["STORESAPPROVED", dept]),
+            db.query("SELECT * FROM transferview WHERE current_status = ? AND transfer_to = ?", ["LABAPPROVED", dept]),
+            db.query("SELECT * FROM transferview WHERE current_status = ? AND transfer_to = ?", ["ACKNOWLEDGED", dept]),
+            db.query("SELECT * FROM transferview WHERE current_status = ? AND transfer_to = ?", ["REJECTED", dept]),
         ]);
 
         res.status(200).json({
@@ -297,34 +294,34 @@ app.get("/api/getTransferCardData/:id", async (req, res) => {
     }
 });
 
-app.get("/api/getScrapCardData/:id", async (req, res) => {
+// app.get("/api/getScrapCardData/:id", authenticate, async (req, res) => {
 
-    const user = req.params.id;
-    try {
-        const [
-            scrapPendingResult,
-            scrapApprovedResult,
-            scrapAcknowledgedResult,
-            scrapRejectedResult,
-        ] = await Promise.all([
-            db.query("SELECT * FROM scrap_table_view WHERE (status = ? OR status = ?) AND user_id = ?", ["PENDING", "CANCELED", user]),
-            db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["APPROVED", user]),
-            db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["ACKNOWLEDGED", user]),
-            db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["REJECTED", user]),
-        ]);
+//     const user = req.params.id; 
+//     try {
+//         const [
+//             scrapPendingResult,
+//             scrapApprovedResult,
+//             // scrapAcknowledgedResult,
+//             scrapRejectedResult,
+//         ] = await Promise.all([
+//             db.query("SELECT * FROM scrap_table_view WHERE (status = ? OR status = ?) AND user_id = ?", ["INITIATED", "CANCELED", user]),
+//             db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["APPROVED", user]),
+//             // db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["ACKNOWLEDGED", user]),
+//             db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["REJECTED", user]),
+//         ]);
 
 
-        res.status(200).json({
-            pending: scrapPendingResult,
-            approved: scrapApprovedResult,
-            acknowledged: scrapAcknowledgedResult,
-            rejected: scrapRejectedResult,
-        });
-    } catch (error) {
-        console.error("Error executing the queries:", error);
-        res.status(500).json({ error: "There was some error" });
-    }
-});
+//         res.status(200).json({
+//             pending: scrapPendingResult,
+//             approved: scrapApprovedResult,
+//             // acknowledged: scrapAcknowledgedResult,
+//             rejected: scrapRejectedResult,
+//         });
+//     } catch (error) {
+//         console.error("Error executing the queries:", error);
+//         res.status(500).json({ error: "There was some error" });
+//     }
+// });
 
 
 
@@ -390,28 +387,29 @@ app.post("/api/deleteScrapRequest", deleteScrapRequest);
 
 app.get("/api/getTableScrapData", authenticate, getTableScrapData);
 
-
 app.get("/api/getScrapCardData/:id", authenticate, getScrapCardData);
 
 
-
 //Consume Related API's
-app.post("/api/consumeRequest", consumeRequest);
+app.post("/api/consumeRequest", consumeRequest); //ok
 
-app.get("/api/getConsume",authenticate,  getAllConsumeData);
+app.get("/api/getConsume",authenticate,  getAllConsumeData);//ok
 
-app.get("/api/getConsumeData/:id", authenticate, getConsumeData);
+// app.get("/api/getConsumeData/:id", authenticate, getConsumeData);
 
-app.post("/api/rejectConsumeRequest", rejectConsumeRequest);
+app.get('/api/getRequestTableData/:id', authenticate, getRequestTableData); //ok
 
-app.post("/api/acceptConsumeRequest", acceptConsumeRequest);
+app.post("/api/rejectConsumeRequest", rejectConsumeRequest);//ok
 
-app.post("/api/cancelConsumeRequest", cancelConsumeRequest);
+app.post("/api/acceptConsumeRequest", acceptConsumeRequest);//ok
 
-app.post("/api/deleteConsumeRequest", deleteConsumeRequest);
+app.post("/api/cancelConsumeRequest", cancelConsumeRequest); //ok
 
-app.get("/api/getTableConsumeData",authenticate, getTableConsumeData);
+app.post("/api/deleteConsumeRequest", deleteConsumeRequest);//ok
 
-app.get("/api/getConsumeCardData/:id", authenticate, getConsumeCardData);
+app.get("/api/getTableConsumeData",authenticate, getTableConsumeData); //ok
+
+app.get("/api/getConsumeCardData/:id", authenticate, getConsumeCardData);//ok
+
 
 app.listen(4000, () => console.log("App listening on port 4000"));

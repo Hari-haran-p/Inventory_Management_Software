@@ -48,19 +48,19 @@ function Vendors({ open }) {
   const [click, setClick] = useState(false);
 
   useEffect(() => {
-    if(searchQuery == ""){
+    if (searchQuery == "") {
       setFilteredData(manufacturer)
       return
     }
     if (click) {
       const filteredResults = manufacturer.filter((item) => {
-        const propertiesToSearch = ["name","id"];
+        const propertiesToSearch = ["name", "id"];
         return propertiesToSearch.some((property) =>
           typeof item[property] === "string"
             ? item[property].toLowerCase().includes(searchQuery.toLowerCase())
             : typeof item[property] === "number"
-            ? item[property].toString().includes(searchQuery)
-            : false
+              ? item[property].toString().includes(searchQuery)
+              : false
         );
       });
 
@@ -134,21 +134,21 @@ function Vendors({ open }) {
   const [buttonClick, setButtonClick] = useState(false);
 
   useEffect(() => {
-    if(supplierSearchQuery == ""){
+    if (supplierSearchQuery == "") {
       setSupplierFilteredData(supplier)
       return;
     }
     if (buttonClick) {
       const SupplierFilteredResults = supplier.filter((item) => {
-        const supplierPropertiesToSearch = ["id","name", "address", "contact"];
+        const supplierPropertiesToSearch = ["id", "name", "address", "contact"];
         return supplierPropertiesToSearch.some((property) =>
           typeof item[property] === "string"
             ? item[property]
-                .toLowerCase()
-                .includes(supplierSearchQuery.toLowerCase())
+              .toLowerCase()
+              .includes(supplierSearchQuery.toLowerCase())
             : typeof item[property] === "number"
-            ? item[property].toString().includes(supplierSearchQuery)
-            : false
+              ? item[property].toString().includes(supplierSearchQuery)
+              : false
         );
       });
 
@@ -156,36 +156,36 @@ function Vendors({ open }) {
     }
   }, [buttonClick, supplier, supplierSearchQuery]);
 
-    //-----------------------------table row filter for supplier table------------------------------
+  //-----------------------------table row filter for supplier table------------------------------
 
-    const [rowSizeSupplier, setRowSizeSupplier] = useState(10);
-    const [supplierCurrentPage, setSupplierCurrentPage] = useState(1);
-    const [supplierTotalPages, setSupplierTotalPages] = useState(1);
-  
-    useEffect(() => {
-      setSupplierTotalPages(Math.ceil(supplierFilteredData.length / rowSizeSupplier));
-    }, [supplierFilteredData, rowSizeSupplier]);
-  
-    const supplierNextPage = () => {
-      if (supplierCurrentPage < supplierTotalPages) {
-        setSupplierCurrentPage(supplierCurrentPage + 1);
-      }
-    };
-  
-    const supplierPrevPage = () => {
-      if (supplierCurrentPage > 1) {
-        setSupplierCurrentPage(supplierCurrentPage - 1);
-      }
-    };
-  
-    const handleSupplierRowSizeChange = (e) => {
-      const newSize = parseInt(e.target.value);
-      setRowSizeSupplier(newSize);
-      setSupplierCurrentPage(1);
-    };
-  
-    const supplierStartIndex = (supplierCurrentPage - 1) * rowSizeSupplier;
-    const supplierEndIndex = Math.min(supplierStartIndex + rowSizeSupplier, supplierFilteredData.length);
+  const [rowSizeSupplier, setRowSizeSupplier] = useState(10);
+  const [supplierCurrentPage, setSupplierCurrentPage] = useState(1);
+  const [supplierTotalPages, setSupplierTotalPages] = useState(1);
+
+  useEffect(() => {
+    setSupplierTotalPages(Math.ceil(supplierFilteredData.length / rowSizeSupplier));
+  }, [supplierFilteredData, rowSizeSupplier]);
+
+  const supplierNextPage = () => {
+    if (supplierCurrentPage < supplierTotalPages) {
+      setSupplierCurrentPage(supplierCurrentPage + 1);
+    }
+  };
+
+  const supplierPrevPage = () => {
+    if (supplierCurrentPage > 1) {
+      setSupplierCurrentPage(supplierCurrentPage - 1);
+    }
+  };
+
+  const handleSupplierRowSizeChange = (e) => {
+    const newSize = parseInt(e.target.value);
+    setRowSizeSupplier(newSize);
+    setSupplierCurrentPage(1);
+  };
+
+  const supplierStartIndex = (supplierCurrentPage - 1) * rowSizeSupplier;
+  const supplierEndIndex = Math.min(supplierStartIndex + rowSizeSupplier, supplierFilteredData.length);
 
   //<--------------------sort by functionality for supplier table-------------------->
 
@@ -273,9 +273,8 @@ function Vendors({ open }) {
             </div>
           </div>
           <div
-            className={`flex ${
-              open ? "gap-24" : "gap-6"
-            } gap-change  flex-col lg:flex-row items-center justify-center h-auto lg:flex-nowrap duration-500 lg:w-10/12 w-full mt-10 `}
+            className={`flex ${open ? "gap-24" : "gap-6"
+              } gap-change  flex-col lg:flex-row items-center justify-center h-auto lg:flex-nowrap duration-500 lg:w-10/12 w-full mt-10 `}
           >
             <div className="border-2 duration-500 rounded-lg  lg:w-5/12 w-full">
               <h1 className="text-center text-2xl font-bold animate1 whitespace-nowrap text-blue-600 py-3">
@@ -326,9 +325,8 @@ function Vendors({ open }) {
                             <div className="flex">
                               <div>Manufacturer ID</div>
                               <span
-                                className={`bi bi-arrow-${
-                                  sortOrder === "asc" ? "up" : "down"
-                                } ml-2`}
+                                className={`bi bi-arrow-${sortOrder === "asc" ? "up" : "down"
+                                  } ml-2`}
                               />
                             </div>
                           </th>
@@ -340,9 +338,8 @@ function Vendors({ open }) {
                             <div className="flex">
                               <div>Manufacturer Name</div>
                               <span
-                                className={`bi bi-arrow-${
-                                  sortOrder === "asc" ? "up" : "down"
-                                } ml-2`}
+                                className={`bi bi-arrow-${sortOrder === "asc" ? "up" : "down"
+                                  } ml-2`}
                               />
                             </div>
                           </th>
@@ -351,7 +348,7 @@ function Vendors({ open }) {
                       <tbody
                         style={{ backgroundColor: "white", fontWeight: "bold" }}
                       >
-                        {filteredData.slice(startIndex,endIndex).map((data, index) => {
+                        {filteredData.slice(startIndex, endIndex).map((data, index) => {
                           return (
                             <tr class="bg-white">
                               <td scope="row" class="border-b-2 px-6 py-4 ">
@@ -463,11 +460,10 @@ function Vendors({ open }) {
                               <div>Supplier ID</div>
                               {supplierSortedColumn === "id" && (
                                 <i
-                                  className={`bi bi-arrow-${
-                                    supplierSortOrder.id === "asc"
-                                      ? "up"
-                                      : "down"
-                                  } ml-2`}
+                                  className={`bi bi-arrow-${supplierSortOrder.id === "asc"
+                                    ? "up"
+                                    : "down"
+                                    } ml-2`}
                                 ></i>
                               )}
                             </div>
@@ -481,11 +477,10 @@ function Vendors({ open }) {
                               <div>Name</div>
                               {supplierSortedColumn === "name" && (
                                 <i
-                                  className={`bi bi-arrow-${
-                                    supplierSortOrder.name === "asc"
-                                      ? "up"
-                                      : "down"
-                                  } ml-2`}
+                                  className={`bi bi-arrow-${supplierSortOrder.name === "asc"
+                                    ? "up"
+                                    : "down"
+                                    } ml-2`}
                                 ></i>
                               )}
                             </div>
@@ -499,11 +494,10 @@ function Vendors({ open }) {
                               <div>Address</div>
                               {supplierSortedColumn === "address" && (
                                 <i
-                                  className={`bi bi-arrow-${
-                                    supplierSortOrder.address === "asc"
-                                      ? "up"
-                                      : "down"
-                                  } ml-2`}
+                                  className={`bi bi-arrow-${supplierSortOrder.address === "asc"
+                                    ? "up"
+                                    : "down"
+                                    } ml-2`}
                                 ></i>
                               )}
                             </div>
@@ -517,11 +511,10 @@ function Vendors({ open }) {
                               <div>Contact</div>
                               {supplierSortedColumn === "contact" && (
                                 <i
-                                  className={`bi bi-arrow-${
-                                    supplierSortOrder.contact === "asc"
-                                      ? "up"
-                                      : "down"
-                                  } ml-2`}
+                                  className={`bi bi-arrow-${supplierSortOrder.contact === "asc"
+                                    ? "up"
+                                    : "down"
+                                    } ml-2`}
                                 ></i>
                               )}
                             </div>
@@ -531,7 +524,7 @@ function Vendors({ open }) {
                       <tbody
                         style={{ backgroundColor: "white", fontWeight: "bold" }}
                       >
-                        {supplierFilteredData.slice(supplierStartIndex,supplierEndIndex).map((data, index) => {
+                        {supplierFilteredData.slice(supplierStartIndex, supplierEndIndex).map((data, index) => {
                           return (
                             <tr class="bg-white">
                               <td class="px-6 py-4 border-b-2">{supplierStartIndex + index + 1}</td>

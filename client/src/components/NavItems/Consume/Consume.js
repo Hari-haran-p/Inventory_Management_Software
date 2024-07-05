@@ -9,87 +9,21 @@ import ConsumeRequestTable from './Request/ConsumeRequest';
 
 const Consume = () => {
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [stockData, setStockData] = useState([]);
-    const [itemData, setItemData] = useState([]);
-    const [scrapData, setScrapData] = useState([]);
-    const [tableData, setTableData] = useState([]);
-    const [scrapTrackData, setScrapTrackData] = useState([]);
-
-    const [noData, setNoData] = useState(true);
-    const [noTrackData, setNoTrackData] = useState(true);
-    const [noTableData, setNoTableData] = useState(true);
-
+    //<<<<------------Context get user variable and function------------------>>>>
     const { user, getUser, getRequest } = useAuth();
 
-    
-    const [getLabDetails, setGetLabDetails] = useState([]);
-
-    async function fetchGetLabDetails() {
-      const response = await getRequest("http://localhost:4000/api/getLabDetails")
-        .catch((error) => console.log(error));
-      setGetLabDetails(response.data);
-      
-    }
-
-    async function fetchScrapData() {
-        const response = await getRequest("http://localhost:4000/api/getConsume");
-        if (response && response.status == 200) {
-            if (response.data.Data == "No Data") {
-                setNoData(true);
-                setIsLoading(false);
-            } else {
-                setNoData(false);
-                setScrapData(response.data.Data);
-            }
-        } else {
-            setNoData(true);
-        }
-    }
-
-    async function fetchTableData() {
-        const response = await getRequest("http://localhost:4000/api/getTableConsumeData");
-        if (response && response.status == 200) {
-            if (response.data.Data == "No Data") {
-                setNoTableData(true);
-                setIsLoading(false);
-            } else {
-                setNoTableData(false);
-                setTableData(response.data.Data);
-            }
-        } else {
-            setNoTableData(true);
-        }
-    }
-
-
-    async function fetchScrapTrackData(id) {
-        const response = await getRequest(`http://localhost:4000/api/getConsumeData/${id}`);
-        if (response && response.status == 200) {
-            if (response.data.Data == "No Data") {
-                setNoTrackData(true);
-                setIsLoading(false);
-            } else {
-                setNoTrackData(false);
-                setScrapTrackData(response.data.Data);
-            }
-        } else {
-            setNoTrackData(true);
-        }
-    }
-
-    const [showTrackScrap, setShowTrackScrap] = useState(false);
-    const [showScrapApprove, setShowScrapApprove] = useState(false);
-    const [showScrap, setShowScrap] = useState(false);
-    const [showScrapTable, setShowScrapTable] = useState(true);
-
+    //<<<<------------loading , message and error state variables------------------>>>>
+    const [isLoading, setIsLoading] = useState(true);
 
     const [message, setMesaage] = useState(null);
+
     const [error, setError] = useState(null);
 
-    const navigate = useNavigate();
-    const [isNavbarVisible, setIsNavbarVisible] = useState(false);
+
+    //<<<<------------Top navbar state variables------------------>>>>
     const [isArrowRotated, setIsArrowRotated] = useState(false);
+
+    const [isNavbarVisible, setIsNavbarVisible] = useState(false);
 
     const toggleNavbar = () => {
         setIsNavbarVisible((prev) => !prev);
@@ -97,39 +31,118 @@ const Consume = () => {
     };
 
 
+    //<<<<------------visibility state variables------------------>>>>
+    const [showTrackConsume, setShowTrackConsume] = useState(false);
 
-    const fetchStockData = async () => {
+    const [showConsumeApprove, setShowConsumeApprove] = useState(false);
+
+    const [showConsume, setShowConsume] = useState(false);
+
+    const [showConsumeTable, setShowConsumeTable] = useState(true);
+
+
+    //<<<<-----------------Consume main table related state variables and fetch fucntions--------------------->>>>
+
+    const [tableData, setTableData] = useState([]);
+
+    async function fetchTableData() {
+        const response = await getRequest("http://localhost:4000/api/getTableConsumeData");
+        if (response && response.status == 200) {
+            if (response.data.Data == "No Data") {
+                setIsLoading(false);
+            } else {
+                setTableData(response.data.Data);
+            }
+        } else {
+        }
+    }
+
+    //<<<<-----------------Consume Tracking related state varibles and fetch functions--------------------->>>>
+    const [pendingData, setPendingData] = useState([]);
+
+    const fetchPendingData = async () => {
         try {
-            const response = await getRequest("http://localhost:4000/api/getAdminStockData");
-            setStockData(response.data);
+            const response = await getRequest(
+                `http://localhost:4000/api/getConsumeCardData/${user.user_id}`
+            );
+            setPendingData(response.data);
         } catch (error) {
             console.error(error);
         }
     };
+
+
+    //<<<<--------------------Consume Request related variables and function----------------->>>>
+    const [requestTabledata, setRequestTabledata] = useState([]);
+
+    const [noRequestData, setNoRequestData] = useState(true);
+
+    const fetchRequestTableData = async () => {
+        try {
+            const response = await getRequest(`http://localhost:4000/api/getRequestTableData/${user.dept_code}`);
+            if (response && response.status == 200) {
+                if (response.data.Data == "No Data") {
+                    setNoRequestData(true);
+                    setIsLoading(false);
+                } else {
+                    setNoRequestData(false);
+                    setRequestTabledata(response.data.Data);
+                }
+            } else {
+                setNoRequestData(true);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    //<<<<------------------Consume Approval related state variables and fetch functions--------------->>>>
+
+    const [consumeData, setConsumeData] = useState([]);
+
+    const [noData, setNoData] = useState(true);
+
+    async function fetchConsumeData() {
+        const response = await getRequest("http://localhost:4000/api/getConsume");
+        if (response && response.status == 200) {
+            if (response.data.Data == "No Data") {
+                setNoData(true);
+                setIsLoading(false);
+            } else {
+                setNoData(false);
+                setConsumeData(response.data.Data);
+            }
+        } else {
+            setNoData(true);
+        }
+    }
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!Cookies.get("token")) {
             navigate("/");
         } else {
             getUser();
-            fetchStockData();
-            fetchGetLabDetails();
+            fetchRequestTableData();
             fetchTableData();
             if (user.role == 'slsincharge') {
-                fetchScrapData();
+                fetchConsumeData();
             }
         }
     }, [Cookies.get("token")])
 
-    console.log();
-
-    useEffect(() => {
+    const stopIsLoading =()=>{
         if ((user.role == "slsincharge" ?
-            tableData.length > 0 && scrapData.length > 0 && stockData.length > 0 :
-            tableData.length > 0 && stockData.length > 0)) {
+            tableData.length > 0 && consumeData.length > 0 && requestTabledata.length > 0 :
+            tableData.length > 0 && requestTabledata.length > 0)) {
             setIsLoading(false);
         }
-    }, [scrapData, stockData, tableData])
+    }
+
+    useEffect(() => {
+        stopIsLoading();
+    }, [consumeData, requestTabledata, tableData])
 
     const clearMessage = () => {
         setMesaage(null);
@@ -176,47 +189,47 @@ const Consume = () => {
                                 {isNavbarVisible && (
                                     <div className="flex flex-wrap gap-5 z-50 items-center justify-between navTransfer">
                                         <div
-                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapTable == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4 `}
+                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showConsumeTable == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4 `}
                                             onClick={() => {
-                                                setShowTrackScrap(false)
-                                                setShowScrapTable(true)
-                                                setShowScrapApprove(false)
-                                                setShowScrap(false)
+                                                setShowTrackConsume(false)
+                                                setShowConsumeTable(true)
+                                                setShowConsumeApprove(false)
+                                                setShowConsume(false)
                                             }}
                                         >
                                             Home
                                         </div>
                                         <div
-                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackScrap == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackConsume == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                             onClick={() => {
-                                                setShowTrackScrap(true)
-                                                setShowScrapTable(false)
-                                                setShowScrapApprove(false)
-                                                setShowScrap(false)
+                                                setShowTrackConsume(true)
+                                                setShowConsumeTable(false)
+                                                setShowConsumeApprove(false)
+                                                setShowConsume(false)
                                             }}
                                         >
                                             Track Your Request
                                         </div>
-                                        {user.role == "slsincharge" && 
-                                        <div
-                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapApprove == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                                            onClick={() => {
-                                                setShowTrackScrap(false)
-                                                setShowScrapTable(false)
-                                                setShowScrapApprove(true)
-                                                setShowScrap(false)
-                                            }}
-                                        >
-                                            Approval Request
-                                        </div>
+                                        {user.role == "slsincharge" &&
+                                            <div
+                                                className={`cursor-pointer font-bold text-black whitespace-nowrap ${showConsumeApprove == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                                                onClick={() => {
+                                                    setShowTrackConsume(false)
+                                                    setShowConsumeTable(false)
+                                                    setShowConsumeApprove(true)
+                                                    setShowConsume(false)
+                                                }}
+                                            >
+                                                Approval Request
+                                            </div>
                                         }
                                         <div
-                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrap == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                                            className={`cursor-pointer font-bold text-black whitespace-nowrap ${showConsume == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                             onClick={() => {
-                                                setShowScrap(true)
-                                                setShowTrackScrap(false)
-                                                setShowScrapTable(false)
-                                                setShowScrapApprove(false)
+                                                setShowConsume(true)
+                                                setShowTrackConsume(false)
+                                                setShowConsumeTable(false)
+                                                setShowConsumeApprove(false)
                                             }}
                                         >
                                             Consume
@@ -228,55 +241,48 @@ const Consume = () => {
                     </div>
                 </div>
             )}
+
             <Table
+                isVisible={showConsumeTable}
                 consumeData={tableData}
-                isVisible={showScrapTable}
-            />
-            <ConsumeTrack
-                isVisible={showTrackScrap}
-                // onClose={() => setShowTrackScrap(false)}
-                user={user}
-                setScrapTrackData={setScrapTrackData}
-                scrapTrackData={scrapTrackData}
-                noTrackData={noTrackData}
-                setMesaage={setMesaage}
-                setError={setError}
-                isLoading={isLoading}
-                setIsLoading={setIsLoading}
-                fetchScrapTrackData={fetchScrapTrackData}
-            />
-            <ConsumeApprove
-                isVisible={showScrapApprove}
-                onClose={() => setShowScrapApprove(false)}
-                user={user}
-                setMesaage={setMesaage}
-                setError={setError}
-                scrapData={scrapData}
-                fetchScrapData={fetchScrapData}
-                noData={noData}
-            />
-            {/* <ScrapRequest
-                isVisible={showScrap}
-                onClose={() => setShowScrap(false)}
-                user={user}
-                setMessage={setMesaage}
-                setError={setError}
-                fetchScrapTrackData={fetchScrapTrackData}
-            /> */}
-            <ConsumeRequestTable
-                user={user}
-                isVisible={showScrap}
-                onClose={()=>setShowScrap(false)}
-                setMessage={setMesaage}
-                setError={setError}
-                getLabDetails={getLabDetails}
-                setGetLabDetails={setGetLabDetails}
-                getStock={stockData}
-                fetchGetStock={fetchStockData}
-                isLoading={isLoading}
-                setIsLoading={setIsLoading}
             />
 
+            <ConsumeTrack
+                isVisible={showTrackConsume}
+                setMesaage={setMesaage}
+                setError={setError}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                fetchPendingData={fetchPendingData}
+                pendingData={pendingData}
+            />
+
+            <ConsumeApprove
+                isVisible={showConsumeApprove}
+                onClose={() => setShowConsumeApprove(false)}
+                user={user}
+                setMesaage={setMesaage}
+                setError={setError}
+                consumeData={consumeData}
+                fetchConsumeData={fetchConsumeData}
+                fetchPendingData={fetchPendingData}
+                fetchTableData={fetchTableData}
+                noData={noData}
+            />
+
+
+            <ConsumeRequestTable
+                user={user}
+                isVisible={showConsume}
+                setIsLoading={setIsLoading}
+                setMessage={setMesaage}
+                setError={setError}
+                requestTabledata={requestTabledata}
+                fetchGetStock={fetchRequestTableData}
+                noRequestData={noRequestData}
+                fetchTableData={fetchTableData}
+                fetchPendingData={fetchPendingData}
+            />
         </>
     )
 }

@@ -5,16 +5,6 @@ function Table({ consumeData,isVisible }) {
   const [openPopup, setOpenPopup] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
 
-  const handleOpenPopup = (data) => {
-    setSelectedData(data);
-    setOpenPopup(true);
-  };
-
-  const handleClosePopup = () => {
-    setOpenPopup(false);
-    setSelectedData(null);
-  };
-
   // Search functionality
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -241,22 +231,7 @@ function Table({ consumeData,isVisible }) {
                       )}
                     </div>
                   </th>
-                  {/* <th
-                    scope="col"
-                    className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
-                  >
-                    <div className="flex">
-                      <div onClick={() => sortData("cost_per_item")}>
-                        Cost Per Item
-                      </div>
-                      {sortedColumn === "cost_per_item" && (
-                        <i
-                          className={`bi bi-arrow-${sortOrder.cost_per_item === "asc" ? "up" : "down"
-                            } ml-2`}
-                        ></i>
-                      )}
-                    </div>
-                  </th> */}
+                 
                   <th
                     scope="col"
                     className="px-6 py-3 text-left whitespace-nowrap tracking-wider cursor-pointer"
@@ -424,9 +399,7 @@ function Table({ consumeData,isVisible }) {
                       <td class="px-6 py-4 whitespace-nowrap">
                         {data.item_subname}
                       </td>
-                      {/* <td class="px-6 py-4 whitespace-nowrap">
-                        {data.cost_per_item}
-                      </td> */}
+                     
                       <td class="px-6 py-4 whitespace-nowrap">
                         {data.manufacturer_name}
                       </td>

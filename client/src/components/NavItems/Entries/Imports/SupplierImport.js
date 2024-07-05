@@ -71,13 +71,12 @@ const SupplierImport = (props) => {
                     if (error) {
                         setError(error.response.data.Data);
                         setFile("");
-                        setFilename("Kindly select file");
+                        setFilename("");
                     }
                     console.error('Error reading file:', error);
                 }
             }
         }
-
     };
 
 

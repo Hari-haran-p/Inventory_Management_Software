@@ -8,21 +8,12 @@ const TrackTransfer = ({
   user,
   setMessage,
   setError,
-  onClose,
+  fetchPendingData,
+  pendingData,
+  fetchOverallTranferedData
 }) => {
-  const [pendingData, setPendingData] = useState([]);
-  const [accordions, setAccordions] = useState([]);
 
-  const fetchPendingData = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/getTransferCardData/${user.user_id}`
-      );
-      setPendingData(response.data);
-    } catch (error) {
-      console.error(error); 
-    }
-  };
+  const [accordions, setAccordions] = useState([]);
 
   useEffect(() => {
     fetchPendingData();
@@ -94,11 +85,11 @@ const TrackTransfer = ({
               isOpen={accordion.isOpen}
               user={user}
               setMessage={setMessage}
-              onClose={onClose}
+              fetchOverallTranferedData={fetchOverallTranferedData}
               setError={setError}
               toggleAccordion={() => toggleAccordion(accordion.key)}
               noDataMessage={accordion.noDataMessage}
-              fetchPendingData = {fetchPendingData}
+              fetchPendingData={fetchPendingData}
             />
           ))}
         </div>

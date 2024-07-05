@@ -86,9 +86,17 @@ const importSuppliers = async function (req, res, next) {
 
         for (let i = 0; i < data.length; i++) {
             const currData = data[i];
+            if (typeof currData.name != "string") {
+                return res.status(401).json({ Data: `Supplier name at row ${i + 1} is not valid` });
+            }
             if (supplierTableSet.has(currData.name.toUpperCase())) {
-                res.status(401).json({ Data: `Supplier name at row ${i + 1} is duplicate` });
-                return;
+                return res.status(401).json({ Data: `Supplier name at row ${i + 1} is duplicate` });
+            }
+            if(!Number.isInteger(currData.contact)){
+                return res.status(401).json({ Data: `Supplier Contact at row ${i + 1} is not valid` });
+            }
+            if(currData.contact.toString().length != 10){
+                return res.status(401).json({ Data: `Supplier Contact at row ${i + 1} is not valid` });
             }
         }
 
@@ -480,7 +488,7 @@ const importStocks = async function (req, res, next) {
             // console.log(d, curr_date)
             const insert = await new Promise((resolve, reject) => {
                 connection.query("INSERT INTO stocktable (apexno, consumable, type, name, subname, description, quantity, cost, quantity_units, faculty_id, dept_id, apex_reason, manufacturer_id, supplier_id ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    [d.apexno.toUpperCase(), d.consumable.toUpperCase(), d.type, d.name.toUpperCase(),d.subname.toUpperCase(),d.description.toUpperCase(), d.quantity, d.cost,d.quantity_units.toUpperCase(), d.faculty_id.toUpperCase(),d.dept_id.toUpperCase(), d.apex_reason.toUpperCase(),d.manufacturer_id.toUpperCase(),d.supplier_id.toUpperCase()],
+                    [d.apexno.toString().toUpperCase(), d.consumable.toUpperCase(), d.type, d.name.toUpperCase(),d.subname.toUpperCase(),d.description.toUpperCase(), d.quantity, d.cost,d.quantity_units.toUpperCase(), d.faculty_id.toUpperCase(),d.dept_id.toUpperCase(), d.apex_reason.toUpperCase(),d.manufacturer_id.toUpperCase(),d.supplier_id.toUpperCase()],
                     async (error, result) => {
                         if (error) {
                             console.log(error);
@@ -495,6 +503,7 @@ const importStocks = async function (req, res, next) {
         })
 
         await Promise.all(result).catch(async (error) => {
+            console.log(error);
             await connection.rollback();
             return;
         });
@@ -513,25 +522,22 @@ const importStocks = async function (req, res, next) {
         if (connection) {
             await connection.rollback();
         }
-        // res.status(401).json({ Data: `Some Internal Error` });
         return;
     } finally {
         if (connection) {
             await connection.release();
         }
     }
-
 }
 
 const importTransferItems = async function (req, res, next) {
-
     let connection;
     try {
 
         connection = await db.getConnection();
         await connection.beginTransaction();
         const data = req.body.items;
-
+        // console.log(data);
 
         const stockTableData = await new Promise((resolve, reject) => {
             connection.query("SELECT * FROM stocktable", (error, result) => {
@@ -544,11 +550,11 @@ const importTransferItems = async function (req, res, next) {
         })
 
 
-
         for (var i = 0; i < data.length; i++) {
 
             const stockResult = stockTableData.filter((f) => {
-                if (f.apexno == data[i].apex_no && f.id == data[i].stock_id && f.dept_id == data[i].transfered_from) {
+                console.log(f.dept_id == data[i].transfered_from);
+                if (f.apexno.toString() == data[i].apex_no.toString() && f.id == data[i].stock_id && f.dept_id == data[i].transfered_from) {
                     return f;
                 }
             })
@@ -564,29 +570,27 @@ const importTransferItems = async function (req, res, next) {
                         resolve(result);
                 });
             })
-
+console.log(stockResult);
             if (transferResult2.length > 0) {
-                const transfer = parseInt(transferResult2[0].transfer) + parseInt(data[i].transfer_qty);
+                const transfer = parseInt(transferResult2[0].transfer_qty) + parseInt(data[i].transfer_qty);
                 if (transfer > stockResult[0].quantity) {
                     return res.status(500).json({ "Data": `Item is in Progress at ${i + 1} row` });
                 }
             }
 
-
             if (stockResult) {
                 if (stockResult[0].quantity >= data[i].transfer_qty) {
 
                     const update = await new Promise((resolve, reject) => {
-
                         connection.query(
                             "INSERT INTO transfertable (apex_no, stock_id, transfer_qty, transfer_to, transfered_from, faculty_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
                             [
-                                data[i].apex_no,
+                                data[i].apex_no.toString().toUpperCase(),
                                 data[i].stock_id,
                                 data[i].transfer_qty,
-                                data[i].transfer_to,
-                                data[i].transfered_from,
-                                stockResult[0].faculty_id,
+                                data[i].transfer_to.toString().toUpperCase(),
+                                data[i].transfered_from.toString().toUpperCase(),
+                                data[i].faculty_id.toString().toUpperCase(),
                                 "STORESAPPROVED"
                             ],
                             async (error, result) => {
@@ -652,6 +656,7 @@ const importTransferItems = async function (req, res, next) {
         res.status(200).json({ Data: "Data sucessfully imported" });
 
     } catch (error) {
+        console.log(error);
         if (connection) {
             await connection.rollback();
         }

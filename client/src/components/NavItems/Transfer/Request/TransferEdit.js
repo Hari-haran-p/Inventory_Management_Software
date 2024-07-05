@@ -5,14 +5,9 @@ function TransferEdit({
   data,
   user,
   onClose,
-  onSubmit,
-  getLabDetails,
-  setGetLabDetails,
   setMessage,
   setError,
   setIsLoading,
-  isLoading,
-  fetchGetStock
 }) {
   const [formData, setFormData] = useState({
     id: "",
@@ -51,7 +46,6 @@ function TransferEdit({
         "http://localhost:4000/api/transferRequest", { items: formData, user_id: user }
       );
       if (response.status == 200) {
-        fetchGetStock()
         setMessage(response.data.Data);
         onClose();
         setIsLoading(false);

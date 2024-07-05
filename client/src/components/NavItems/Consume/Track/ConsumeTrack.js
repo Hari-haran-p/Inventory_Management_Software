@@ -3,29 +3,15 @@ import Accordion from "./Accordion";
 import axios from "axios";
 import { useAuth } from '../../../../AuthContext';
 
-const ConsumeTrack = ({isVisible,setMessage,onClose,setError}) => {
+const ConsumeTrack = ({isVisible, setMesaage, setError, isLoading, setIsLoading, pendingData, fetchPendingData}) => {
 
-  const [pendingData, setPendingData] = useState([]);
   const [accordions, setAccordions] = useState([]);
 
-  const { user, getUser } = useAuth();
-
-
-  const fetchPendingData = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/getScrapCardData/${user.user_id}`
-      );
-      setPendingData(response.data);
-    } catch (error) {
-      console.error(error); 
-    }
-  };
+  const { user, getUser, getRequest } = useAuth();
 
   useEffect(() => {
     fetchPendingData();
   }, []);
-
 
   useEffect(() => {
     setAccordions([
@@ -45,13 +31,6 @@ const ConsumeTrack = ({isVisible,setMessage,onClose,setError}) => {
         noDataMessage: "No approved data available",
         icon:"&#9660;"
       },
-      // {
-      //   key: 3,
-      //   title: "Acknowledged",
-      //   data: pendingData.acknowledged || [],
-      //   isOpen: false,
-      //   noDataMessage: "No acknowledged data available",
-      // },
       {
         key: 3,
         title: "Rejected",
@@ -88,16 +67,16 @@ const ConsumeTrack = ({isVisible,setMessage,onClose,setError}) => {
               data={accordion.data}
               isOpen={accordion.isOpen}
               user={user}
-              setMessage={setMessage}
-              onClose={onClose}
+              setMesaage={setMesaage}
               setError={setError}
               toggleAccordion={() => toggleAccordion(accordion.key)}
               noDataMessage={accordion.noDataMessage}
+              fetchPendingData={fetchPendingData}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
             />
           ))}
         </div>
-
-
     </>
   )
 }

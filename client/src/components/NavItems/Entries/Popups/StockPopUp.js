@@ -4,7 +4,7 @@ import { useAuth } from "../../../../AuthContext";
 
 const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplier }) => {
 
-  const [data, setData] = useState({
+  const formdata = {
     apexno: "",
     consumable: "",
     type: "",
@@ -14,14 +14,15 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
     quantity: "",
     cost: "",
     quantity_units: "",
-    faculty_id: "",
     dept_id: "",
     apex_reason: "",
     manufacturerId: "",
     supplierId: ""
-  });
+  }
 
-  const { getUser, user } = useAuth();
+  const [data, setData] = useState(formdata);
+
+  const { user } = useAuth();
   const { getRequest } = useAuth();
 
   const [item, setItem] = useState([]);
@@ -30,15 +31,9 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
     setItem(response.data);
   }
 
-  const [autoForm, setAutoForm] = useState({});
-
-  const handleChange = (e) => {
-    setData(e.target.value);
-  };
-
   const HandleSubmit = async (e) => {
-    console.log("i an called");
-    if (window.confirm("Are you sure want to add stock?")) {
+    console.log("i amm called");
+    if (window.confirm("Are you sure want to add stock ?")) {
       try {
         e.preventDefault();
         data.userId = user.user_id;
@@ -51,63 +46,18 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
 
         if (response && response.status == 201) {
           setMessage(response.data.Data);
-          setData({
-            apexno: "",
-            consumable: "",
-            type: "",
-            name: "",
-            subname: "",
-            description: "",
-            quantity: "",
-            cost: "",
-            quantity_units: "",
-            faculty_id: "",
-            dept_id: "",
-            apex_reason: "",
-            manufacturerId: "",
-            supplierId: ""
-          });
+          setData(formdata);
         }
 
       } catch (error) {
         console.log(error);
         if (error && error.response.status == 400) {
           setError(error.response.data.Data);
-          setData({
-            apexno: "",
-            consumable: "",
-            type: "",
-            name: "",
-            subname: "",
-            description: "",
-            quantity: "",
-            cost: "",
-            quantity_units: "",
-            faculty_id: "",
-            dept_id: "",
-            apex_reason: "",
-            manufacturerId: "",
-            supplierId: ""
-          });
+          setData(formdata);
         }
       }
     } else {
-      setData({
-        apexno: "",
-        consumable: "",
-        type: "",
-        name: "",
-        subname: "",
-        description: "",
-        quantity: "",
-        cost: "",
-        quantity_units: "",
-        faculty_id: "",
-        dept_id: "",
-        apex_reason: "",
-        manufacturerId: "",
-        supplierId: ""
-      });
+      setData(formdata);
     }
   };
 
@@ -121,36 +71,6 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
       uniqueItemNamesArray.push({ itemname: itemName });
     }
   });
-
-  const [subName, setSubName] = useState(item);
-
-  const handleItemChange = (e) => {
-    const result = item.filter((items) => {
-      if (items.item_name.toUpperCase() == e.target.value.toUpperCase()) {
-        return items;
-      }
-    });
-    setSubName(result);
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-
-  function finalClick(e) {
-    const code = e.target.value;
-    if (!data.itemname) {
-      setError("Item name cannot be empty");
-      return;
-    }
-    const result = item.filter((items) => {
-      if (
-        items.item_name.toUpperCase() == data.itemname.toUpperCase() &&
-        items.item_subname.toUpperCase() == code.toUpperCase()
-      ) {
-        return items;
-      }
-    });
-    setData({ ...data, [e.target.name]: code, itemcode: result[0].item_code });
-    setAutoForm(result[0]);
-  }
 
   useEffect(() => {
     fetchItems();
@@ -170,11 +90,12 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
             <input
               type="text"
               name="apexno"
+              autoComplete="off"
               value={data.apexno}
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg W-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
             />
@@ -187,7 +108,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg W-52 sm:w-96
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96
                 bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               autoComplete="off"
@@ -209,7 +130,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg W-52 sm:w-96
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96
                 bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               autoComplete="off"
@@ -247,7 +168,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg W-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               autoComplete="off"
@@ -262,7 +183,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg W-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               autoComplete="off"
@@ -277,7 +198,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg W-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
             />
@@ -291,7 +212,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg W-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
             />
@@ -305,7 +226,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg W-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
             />
@@ -318,8 +239,8 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg w-full
-                bg-white border-2 border-gray-300 placeholder-gray-600 W-52 sm:w-96 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96
+                bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               autoComplete="off"
             >
@@ -337,7 +258,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
             <select
               name="manufacturerId"
               value={data.manufacturerId}
-              className="text-md block px-3 py-2 rounded-lg w-full
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96
                 bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               onChange={(e) =>
@@ -358,7 +279,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
             <select
               name="supplierId"
               value={data.supplierId}
-              className="text-md block px-3 py-2 rounded-lg w-full
+              className="text-md block px-3 py-2 rounded-lg  w-52 sm:w-96
                 bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               onChange={(e) =>
@@ -384,7 +305,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               }
               value={data.apex_reason}
               required
-              className="text-md block px-3 py-2 rounded-lg W-52 sm:w-96
+              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
             />
           </div>

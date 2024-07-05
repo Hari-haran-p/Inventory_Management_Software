@@ -6,7 +6,7 @@ import axios from "axios";
 import RejectPopup from './RejectPopup';
 
 
-const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapData }) => {
+const TransferCard = ({ data, user, setMessage, setError, onClose, fetchConsumeData, fetchTableData, fetchPendingData }) => {
 
   const [isLoading, setIsLoading] = useState(false)
   const [rejectDesc, setRejectDesc] = useState("");
@@ -21,15 +21,19 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
           setIsLoading(false);
           if (response && response.status == 201) {
             setMessage(response.data.Data);
-            onClose();
-            fetchScrapData();
+            // onClose();
+            fetchConsumeData();
+            fetchTableData();
+            fetchPendingData();
           }
         })
     } catch (error) {
       setIsLoading(false);
       setError(error.response.data.Data)
-      onClose();
-      fetchScrapData();
+      // onClose();
+      fetchConsumeData();
+      fetchTableData();
+      fetchPendingData();
     }
   }
 
@@ -48,16 +52,20 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
           if (response && response.status == 201) {
             setIsLoading(false);
             setMessage(response.data.Data);
-            onClose();
-            fetchScrapData();
+            // onClose();
+            fetchConsumeData();
+            fetchTableData();
+            fetchPendingData();
           }
           return;
         } catch (error) {
           setIsLoading(false);
           if (error && error.response.status == 500) {
             setError(error.response.data.Data);
-            onClose();
-            fetchScrapData();
+            // onClose();
+            fetchConsumeData();
+            fetchTableData();
+            fetchPendingData();
           }
         }
       } else {
@@ -128,7 +136,9 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
                 <div className="pt-4">Scrap Value : {data.inventory_value}</div>
               </div>
             </div>
-            < RejectPopup
+           
+          </div>
+          < RejectPopup
               isVisible={showManufacturer}
               // rejectDesc={rejectDesc}
               rejectDesc={rejectDesc}
@@ -137,8 +147,6 @@ const TransferCard = ({ data, user, setMessage, setError, onClose, fetchScrapDat
               setError={setError}
               handleReject={handleReject}
             />
-          </div>
-
         </>
       )}
 

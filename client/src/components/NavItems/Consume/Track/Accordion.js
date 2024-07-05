@@ -3,7 +3,9 @@ import React from "react";
 import TrackCard from "./TrackCard";
 
 const Accordion = (props) => {
+
   return (
+
     <div className=" rounded-lg bg-white mb-4">
       <button
         className={`w-full ${props.isOpen ? "p-4" : "p-5"} font-bold flex items-center justify-between hover:bg-blue-600 hover:text-white text-left border-b-2 border-blue-700  
@@ -24,10 +26,12 @@ const Accordion = (props) => {
                 key={index}
                 data={data}
                 index={index}
-                onClose={props.onClose}
                 user={props.user}
                 setError={props.setError}
-                setMessage={props.setMessage}
+                setMesaage={props.setMesaage}
+                fetchPendingData={props.fetchPendingData}
+                isLoading={props.isLoading}
+                setIsLoading={props.setIsLoading}
               />
             ))
           ) : (

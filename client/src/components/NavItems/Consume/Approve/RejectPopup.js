@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react'
 
 const RejectPopup = ({ isVisible, onClose, getRejectDesc, rejectDesc, setError, handleReject, setRejectDesc }) => {
 
-
     if (!isVisible) return null;
 
     return (
         <>
-            <div className=" bg-black bg-opacity-25 flex justify-center items-center">
+            <div className="fixed inset-0 bg-black bg-opacity-25 flex justify-center items-center">
                 <div
-                    style={{ width:"80%", display: "flex", alignItems: "center", justifyContent: "center", }}
+                    style={{ width: "80%", display: "flex", alignItems: "center", justifyContent: "center", }}
                     className="flex flex-col ">
                     <div className="bg-white h-5/6 w-5/6 px-10  animate1 overflow-x-auto overflow-y-auto border-gray-700 rounded-lg">
                         <div className="w-full text-end">
@@ -21,7 +20,7 @@ const RejectPopup = ({ isVisible, onClose, getRejectDesc, rejectDesc, setError, 
                             </button>
                         </div>
                         <div className="flex flex-col justify-center pt-6 items-center">
-                            <form onSubmit={(e)=>handleReject(e)}>
+                            <form onSubmit={(e) => handleReject(e)}>
                                 <div className="">
                                     <div class="py-1 flex flex-wrap">
                                         <span class="px-1 py-1 whitespace-nowrap text-md text-gray-600">
