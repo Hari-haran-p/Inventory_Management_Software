@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../../../../AuthContext";
 
 function StockEdit({ data, onClose, onSubmit, setMessage, setError, setIsLoading, isLoading }) {
 
@@ -19,6 +20,9 @@ function StockEdit({ data, onClose, onSubmit, setMessage, setError, setIsLoading
     }
   }, [data]);
 
+  const {BackendUrl} = useAuth();
+
+
   const handleChange = (e) => {
     e.preventDefault();
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,7 +34,7 @@ function StockEdit({ data, onClose, onSubmit, setMessage, setError, setIsLoading
       e.preventDefault();
       try {
         const response = await axios.post(
-          "/api/stockEdit",
+          `${BackendUrl}/api/stockEdit`,
           formData
         );
 

@@ -3,14 +3,14 @@ import axios from 'axios';
 import { useAuth } from '../../../../AuthContext';
 
 const TrackCard = ({ data, setMesaage, setError, setIsLoading, fetchPendingData }) => {
-    const { user, getUser } = useAuth();
+    const { user, getUser, BackendUrl } = useAuth();
 
     const handleCancel = async (e) => {
         try {
             if (window.confirm("Are you sure want to cancel ?")) {
                 setIsLoading(true);
                 e.preventDefault();
-                const response = await axios.post("/api/cancelConsumeRequest",
+                const response = await axios.post(`${BackendUrl}/api/cancelConsumeRequest`,
                     {
                         consume_id: data.id,
                         dept_id: user.dept_code,
@@ -41,7 +41,7 @@ const TrackCard = ({ data, setMesaage, setError, setIsLoading, fetchPendingData 
                 setIsLoading(true);
                 e.preventDefault();
                 const response = await axios.post(
-                    "/api/deleteConsumeRequest",
+                    `${BackendUrl}/api/deleteConsumeRequest`,
                     {
                         consume_id: data.id,
                         dept_id: user.dept_code,

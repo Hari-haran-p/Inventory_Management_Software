@@ -10,7 +10,7 @@ import ScrapRequestTable from './Request/ScrapRequest';
 const Scrap = () => {
 
     //<<<<------------Context get user variable and function------------------>>>>
-    const { user, getUser, getRequest } = useAuth();
+    const { user, getUser, getRequest, BackendUrl } = useAuth();
 
 
     //<<<<------------Loading , message and error state variables------------------>>>>
@@ -49,7 +49,7 @@ const Scrap = () => {
     const [tableData, setTableData] = useState([]);
 
     async function fetchTableData() {
-        const response = await getRequest("/api/getTableScrapData");
+        const response = await getRequest(`${BackendUrl}/api/getTableScrapData`);
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setIsLoading(false);
@@ -66,7 +66,7 @@ const Scrap = () => {
     const fetchPendingData = async () => {
         try {
             const response = await getRequest(
-                `/api/getScrapCardData/${user.user_id}`
+                `${BackendUrl}/api/getScrapCardData/${user.user_id}`
             );
             console.log(response);
             setPendingData(response.data);
@@ -84,7 +84,7 @@ const Scrap = () => {
 
     const fetchStockData = async () => {
         try {
-            const response = await getRequest(`/api/getAdminScrapStockData/${user.dept_code}`);
+            const response = await getRequest(`${BackendUrl}/api/getAdminScrapStockData/${user.dept_code}`);
             if (response && response.status == 200) {
                 if (response.data.Data == "No Data") {
                     setNoRequestData(true);
@@ -111,7 +111,7 @@ const Scrap = () => {
     const [noData, setNoData] = useState(true);
 
     async function fetchScrapData() {
-        const response = await getRequest("/api/getScrap");
+        const response = await getRequest(`${BackendUrl}/api/getScrap`);
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setNoData(true);

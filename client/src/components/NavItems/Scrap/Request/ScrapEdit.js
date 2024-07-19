@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../../../../AuthContext";
 
 function ScrapEdit({
   data,
@@ -35,6 +36,8 @@ function ScrapEdit({
     }
   }, [data]);
 
+  const {BackendUrl} = useAuth();
+
   const handleChange = (e) => {
     e.preventDefault();
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -45,7 +48,7 @@ function ScrapEdit({
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "/api/scrapRequest", { items: formData, user: user }
+        `${BackendUrl}/api/scrapRequest`, { items: formData, user: user }
       );
       if (response && response.status == 200) {
         console.log(response.data);

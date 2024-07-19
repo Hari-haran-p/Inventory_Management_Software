@@ -23,12 +23,11 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
 
   const [data, setData] = useState(formdata);
 
-  const { user } = useAuth();
-  const { getRequest } = useAuth();
+  const { user, getRequest, BackendUrl } = useAuth();
 
   const [item, setItem] = useState([]);
   async function fetchItems() {
-    const response = await getRequest("/api/getItems");
+    const response = await getRequest(`${BackendUrl}/api/getItems`);
     setItem(response.data);
   }
 
@@ -41,7 +40,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
         data.dept_id = user.dept_code;
         console.log("came here", data);
         const response = await axios.post(
-          "/api/stockAdd",
+          `${BackendUrl}/api/stockAdd`,
           { ...data, user_dept_id: user.dept_code }
         );
 

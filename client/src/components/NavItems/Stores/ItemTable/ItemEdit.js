@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../../../../AuthContext";
 
 function ItemEdit({ data, onClose , onSubmit, setMessage, setError}) {
 
   const [isLoading, setIsLoading] = useState(false);
+  const {BackendUrl} = useAuth();
+
 
   const [formData, setFormData] = useState({
     item_code: "",
@@ -35,7 +38,7 @@ const HandleSubmit = async (e) => {
   setIsLoading(true);
   e.preventDefault();
     try {
-      const response = await axios.post("/api/itemEdit", formData);
+      const response = await axios.post(`${BackendUrl}/api/itemEdit`, formData);
         console.log(response);
       if( response && response.status==201){
         setMessage(response.data.Data)

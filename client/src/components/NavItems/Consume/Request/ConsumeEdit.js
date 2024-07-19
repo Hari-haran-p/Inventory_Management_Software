@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../../../../AuthContext";
 
 function ConsumeEdit({
   data,
@@ -29,6 +30,9 @@ function ConsumeEdit({
 
   const [selectedLab, setSelectedLab] = useState("");
 
+  const {BackendUrl} = useAuth(); 
+
+
   useEffect(() => {
     if (data) {
       setFormData(data);
@@ -47,7 +51,7 @@ function ConsumeEdit({
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "/api/consumeRequest", { items: formData, user: user }
+        `${BackendUrl}/api/consumeRequest`, { items: formData, user: user }
       );
       if (response.status == 200) {
         console.log("tis is data: "+response.data);

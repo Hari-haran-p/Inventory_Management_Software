@@ -15,12 +15,14 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState([]);
   const navigate = useNavigate();
 
+  const BackendUrl ="";
+
   async function getUser() {
     return new Promise(async (resolve, reject) => {
       try {
         const token = Cookies.get('token');
         // console.log(token);
-        const result = await axios.post("/api/getUser", {
+        const result = await axios.post(`${BackendUrl}/api/getUser`, {
           token: token,
         }).catch((error) => console.log(error));
         setUser(result.data);
@@ -36,7 +38,7 @@ export function AuthProvider({ children }) {
     e.preventDefault();
     try {
       console.log("hiiii.....")
-      const result = await axios.post('/api/credentiallogin' ,formData);
+      const result = await axios.post(`${BackendUrl}/api/credentiallogin` ,formData);
       Cookies.set("token", result.data)
       setIsLoggedIn(true)
       await getUser();
@@ -74,7 +76,7 @@ export function AuthProvider({ children }) {
   async function login(response) {
     try {
       console.log("hiiii.....")
-      const result = await axios.post("/api/loginUser", { res: response });
+      const result = await axios.post(`${BackendUrl}/api/loginUser`, { res: response });
       Cookies.set("token", result.data)
       setIsLoggedIn(true)
       await getUser();
@@ -110,7 +112,8 @@ export function AuthProvider({ children }) {
     getUser,
     user,
     getRequest,
-    handleAdminLogin
+    handleAdminLogin,
+    BackendUrl,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

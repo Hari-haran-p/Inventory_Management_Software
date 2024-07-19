@@ -105,16 +105,16 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
 
             <div className="flex justify-between flex-wrap items-center pb-2">
               <div className="flex items-center flex-wrap gap-2 ">
-                <div className="text-lg font-bold">Item Code :</div>
+                <div className="text-lg font-bold">Apex No :</div>
                 <div className="font-bold text-indigo-700">
-                  {data.stock_id}
+                  {data.apex_no}
                 </div>
-              </div>
+              </div>{console.log(data)}
 
               <div className="flex gap-2 flex-wrap items-center ">
-                <div className="text-lg font-bold">Item Name :</div>
+                <div className="text-lg font-bold">Budget :</div>
                 <div className="font-bold text-indigo-700">
-                  {(data.name)}
+                  {(data.budget)}
                 </div>
               </div>
             </div>
@@ -124,44 +124,44 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
             <div className="flex justify-between flex-wrap">
               <div className="lg:text-start flex flex-col gap-5">
                 <div className="flex flex-col">
-                  <div className="text-sm ">Item Type</div>
+                  <div className="text-sm ">Apex Type</div>
                   <div className="font-bold  text-indigo-700">
-                    {data.type}
+                    {data.apex_type}
                   </div>
                 </div>
                 <div className="flex flex-col ">
-                  <div className="text-sm ">Transfered From</div>
+                  <div className="text-sm ">Apex By</div>
                   <div className="font-bold  text-indigo-700">
-                    {data.transfered_from}
+                    {data.apex_by}
                   </div>
                 </div>
               </div>
               <div className="lg:text-center flex flex-col gap-5">
                 <div className="flex flex-col ">
-                  <div className="text-sm ">Item Subname</div>
+                  <div className="text-sm ">Material Nature</div>
                   <div className="font-bold text-indigo-700">
-                    {data.subname}
+                    {data.material_nature}
                   </div>
                 </div>
                 <div className="flex flex-col ">
-                  <div className="text-sm ">Cost Per Item</div>
+                  <div className="text-sm ">Faculty name</div>
                   <div className="font-bold text-indigo-700">
-                    Rs {data.inventory_value}
+                    {data.faculty_name}
                   </div>
                 </div>
               </div>
               <div className=" lg:text-end flex flex-col gap-5">
                 <div className="flex flex-col flex-wrap ">
-                  <div className="text-sm ">Item Description</div>
+                  <div className="text-sm ">Department Id</div>
                   <div className="font-bold text-indigo-700 break-words">
-                    {data.description}
+                    {data.dept_id}
                   </div>
                 </div>
 
                 <div className="flex flex-col ">
-                  <div className="text-sm ">Requested Qty</div>
+                  <div className="text-sm ">Department name</div>
                   <div className="font-bold  text-indigo-700">
-                    {data.transfer_qty} nos
+                    {data.dept_name}
                   </div>
                 </div>
               </div>
@@ -169,7 +169,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
           </div>
           <br />
           <div className="flex justify-between items-center">
-            {data.current_status == "REJECTED" &&
+            {data.status == "REJECTED" &&
               <div className="flex flex-col ">
                 <div className="text-sm ">Rejected Reason</div>
                 <div className="font-bold  text-indigo-700">
@@ -177,7 +177,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
                 </div>
               </div>
             }
-            {data.current_status == "INITIATED" ? (
+            {data.status == "INITIATED" ? (
               <button
                 onClick={handleCancel}
                 class="border border-red-500 h-10 bg-red-500 text-white rounded-md px-4 py-2  transition duration-500 ease select-none hover:bg-red-600 focus:outline-none focus:shadow-outline"
@@ -185,7 +185,7 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
                 Cancel
               </button>
             ) : null}
-            {data.current_status == "CANCELLED" ? (
+            {data.status == "CANCELLED" ? (
               <button
                 onClick={handleDelete}
                 class="border border-red-500 h-10 bg-red-500 text-white rounded-md px-4 py-2  transition duration-500 ease select-none hover:bg-red-600 focus:outline-none focus:shadow-outline"
@@ -195,14 +195,14 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
 
             ) : null}
             <div className="flex flex-wrap items-center justify-between">
-              <div className={`text-lg border-2 ${data.current_status == 'INITIATED' ? "border-indigo-500 rounded-md p-1  text-indigo-700 bg-indigo-100" : data.current_status == 'CANCELLED' ? "border-red-500  text-red-700 rounded-md p-1 bg-red-100" : data.status == 'LABAPPROVED' ? "border-orange-500  text-orange-700 rounded-md p-1 bg-orange-100" : data.current_status == 'STORESAPPROVED' ? "border-green-500 text-green-700  rounded-md p-1 bg-green-100" : data.current_status == "REJECTED" ? "border-red-500 text-red-700 rounded-md p-1 bg-red-100" : data.current_status == "ACKNOWLEDGED" ? "border-2 border-purple-600 text-purple-800  rounded-md p-1 bg-purple-100 " : ""} `}>Status :
+              <div className={`text-lg border-2 ${data.status == 'INITIATED' ? "border-indigo-500 rounded-md p-1  text-indigo-700 bg-indigo-100" : data.status == 'CANCELLED' ? "border-red-500  text-red-700 rounded-md p-1 bg-red-100" : data.status == 'APPROVED' ? "border-orange-500  text-orange-700 rounded-md p-1 bg-orange-100" : data.status == 'STOCKED' ? "border-green-500 text-green-700  rounded-md p-1 bg-green-100" : data.status == "REJECTED" ? "border-red-500 text-red-700 rounded-md p-1 bg-red-100" : data.status == "FORWARDED" ? "border-2 border-purple-600 text-purple-800  rounded-md p-1 bg-purple-100 " : ""} `}>Status :
                 <span className={`font-bold`}>
-                  {" "} {data.current_status}
+                  {" "} {data.status}
                 </span>
               </div>
-              <div>
-                {data.current_status == "STORESAPPROVED" && <div><button onClick={() => handleAcknowledge()} className="text-lg font-bold border-2 border-sky-500 text-sky-700  rounded-md p-1 bg-sky-100 hover:bg-sky-500 hover:text-white">Acknowledge</button></div>}
-              </div>
+              {/* <div>
+                {data.status == "STORESAPPROVED" && <div><button onClick={() => handleAcknowledge()} className="text-lg font-bold border-2 border-sky-500 text-sky-700  rounded-md p-1 bg-sky-100 hover:bg-sky-500 hover:text-white">Acknowledge</button></div>}
+              </div> */}
             </div>
           </div>
 

@@ -42,7 +42,7 @@ const Navbar = ({ location, open, setOpen, user, loc }) => {
           <h1
             className={`ml-2 mb-2.5 text-2xl pt-1 ${!open && "hidden"}`}
           >
-            Stores BIT 
+            Stores BIT
           </h1>
         </div>
 
@@ -135,6 +135,23 @@ const Navbar = ({ location, open, setOpen, user, loc }) => {
                 </a>
               </li>
             }
+            <li title="Apex">
+              <a onClick={setNavState} href="/apex" key="8">
+                <li
+                  className={`flex gap-x-4 mb-4 cursor-pointer ${location.split("/")[1] === "apex".toLocaleLowerCase() ? "bg-white bg-opacity-40" : ""}  rounded-full hover:bg-white hover:bg-opacity-40 pl-5 pt-1 pr-2 pb-2`}
+                >
+                  <i
+                    className={`bi bi-receipt-cutoff ${!open && "text-2xl text-center"
+                      } duration-300 `}
+                  ></i>
+                  <span
+                    className={` duration-300 ${!open && "hidden"}`}
+                  >
+                    Apex
+                  </span>
+                </li>
+              </a>
+            </li>
             <li title="Transfer">
               <a onClick={setNavState} href="/transfer" key="2">
                 <li

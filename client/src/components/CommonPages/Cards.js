@@ -18,11 +18,11 @@ function Cards() {
   const [getStockDatas, setGetStockDatas] = useState([]);
   const [getScrapDatas, setGetScrapDatas] = useState([]);
 
-  const { getRequest } = useAuth();
+  const { getRequest, BackendUrl } = useAuth();
 
   const fetchTotalStockValueData = async () => {
     try {
-      const response = await getRequest('/api/getTotalStockValueData');
+      const response = await getRequest( `${BackendUrl}/api/getTotalStockValueData`);
       setTotalStockValueData(response.data[0].stock);
     } catch (error) {
       console.log(error)
@@ -32,7 +32,7 @@ function Cards() {
 
   const fetchscrapValueData = async () => {
     try {
-      const response = await getRequest('/api/getTotalScrapValueData');
+      const response = await getRequest(`${BackendUrl}/api/getTotalScrapValueData`);
       setTotalScrapValueData(response.data[0].name);
     } catch (error) {
       console.log(error)
@@ -41,7 +41,7 @@ function Cards() {
 
   const fetchTotalInventoryValueData = async () => {
     try {
-      const response = await getRequest('/api/getTotalInventoryValueData');
+      const response = await getRequest(`${BackendUrl}/api/getTotalInventoryValueData`);
       setTotalInventoryValueData(response.data[0].cost);
     } catch (error) {
       console.log(error)
@@ -50,7 +50,7 @@ function Cards() {
 
   const fetchgetStockDatas = async () => {
     try {
-      const response = await getRequest('/api/getOverallLabsStock');
+      const response = await getRequest(`${BackendUrl}/api/getOverallLabsStock`);
       setGetStockDatas(response.data);
     } catch (error) {
       console.error(error);
@@ -59,7 +59,7 @@ function Cards() {
 
   const fetchgetInventoryDatas = async () => {
     try {
-      const response = await getRequest('/api/getInventoryData');
+      const response = await getRequest(`${BackendUrl}/api/getInventoryData`);
       setGetInventoryDatas(response.data);
     } catch (error) {
       console.error(error);
@@ -68,7 +68,7 @@ function Cards() {
 
   const fetchgetScrapDatas = async () => {
     try {
-      const response = await getRequest('/api/getScrapData');
+      const response = await getRequest(`${BackendUrl}/api/getScrapData`);
       setGetScrapDatas(response.data);
     } catch (error) {
       console.error(error);

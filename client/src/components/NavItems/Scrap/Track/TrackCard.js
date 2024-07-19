@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import { useAuth } from '../../../../AuthContext';
 
 const TrackCard = ({ data, user, setMessage, setError, setIsLoading, fetchPendingData, getUser }) => {
+
+    const {BackendUrl} = useAuth();
 
     const handleCancel = async (e) => {
         try {
             if (window.confirm("Are you sure want to cancel ?")) {
                 setIsLoading(true);
                 e.preventDefault();
-                const response = await axios.post("/api/cancelScrapRequest",
+                const response = await axios.post(`${BackendUrl}/api/cancelScrapRequest`,
                     {
                         scrap_id: data.id,
                         dept_id: user.dept_code,
@@ -37,7 +40,7 @@ const TrackCard = ({ data, user, setMessage, setError, setIsLoading, fetchPendin
                 setIsLoading(true);
                 e.preventDefault();
                 const response = await axios.post(
-                    "/api/deleteScrapRequest",
+                    `${BackendUrl}/api/deleteScrapRequest`,
                     {
                         scrap_id: data.id,
                         dept_id: user.dept_code,

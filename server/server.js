@@ -20,7 +20,7 @@ const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest, acceptS
 const { importItems, importStocks, importTransferItems, importManufacturers, importSuppliers } = require("./excel_import.js");
 const { error } = require("console");
 const { consumeRequest, getAllConsumeData, getConsumeData, rejectConsumeRequest, acceptConsumeRequest, cancelConsumeRequest, deleteConsumeRequest, getTableConsumeData, getConsumeCardData, getRequestTableData } = require("./consume.js");
-const { apexAdd } = require("./apex.js");
+const { apexAdd, getApexTableData, getApexCardData } = require("./apex.js");
 
 
 const app = express();
@@ -384,6 +384,10 @@ app.get("/api/getConsumeCardData/:id", authenticate, getConsumeCardData);//ok
 //Apex related api's
 
 app.post('/api/apexAdd', apexAdd);
+
+app.get('/api/getApexTableData', getApexTableData);
+
+app.get('/api/getApexCardData/:id', getApexCardData);
 
 
 app.listen(4000, () => console.log("App listening on port 4000"));

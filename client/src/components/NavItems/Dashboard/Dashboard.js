@@ -7,7 +7,7 @@ import { useAuth } from "../../../AuthContext";
 
 function Dashboard({ open, setOpen }) {
 
-  const { getRequest } = useAuth();
+  const { getRequest, BackendUrl } = useAuth();
 
   const setNavState = () => {
     setOpen(open);
@@ -23,7 +23,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchInventory = async () => {
     try {
-      const response = await getRequest('/api/getInventory');
+      const response = await getRequest(`${BackendUrl}/api/getInventory`);
       setInventory(response.data);
     } catch (error) {
       console.error(error);
@@ -32,7 +32,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchCategories = async () => {
     try {
-      const response = await getRequest('/api/getCategories');
+      const response = await getRequest(`${BackendUrl}/api/getCategories`);
       setCategories(response.data);
     } catch (error) {
       console.error(error);
@@ -41,7 +41,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabitem = async () => {
     try {
-      const response = await getRequest('/api/getLabItem');
+      const response = await getRequest(`${BackendUrl}/api/getLabItem`);
       setLabitem(response.data);
     } catch (error) {
       console.error(error);
@@ -50,7 +50,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabname = async () => {
     try {
-      const response = await getRequest('/api/getLabDetails');
+      const response = await getRequest(`${BackendUrl}/api/getLabDetails`);
       setLabname(response.data);
     } catch (error) {
       console.error(error);
@@ -59,7 +59,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabsStock = async () => {
     try {
-      const response = await getRequest('/api/getLabsStock');
+      const response = await getRequest(`${BackendUrl}/api/getLabsStock`);
       setLabsStock(response.data);
     } catch (error) {
       console.error(error);
