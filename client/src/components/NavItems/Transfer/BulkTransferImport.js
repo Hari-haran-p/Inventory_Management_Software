@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { read, utils, writeFile } from 'xlsx';
+import { useAuth } from '../../../AuthContext';
 
 const TransferImport = (props) => {
 
@@ -10,6 +11,7 @@ const TransferImport = (props) => {
     const [file, setFile] = useState("");
     const [rows, setRows] = useState([]);
 
+    const {BackendUrl} = useAuth();
 
     const handleChange = (e) => {
 
@@ -64,7 +66,7 @@ const TransferImport = (props) => {
                     if (sheets.length) {
                         const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
                         setRows(rows);
-                        const response = await axios.post("/api/importTransferItems", { items: rows })
+                        const response = await axios.post(`${BackendUrl}/api/importTransferItems`, { items: rows })
                         console.log(response);
                         if (response) {
                             // setIsLoading(false);

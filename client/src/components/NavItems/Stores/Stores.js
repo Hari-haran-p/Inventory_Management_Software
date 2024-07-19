@@ -12,7 +12,7 @@ function Stores() {
   const [itemNoData, setItemNodata] = useState(true);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
-  const { getRequest } = useAuth();
+  const { getRequest, BackendUrl } = useAuth();
 
 
 
@@ -20,7 +20,7 @@ function Stores() {
 
   const [itemData, setItemData] = useState([]);
   async function fetchItemData() {
-    const response = await getRequest("/api/getItems");
+    const response = await getRequest(`${BackendUrl}/api/getItems`);
     if (response.data == "No Data" || response.data.length <= 0) {
       setItemNodata(true);
     } else {
@@ -34,7 +34,7 @@ function Stores() {
 
   const [getStock, setGetStock] = useState([]);
   async function fetchGetStock() {
-    const response = await getRequest("/api/getStock")
+    const response = await getRequest(`${BackendUrl}/api/getStock`)
       .catch((error) => console.log(error));
       console.log(response.data);
     setGetStock(response.data);

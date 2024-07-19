@@ -6,7 +6,7 @@ import { useAuth } from '../../../../AuthContext';
 export default function StockEntries() {
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
-  const {getRequest} = useAuth();
+  const {getRequest, BackendUrl} = useAuth();
   
 
   const clearMessage = () => {
@@ -19,18 +19,18 @@ export default function StockEntries() {
 
   async function fetchQuantityUnits() {
     const response = await getRequest(
-      "/api/getQuantityUnits"
+      `${BackendUrl}/api/getQuantityUnits`
     );
     setQuantityUnits(response.data);
   }
   async function fetchManufacturer() {
     const response = await getRequest(
-      "/api/getManufacturer"
+      `${BackendUrl}/api/getManufacturer`
     );
     setManufacturer(response.data);
   }
   async function fetchSupplier() {
-    const response = await getRequest("/api/getSupplier");
+    const response = await getRequest(`${BackendUrl}/api/getSupplier`);
     setSupplier(response.data);
   }
 

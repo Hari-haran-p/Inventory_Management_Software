@@ -8,7 +8,7 @@ const Excel = () => {
 
     const [movies, setMovies] = useState([]);
 
-const {user, getUser} = useAuth();
+const {user, getUser, BackendUrl} = useAuth();
 
 useEffect(()=>{
   getUser();
@@ -63,7 +63,7 @@ useEffect(()=>{
             if (sheets.length) {
               const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
               setMovies(rows);
-              const response = await axios.post("/api/importStocks", {items:rows, user_id:user.user_id})
+              const response = await axios.post(`${BackendUrl}/api/importStocks`, {items:rows, user_id:user.user_id})
               console.log(response);
               console.log(rows);
             }

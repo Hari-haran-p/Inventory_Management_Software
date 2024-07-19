@@ -15,7 +15,7 @@ import TransferTable from "./Table/TransferTable.js";
 const Transfer = () => {
 
   //<<<<---------------Context variables and functions------------------>>>>
-  const { getUser, user, getRequest } = useAuth();
+  const { getUser, user, getRequest, BackendUrl } = useAuth();
 
 
   // <<<<-----------Loading , Message and Error state variables--------------->>>>
@@ -54,7 +54,7 @@ const Transfer = () => {
 
   const fetchOverallTranferedData = async () => {
     try {
-      const response = await getRequest("/api/getOverallTransferedData");
+      const response = await getRequest(`${BackendUrl}/api/getOverallTransferedData`);
       setOverallTranferedData(response.data);
     } catch (error) {
       console.error(error);
@@ -67,7 +67,7 @@ const Transfer = () => {
   const fetchPendingData = async () => {
     try {
       const response = await axios.get(
-        `/api/getTransferCardData/${user.dept_code}`
+        `${BackendUrl}/api/getTransferCardData/${user.dept_code}`
       );
       setPendingData(response.data);
     } catch (error) {
@@ -83,7 +83,7 @@ const Transfer = () => {
 
   async function fetchTransferData(data) {
     try {
-      const result = await axios.post("/api/getTransferData", data, { headers: { Authorization: Cookies.get("token") } })
+      const result = await axios.post(`${BackendUrl}/api/getTransferData`, data, { headers: { Authorization: Cookies.get("token") } })
       if (result.status == 200) {
         if (result.data.data == "No Data") {
           setNoData(true);
@@ -102,7 +102,7 @@ const Transfer = () => {
   const [getStock, setGetStock] = useState([]);
 
   async function fetchGetStock() {
-    const response = await getRequest(`/api/getAdminTransferStockData/${user.dept_code}`)
+    const response = await getRequest(`${BackendUrl}/api/getAdminTransferStockData/${user.dept_code}`)
       .catch((error) => console.log(error));
     setGetStock(response.data);
   }
@@ -188,7 +188,7 @@ const Transfer = () => {
   async function fetchTrackTransferData(data) {
     try {
       const response = await axios.post(
-        "/api/getTrackTransfer", data
+        `${BackendUrl}/api/getTrackTransfer`, data
       );
       if (response.status == 200) {
         setTrackTransferData(response.data.data)
@@ -204,7 +204,7 @@ const Transfer = () => {
 
   const fetchStockData = async () => {
     try {
-      const response = await getRequest("/api/getAdminStockData");
+      const response = await getRequest(`${BackendUrl}/api/getAdminStockData`);
       setStockData(response.data);
     } catch (error) {
       console.error(error);

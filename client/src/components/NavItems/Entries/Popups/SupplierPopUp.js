@@ -1,8 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useAuth } from "../../../../AuthContext";
 
 const SupplierPopUp = ({ setMessage, setError }) => {
+
+  const {BackendUrl} = useAuth(); 
+
+
   const [data, setData] = useState({ name: "", address: "", contact: "" });
 
   const handleChange = (e) => {
@@ -15,7 +20,7 @@ const SupplierPopUp = ({ setMessage, setError }) => {
     try {
       if (data != "") {
         const response = await axios.post(
-          "/api/supplierAdd",
+          `${BackendUrl}/api/supplierAdd`,
           data
         );
         if (response && response.status == 201) {

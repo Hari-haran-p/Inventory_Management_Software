@@ -4,6 +4,7 @@ import Accept from "../../../../Lotties/accept.json";
 import Reject from '../../../../Lotties/reject.json'
 import axios from "axios";
 import RejectPopup from './RejectPopup';
+import { useAuth } from "../../../../AuthContext.js";
 
 
 const TransferCard = ({ data, user, setMessage, setError, fetchScrapData, fetchTableData }) => {
@@ -11,12 +12,13 @@ const TransferCard = ({ data, user, setMessage, setError, fetchScrapData, fetchT
   const [isLoading, setIsLoading] = useState(false)
   const [rejectDesc, setRejectDesc] = useState("");
   const [showManufacturer, setShowManufacturer] = useState(false);
+  const {BackendUrl} = useAuth();
 
   const handleAccept = async (id) => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post("http://localhost:4000/api/acceptScrapRequest", { ...data, user_id: user.user_id, role: user.role })
+      const response = await axios.post(`${BackendUrl}/api/acceptScrapRequest`, { ...data, user_id: user.user_id, role: user.role })
         .then((response) => {
           setIsLoading(false);
           if (response && response.status == 201) {
@@ -44,7 +46,7 @@ const TransferCard = ({ data, user, setMessage, setError, fetchScrapData, fetchT
           setIsLoading(true);
           setShowManufacturer(false);
           setRejectDesc("")
-          const response = await axios.post("http://localhost:4000/api/rejectScrapRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc });
+          const response = await axios.post(`${BackendUrl}/api/rejectScrapRequest`, { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc });
           if (response && response.status == 201) {
             setIsLoading(false);
             setMessage(response.data.Data);

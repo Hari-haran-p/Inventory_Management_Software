@@ -22,13 +22,11 @@ const AppexPopUp = ({ setMessage, setError }) => {
     }
 
     const [data, setData] = useState(formdata);
-
-    const { user } = useAuth();
-    const { getRequest } = useAuth();
+    const { user, getRequest, BackendUrl } = useAuth();
 
     const [labs, setLabs] = useState([]);
     async function fetchLabs() {
-        const response = await getRequest("/api/getLabDetails");
+        const response = await getRequest(`${BackendUrl}/api/getLabDetails`);
         setLabs(response.data);
     }
 
@@ -41,7 +39,7 @@ const AppexPopUp = ({ setMessage, setError }) => {
                 data.deptId = user.dept_code;
                 console.log("came here", data);
                 const response = await axios.post(
-                    "/api/apexAdd",
+                    `${BackendUrl}/api/apexAdd`,
                     { ...data, user_dept_id: user.dept_code }
                 );
 
@@ -206,8 +204,8 @@ const AppexPopUp = ({ setMessage, setError }) => {
                             <option value="" selected>
                                 Select apex type
                             </option>
-                            <option value="BIT">Advance type(urgent basis)</option>
-                            <option value="BET">Normal type(approval basis)</option>
+                            <option value="ADVANCE">Advance type(urgent basis)</option>
+                            <option value="NORMAL">Normal type(approval basis)</option>
                         </select>
                     </div>
                 </div>

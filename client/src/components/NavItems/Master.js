@@ -11,16 +11,15 @@ function Master() {
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
-  const { user, getUser } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
 
   const [stockData, setStockData] = useState([]);
-  const { getRequest} = useAuth();
+  const { user, getUser, getRequest, BackendUrl} = useAuth();
 
   const fetchStockData = async () => {
     try {
       const response = await getRequest(
-        "/api/getAdminStockData"
+        `${BackendUrl}/api/getAdminStockData`
       );
       setStockData(response.data);
     } catch (error) {

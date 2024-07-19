@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../../../../AuthContext";
 
 function TransferEdit({
   data,
@@ -33,6 +34,8 @@ function TransferEdit({
     }
   }, [data]);
 
+  const {BackendUrl} = useAuth();
+
   const handleChange = (e) => {
     e.preventDefault();
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,7 +46,7 @@ function TransferEdit({
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "/api/transferRequest", { items: formData, user_id: user }
+        `${BackendUrl}/api/transferRequest`, { items: formData, user_id: user }
       );
       if (response.status == 200) {
         setMessage(response.data.Data);

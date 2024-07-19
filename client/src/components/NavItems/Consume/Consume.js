@@ -10,7 +10,7 @@ import ConsumeRequestTable from './Request/ConsumeRequest';
 const Consume = () => {
 
     //<<<<------------Context get user variable and function------------------>>>>
-    const { user, getUser, getRequest } = useAuth();
+    const { user, getUser, getRequest, BackendUrl } = useAuth();
 
     //<<<<------------loading , message and error state variables------------------>>>>
     const [isLoading, setIsLoading] = useState(true);
@@ -49,7 +49,7 @@ const Consume = () => {
     const [tableData, setTableData] = useState([]);
 
     async function fetchTableData() {
-        const response = await getRequest("/api/getTableConsumeData");
+        const response = await getRequest(`${BackendUrl}/api/getTableConsumeData`);
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setIsLoading(false);
@@ -66,7 +66,7 @@ const Consume = () => {
     const fetchPendingData = async () => {
         try {
             const response = await getRequest(
-                `/api/getConsumeCardData/${user.user_id}`
+                `${BackendUrl}/api/getConsumeCardData/${user.user_id}`
             );
             setPendingData(response.data);
         } catch (error) {
@@ -82,7 +82,7 @@ const Consume = () => {
 
     const fetchRequestTableData = async () => {
         try {
-            const response = await getRequest(`/api/getRequestTableData/${user.dept_code}`);
+            const response = await getRequest(`${BackendUrl}/api/getRequestTableData/${user.dept_code}`);
             if (response && response.status == 200) {
                 if (response.data.Data == "No Data") {
                     setNoRequestData(true);
@@ -106,7 +106,7 @@ const Consume = () => {
     const [noData, setNoData] = useState(true);
 
     async function fetchConsumeData() {
-        const response = await getRequest("/api/getConsume");
+        const response = await getRequest(`${BackendUrl}/api/getConsume`);
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setNoData(true);

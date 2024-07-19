@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import axios from "axios";
 import { read, utils, writeFile } from 'xlsx';
+import { useAuth } from '../../../../AuthContext';
 
 const StockImport = (props) => {
 
@@ -10,6 +11,8 @@ const StockImport = (props) => {
     const [filename, setFilename] = useState("");
     const [file, setFile] = useState("");
     const [rows, setRows] = useState([]);
+    const {BackendUrl} = useAuth(); 
+
 
     const handleChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -60,7 +63,7 @@ const StockImport = (props) => {
                     if (sheets.length) {
                         const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
                         setRows(rows);
-                        const response = await axios.post("/api/importStocks", { items: rows })
+                        const response = await axios.post(`${BackendUrl}/api/importStocks`, { items: rows })
                         if (response) {
                             setMessage(response.data.Data)
                             setFile("");

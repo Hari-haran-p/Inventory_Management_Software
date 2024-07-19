@@ -1,12 +1,15 @@
 import {React, useState} from 'react';
 import axios from 'axios';
 import { read, utils, writeFile } from 'xlsx';
+import { useAuth } from '../../../../AuthContext';
 
 
 
 const SupplierImport = (props) => {
 
-   const {setError, setMessage } = props
+   const {setError, setMessage } = props;
+   const {BackendUrl} = useAuth(); 
+
 
     const [filename, setFilename] = useState("");
     const [file, setFile] = useState("");
@@ -60,7 +63,7 @@ const SupplierImport = (props) => {
                     if (sheets.length) {
                         const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
                         setRows(rows);
-                        const response = await axios.post("/api/importSuppliers", { items: rows })
+                        const response = await axios.post(`${BackendUrl}/api/importSuppliers`, { items: rows })
                         if (response) {
                             setMessage(response.data.Data)
                             setFile("");

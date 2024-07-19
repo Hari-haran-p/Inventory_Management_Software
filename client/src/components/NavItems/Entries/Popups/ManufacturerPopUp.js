@@ -2,10 +2,13 @@ import { React, useEffect, useState } from "react";
 import axios from "axios";
 import { read, utils } from "xlsx";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../AuthContext";
 
 const ManufacturerPopUp = () => {
 
   const [name, setName] = useState(null);
+  const {BackendUrl} = useAuth(); 
+
 
   const handleChange = (e) => {
     setName(e.target.value);
@@ -18,7 +21,7 @@ const ManufacturerPopUp = () => {
     try {
       if (name != null) {
         const response = await axios.post(
-          "/api/manufacturerAdd",
+          `${BackendUrl}/api/manufacturerAdd`,
           { name: name.toUpperCase() }
         );
         if (response && response.status == 201) {
@@ -91,7 +94,7 @@ const ManufacturerPopUp = () => {
             const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
             setRows(rows);
             const response = await axios.post(
-              "/api/importManufacturers",
+              `${BackendUrl}/api/importManufacturers`,
               { items: rows }
             );
             if (response) {

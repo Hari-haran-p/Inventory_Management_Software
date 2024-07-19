@@ -11,7 +11,7 @@ function Vendors({ open }) {
   const [manufacturer, setManufacturer] = useState([]);
   const [supplier, setSupplier] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { getRequest } = useAuth();
+  const { getRequest, BackendUrl } = useAuth();
 
   //<-----End of creation of required state variables------>
 
@@ -19,13 +19,13 @@ function Vendors({ open }) {
 
   async function fetchManufacturer() {
     const response = await getRequest(
-      "/api/getManufacturer"
+      `${BackendUrl}/api/getManufacturer`
     ).catch((error) => console.log(error));
     setManufacturer(response.data);
   }
   async function fetchSupplier() {
     const response = await getRequest(
-      "/api/getSupplier"
+      `${BackendUrl}/api/getSupplier`
     ).catch((error) => console.log(error));
     setSupplier(response.data);
   }

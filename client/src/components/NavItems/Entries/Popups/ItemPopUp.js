@@ -39,7 +39,7 @@ const ItemPopUp = ({ isVisible, onClose, setMessage, user, setError, setIsLoadin
         return;
       } else {
         e.preventDefault();
-        const response = await axios.post("/api/itemAdd", data);
+        const response = await axios.post(`${BackendUrl}/api/itemAdd`, data);
         if (response && response.status == 201) {
           setMessage(response.data.Data);
           setIsLoading(false);

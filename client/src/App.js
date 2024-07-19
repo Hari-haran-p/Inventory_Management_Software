@@ -1,13 +1,5 @@
 import "./App.css";
-
-import {
-  Routes,
-  Route,
-  useLocation,
-  useNavigate,
-  Navigate,
-} from "react-router-dom";
-
+import { Routes, Route, useLocation, useNavigate, } from "react-router-dom";
 import Vendors from "./components/NavItems/Vendors";
 import Entries from "./components/NavItems/Entries/Entries";
 import Master from "./components/NavItems/Master";
@@ -32,6 +24,7 @@ import SupplierEntries from "./components/NavItems/Entries/EntriesImports/Suppli
 import StockEntries from "./components/NavItems/Entries/EntriesImports/StockEntries.js";
 import Consume from "./components/NavItems/Consume/Consume.js";
 import ApexEntries from "./components/NavItems/Entries/EntriesImports/ApexEntries.js";
+import Apex from "./components/NavItems/Apex/Apex.js";
 
 
 function App() {
@@ -39,7 +32,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [showNav, setShowNav] = useState(true);
-  const [menu, setMenu] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -63,7 +55,7 @@ function App() {
 
   const { user, getUser } = useAuth();
 
-  const loc = ["dashboard", "master", "vendors", "transfer", "stores", "scrap", "entries", "consume"]
+  const loc = ["dashboard", "master", "vendors", "apex", "transfer", "stores", "scrap", "entries", "consume"]
 
   function navUsed() {
     return loc.includes(location.pathname.split("/")[1]);
@@ -108,7 +100,7 @@ function App() {
               </div>
             }
             <div
-              className={`h-screen flex-1 ${navUsed() ? showNav ? (open ? "ml-64" : window.innerWidth < 800 ? "": "ml-20") : "" : ""
+              className={`h-screen flex-1 ${navUsed() ? showNav ? (open ? "ml-64" : window.innerWidth < 800 ? "" : "ml-20") : "" : ""
                 } 
         duration-300`}
             >
@@ -148,6 +140,10 @@ function App() {
                   <Route
                     path="/vendors"
                     element={<Vendors />}
+                  />
+                  <Route
+                    path="/apex/*"
+                    element={<Apex />}
                   />
                   <Route
                     path="/transfer/*"
