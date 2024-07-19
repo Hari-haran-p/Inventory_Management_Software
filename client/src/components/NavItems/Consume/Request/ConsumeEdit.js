@@ -47,7 +47,7 @@ function ConsumeEdit({
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "http://localhost:4000/api/consumeRequest", { items: formData, user: user }
+        "/api/consumeRequest", { items: formData, user: user }
       );
       if (response.status == 200) {
         console.log("tis is data: "+response.data);

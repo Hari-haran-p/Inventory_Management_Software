@@ -20,7 +20,7 @@ function Stores() {
 
   const [itemData, setItemData] = useState([]);
   async function fetchItemData() {
-    const response = await getRequest("http://localhost:4000/api/getItems");
+    const response = await getRequest("/api/getItems");
     if (response.data == "No Data" || response.data.length <= 0) {
       setItemNodata(true);
     } else {
@@ -34,7 +34,7 @@ function Stores() {
 
   const [getStock, setGetStock] = useState([]);
   async function fetchGetStock() {
-    const response = await getRequest("http://localhost:4000/api/getStock")
+    const response = await getRequest("/api/getStock")
       .catch((error) => console.log(error));
       console.log(response.data);
     setGetStock(response.data);

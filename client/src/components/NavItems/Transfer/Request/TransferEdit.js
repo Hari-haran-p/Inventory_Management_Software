@@ -43,7 +43,7 @@ function TransferEdit({
       setIsLoading(true);
       e.preventDefault();
       const response = await axios.post(
-        "http://localhost:4000/api/transferRequest", { items: formData, user_id: user }
+        "/api/transferRequest", { items: formData, user_id: user }
       );
       if (response.status == 200) {
         setMessage(response.data.Data);

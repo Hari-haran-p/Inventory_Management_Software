@@ -64,7 +64,7 @@ const ItemImport = (props) => {
                     if (sheets.length) {
                         const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
                         setRows(rows);
-                        const response = await axios.post("http://localhost:4000/api/importItems", { items: rows })
+                        const response = await axios.post("/api/importItems", { items: rows })
                         if (response) {
                             setIsLoading(false);
                             setMessage(response.data.Data)

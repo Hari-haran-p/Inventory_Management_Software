@@ -20,7 +20,7 @@ const TransferCard = ({ data, setMessage, setError, fetchTransferData, fetchPend
 
     try {
       setIsLoading(true);
-      const response = await axios.post("http://localhost:4000/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
+      const response = await axios.post("/api/acceptRequest", { ...data, user_id: user.user_id, role: user.role })
         .then(async (response) => {
           await fetchTransferData(user);
           fetchPendingData();
@@ -52,7 +52,7 @@ const TransferCard = ({ data, setMessage, setError, fetchTransferData, fetchPend
           // setShowManufacturer(false);
           // setRejectDesc("")
           console.log("hiiiiiiii");
-          const response = await axios.post("http://localhost:4000/api/rejectRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc })
+          const response = await axios.post("/api/rejectRequest", { ...data, user_id: user.user_id, role: user.role, rejectDesc: rejectDesc })
             .then((response) => {
               setIsLoading(false);
               fetchPendingData();

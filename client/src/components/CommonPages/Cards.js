@@ -22,7 +22,7 @@ function Cards() {
 
   const fetchTotalStockValueData = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getTotalStockValueData');
+      const response = await getRequest('/api/getTotalStockValueData');
       setTotalStockValueData(response.data[0].stock);
     } catch (error) {
       console.log(error)
@@ -32,7 +32,7 @@ function Cards() {
 
   const fetchscrapValueData = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getTotalScrapValueData');
+      const response = await getRequest('/api/getTotalScrapValueData');
       setTotalScrapValueData(response.data[0].name);
     } catch (error) {
       console.log(error)
@@ -41,7 +41,7 @@ function Cards() {
 
   const fetchTotalInventoryValueData = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getTotalInventoryValueData');
+      const response = await getRequest('/api/getTotalInventoryValueData');
       setTotalInventoryValueData(response.data[0].cost);
     } catch (error) {
       console.log(error)
@@ -50,7 +50,7 @@ function Cards() {
 
   const fetchgetStockDatas = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getOverallLabsStock');
+      const response = await getRequest('/api/getOverallLabsStock');
       setGetStockDatas(response.data);
     } catch (error) {
       console.error(error);
@@ -59,7 +59,7 @@ function Cards() {
 
   const fetchgetInventoryDatas = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getInventoryData');
+      const response = await getRequest('/api/getInventoryData');
       setGetInventoryDatas(response.data);
     } catch (error) {
       console.error(error);
@@ -68,7 +68,7 @@ function Cards() {
 
   const fetchgetScrapDatas = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getScrapData');
+      const response = await getRequest('/api/getScrapData');
       setGetScrapDatas(response.data);
     } catch (error) {
       console.error(error);
@@ -88,7 +88,7 @@ function Cards() {
     <>
       <div className='card-container w-full h-full flex flex-col lg:flex-row gap-3 lg:w-5/6 lg:gap-8 items-center justify-center '>
         <div
-          className=" w-11/12 h-2/5 md:h-3/5 shadow-2xl rounded-3xl cursor-pointer flex  animate1 bg-white"
+          className=" w-11/12 h-2/5 md:h-3/5 shadow-2xl rounded-3xl cursor-pointer flex   bg-white animate-fadeIn2"
           onClick={() => setStockData(true)}
         >
           <div className="flex w-1/2 items-center justify-around">
@@ -108,7 +108,7 @@ function Cards() {
           </div>
         </div>
         <div
-          className={` w-11/12 h-2/5 md:h-3/5  shadow-2xl bg-white rounded-3xl cursor-pointer flex animate1`}
+          className={` w-11/12 h-2/5 md:h-3/5  shadow-2xl bg-white rounded-3xl cursor-pointer flex animate-fadeIn2`}
           popovertarget="myheader"
           onClick={() => setScrapData(true)}
         >
@@ -129,7 +129,7 @@ function Cards() {
           </div>
         </div>
         <div
-          className={` w-11/12 h-2/5 md:h-3/5 shadow-2xl bg-white rounded-3xl  cursor-pointer flex  animate1`}
+          className={` w-11/12 h-2/5 md:h-3/5 shadow-2xl bg-white rounded-3xl  cursor-pointer flex  animate-fadeIn2`}
           onClick={() => setInventoryData(true)}
         >
           <div className="flex w-1/2 items-center justify-around">

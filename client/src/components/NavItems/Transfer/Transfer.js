@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
 import TransferRequestTable from "./Request/TransferPopup.js";
 import TransferCard from "./Approve/TransferCard.js";
@@ -36,13 +36,16 @@ const Transfer = () => {
 
 
   // <<<<------------Top nave bar erlated state variables and functions---------->>>>
-  const [isNavbarVisible, setIsNavbarVisible] = useState(false);
+  const cuurNavState = localStorage.getItem('transferNavState') == null ? true :  JSON.parse(localStorage.getItem('transferNavState'));
 
-  const [isArrowRotated, setIsArrowRotated] = useState(false);
+  const [isArrowRotated, setIsArrowRotated] = useState(cuurNavState);
+
+  const [isNavbarVisible, setIsNavbarVisible] = useState(cuurNavState);
 
   const toggleNavbar = () => {
-    setIsNavbarVisible((prev) => !prev);
-    setIsArrowRotated((prev) => !prev);
+      localStorage.setItem("transferNavState", JSON.stringify(!isArrowRotated));
+      setIsNavbarVisible((prev) => !prev);
+      setIsArrowRotated((prev) => !prev);
   };
 
 
@@ -51,7 +54,7 @@ const Transfer = () => {
 
   const fetchOverallTranferedData = async () => {
     try {
-      const response = await getRequest("http://localhost:4000/api/getOverallTransferedData");
+      const response = await getRequest("/api/getOverallTransferedData");
       setOverallTranferedData(response.data);
     } catch (error) {
       console.error(error);
@@ -64,7 +67,7 @@ const Transfer = () => {
   const fetchPendingData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/getTransferCardData/${user.dept_code}`
+        `/api/getTransferCardData/${user.dept_code}`
       );
       setPendingData(response.data);
     } catch (error) {
@@ -73,14 +76,14 @@ const Transfer = () => {
   };
 
 
-// <<<<----------------Approval ralted state variables and fetch functions---------------->>>>
+  // <<<<----------------Approval ralted state variables and fetch functions---------------->>>>
   const [transferData, setTransferData] = useState([]);
 
   const [noData, setNoData] = useState(false);
 
   async function fetchTransferData(data) {
     try {
-      const result = await axios.post("http://localhost:4000/api/getTransferData", data, { headers: { Authorization: Cookies.get("token") } })
+      const result = await axios.post("/api/getTransferData", data, { headers: { Authorization: Cookies.get("token") } })
       if (result.status == 200) {
         if (result.data.data == "No Data") {
           setNoData(true);
@@ -95,11 +98,11 @@ const Transfer = () => {
   }
 
 
-// <<<<------------------Request Table related state variable and fecth funtions---------------->>>>
+  // <<<<------------------Request Table related state variable and fecth funtions---------------->>>>
   const [getStock, setGetStock] = useState([]);
 
   async function fetchGetStock() {
-    const response = await getRequest(`http://localhost:4000/api/getAdminTransferStockData/${user.dept_code}`)
+    const response = await getRequest(`/api/getAdminTransferStockData/${user.dept_code}`)
       .catch((error) => console.log(error));
     setGetStock(response.data);
   }
@@ -109,21 +112,53 @@ const Transfer = () => {
 
   const [trackTransferData, setTrackTransferData] = useState([]);
 
-  // const onClose = () => {
-  //   setTransferPopup(false);
-  //   setTrackTransfer(false);
-  //   setApprovalRequest(false);
-  //   fetchTransferData();
-  //   fetchOverallTranferedData();
-  // };
+  //Defining routes
+  const localtion = useLocation();
+  const setPageState = async () => {
+    const loc = localtion.pathname.split("/");
+    console.log(loc);
+    if (loc.length <= 2) {
+      setApprovalRequest(false);
+      setTransferPopup(false)
+      setTrackTransfer(false);
+      setShowTable(true);
+      setShowTransferImport(false)
+    } else if (loc.length > 2 && loc[2] == "track") {
+      setApprovalRequest(false);
+      setTransferPopup(false)
+      setTrackTransfer(true);
+      setShowTable(false);
+      setShowTransferImport(false)
+    } else if (loc.length > 2 && loc[2] == "approve") {
+      setApprovalRequest(true);
+      setTransferPopup(false)
+      setTrackTransfer(false);
+      setShowTable(false);
+      setShowTransferImport(false)
+    } else if (loc.length > 2 && loc[2] == "request") {
+      setTransferPopup(true)
+      setShowTable(false)
+      setTrackTransfer(false);
+      setApprovalRequest(false);
+      setShowTransferImport(false)
+    } else if (user.role == "slsincharge" && loc.length > 2 && loc[2] == "import") {
+      setTransferPopup(false)
+      setShowTable(false)
+      setTrackTransfer(false);
+      setApprovalRequest(false);
+      setShowTransferImport(true);
+    } else {
+      navigate("/404");
+    }
+  }
 
   const navigate = useNavigate();
-
 
   useEffect(() => {
     if (!Cookies.get("token")) {
       navigate("/");
     } else {
+      setPageState();
       getUser()
         .then((result) => {
           fetchTransferData(result);
@@ -153,7 +188,7 @@ const Transfer = () => {
   async function fetchTrackTransferData(data) {
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/getTrackTransfer", data
+        "/api/getTrackTransfer", data
       );
       if (response.status == 200) {
         setTrackTransferData(response.data.data)
@@ -169,7 +204,7 @@ const Transfer = () => {
 
   const fetchStockData = async () => {
     try {
-      const response = await getRequest("http://localhost:4000/api/getAdminStockData");
+      const response = await getRequest("/api/getAdminStockData");
       setStockData(response.data);
     } catch (error) {
       console.error(error);
@@ -223,66 +258,40 @@ const Transfer = () => {
                     <div className="flex flex-wrap gap-5 items-center justify-between navTransfer">
                       <div
                         className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTable == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4 `}
-                        onClick={() => {
-                          setApprovalRequest(false);
-                          setTransferPopup(false)
-                          setTrackTransfer(false);
-                          setShowTable(true);
-                          setShowTransferImport(false)
-                        }}
                       >
-                        Home
+                        <a href="/transfer" >
+                          Home
+                        </a>
                       </div>
                       <div
                         className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackTransfer == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                        onClick={() => {
-                          setApprovalRequest(false);
-                          setTransferPopup(false)
-                          setTrackTransfer(true);
-                          setShowTable(false);
-                          setShowTransferImport(false)
-                        }}
                       >
-                        Track Your Request
+                        <a href="/transfer/track">
+                          Track Your Request
+                        </a>
                       </div>
 
                       <div
                         className={`cursor-pointer font-bold text-black whitespace-nowrap ${showApprovalRequest == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                        onClick={() => {
-                          setApprovalRequest(true);
-                          setTransferPopup(false)
-                          setTrackTransfer(false);
-                          setShowTable(false);
-                          setShowTransferImport(false)
-
-                        }}
                       >
-                        Approval Request
+                        <a href="/transfer/approve">
+                          Approval Request
+                        </a>
                       </div>
                       <div
                         className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTransferPopup == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                        onClick={() => {
-                          setTransferPopup(true)
-                          setShowTable(false)
-                          setTrackTransfer(false);
-                          setApprovalRequest(false);
-                          setShowTransferImport(false)
-                        }}
                       >
-                        Request Transfer
+                        <a href="/transfer/request">
+                          Request Transfer
+                        </a>
                       </div>
                       {user.role == "slsincharge" &&
                         <button
-                          onClick={() => {
-                            setTransferPopup(false)
-                            setShowTable(false)
-                            setTrackTransfer(false);
-                            setApprovalRequest(false);
-                            setShowTransferImport(true);
-                          }}
                           className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTransferImport == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                         >
-                          <span>Bulk Transfer</span>
+                          <a href="/transfer/import">
+                            <span>Bulk Transfer</span>
+                          </a>
                         </button>
                       }
                     </div>

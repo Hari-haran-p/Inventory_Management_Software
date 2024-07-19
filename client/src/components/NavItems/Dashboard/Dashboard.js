@@ -23,7 +23,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchInventory = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getInventory');
+      const response = await getRequest('/api/getInventory');
       setInventory(response.data);
     } catch (error) {
       console.error(error);
@@ -32,7 +32,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchCategories = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getCategories');
+      const response = await getRequest('/api/getCategories');
       setCategories(response.data);
     } catch (error) {
       console.error(error);
@@ -41,7 +41,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabitem = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getLabItem');
+      const response = await getRequest('/api/getLabItem');
       setLabitem(response.data);
     } catch (error) {
       console.error(error);
@@ -50,7 +50,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabname = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getLabDetails');
+      const response = await getRequest('/api/getLabDetails');
       setLabname(response.data);
     } catch (error) {
       console.error(error);
@@ -59,7 +59,7 @@ function Dashboard({ open, setOpen }) {
 
   const fetchLabsStock = async () => {
     try {
-      const response = await getRequest('http://localhost:4000/api/getLabsStock');
+      const response = await getRequest('/api/getLabsStock');
       setLabsStock(response.data);
     } catch (error) {
       console.error(error);
@@ -96,7 +96,7 @@ function Dashboard({ open, setOpen }) {
               <Cards />
             </div>
 
-            <div className="areah lg:pl-28 w-11/12 animate1">
+            <div className="areah lg:pl-28 w-11/12 animate-fadeIn">
               <Areachart inventory={inventory} />
             </div>
             <br /><br />

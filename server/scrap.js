@@ -2,27 +2,6 @@ const { response } = require("express");
 const db = require("./database/db.js");
 
 
-// const scrapRequest = async function (req, res, next) {
-
-//     const formData = req.body.formData;
-//     const resultData = req.body.resultData[0];
-
-//     if (formData.stockReq > resultData.stock_qty) {
-//         res.status(500).json({ Data: "Check for entered stock quantity" });
-//         return;
-//     }
-
-//     db.query("INSERT INTO scraptable (item_code, manufacturer_id, supplier_id, scrap_qty, user_id, inventory_value, dept_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-//         [formData.itemcode, resultData.manufacturer_id, resultData.supplier_id, formData.stockReq, req.body.user_id, formData.stockReq * resultData.cost_per_item, req.body.dept_id]
-//     ).then((response) => {
-//         res.status(200).json({ Data: "Request sucessfully Initiated" });
-//     }).catch((error) => {
-//         res.status(500).json({ Data: "Some internal Error" });
-//     })
-
-// }
-
-
 
 const getScrapCardData = async function (req, res, next) {
 

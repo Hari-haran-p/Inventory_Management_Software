@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
       try {
         const token = Cookies.get('token');
         // console.log(token);
-        const result = await axios.post("http://localhost:4000/api/getUser", {
+        const result = await axios.post("/api/getUser", {
           token: token,
         }).catch((error) => console.log(error));
         setUser(result.data);
@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
     e.preventDefault();
     try {
       console.log("hiiii.....")
-      const result = await axios.post('http://localhost:4000/api/credentiallogin' ,formData);
+      const result = await axios.post('/api/credentiallogin' ,formData);
       Cookies.set("token", result.data)
       setIsLoggedIn(true)
       await getUser();
@@ -74,7 +74,7 @@ export function AuthProvider({ children }) {
   async function login(response) {
     try {
       console.log("hiiii.....")
-      const result = await axios.post("http://localhost:4000/api/loginUser", { res: response });
+      const result = await axios.post("/api/loginUser", { res: response });
       Cookies.set("token", result.data)
       setIsLoggedIn(true)
       await getUser();

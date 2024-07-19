@@ -20,7 +20,7 @@ function Master() {
   const fetchStockData = async () => {
     try {
       const response = await getRequest(
-        "http://localhost:4000/api/getAdminStockData"
+        "/api/getAdminStockData"
       );
       setStockData(response.data);
     } catch (error) {
