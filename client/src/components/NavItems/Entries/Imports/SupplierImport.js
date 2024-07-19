@@ -60,7 +60,7 @@ const SupplierImport = (props) => {
                     if (sheets.length) {
                         const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
                         setRows(rows);
-                        const response = await axios.post("http://localhost:4000/api/importSuppliers", { items: rows })
+                        const response = await axios.post("/api/importSuppliers", { items: rows })
                         if (response) {
                             setMessage(response.data.Data)
                             setFile("");
@@ -83,7 +83,7 @@ const SupplierImport = (props) => {
 
   return (
     <>
-        <div className="w-full pt-7">
+        <div className="w-full">
             <div className="flex  flex-col">
                 <div className="bg-white w-full px-4 md:px-14 animate1 py-5 overflow-x-auto overflow-y-auto flex flex-col items-center justify-center border-gray-700 rounded-lg" >
                     <div className=" w-full">

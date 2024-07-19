@@ -10,7 +10,7 @@ const TrackCard = ({ data, setMesaage, setError, setIsLoading, fetchPendingData 
             if (window.confirm("Are you sure want to cancel ?")) {
                 setIsLoading(true);
                 e.preventDefault();
-                const response = await axios.post("http://localhost:4000/api/cancelConsumeRequest",
+                const response = await axios.post("/api/cancelConsumeRequest",
                     {
                         consume_id: data.id,
                         dept_id: user.dept_code,
@@ -41,7 +41,7 @@ const TrackCard = ({ data, setMesaage, setError, setIsLoading, fetchPendingData 
                 setIsLoading(true);
                 e.preventDefault();
                 const response = await axios.post(
-                    "http://localhost:4000/api/deleteConsumeRequest",
+                    "/api/deleteConsumeRequest",
                     {
                         consume_id: data.id,
                         dept_id: user.dept_code,

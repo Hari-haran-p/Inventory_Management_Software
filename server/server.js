@@ -20,6 +20,7 @@ const { scrapRequest, getScrapData, getAllScrapData, rejectScrapRequest, acceptS
 const { importItems, importStocks, importTransferItems, importManufacturers, importSuppliers } = require("./excel_import.js");
 const { error } = require("console");
 const { consumeRequest, getAllConsumeData, getConsumeData, rejectConsumeRequest, acceptConsumeRequest, cancelConsumeRequest, deleteConsumeRequest, getTableConsumeData, getConsumeCardData, getRequestTableData } = require("./consume.js");
+const { apexAdd } = require("./apex.js");
 
 
 const app = express();
@@ -294,38 +295,6 @@ app.get("/api/getTransferCardData/:id", async (req, res) => {
     }
 });
 
-// app.get("/api/getScrapCardData/:id", authenticate, async (req, res) => {
-
-//     const user = req.params.id; 
-//     try {
-//         const [
-//             scrapPendingResult,
-//             scrapApprovedResult,
-//             // scrapAcknowledgedResult,
-//             scrapRejectedResult,
-//         ] = await Promise.all([
-//             db.query("SELECT * FROM scrap_table_view WHERE (status = ? OR status = ?) AND user_id = ?", ["INITIATED", "CANCELED", user]),
-//             db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["APPROVED", user]),
-//             // db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["ACKNOWLEDGED", user]),
-//             db.query("SELECT * FROM scrap_table_view WHERE status = ? AND user_id = ?", ["REJECTED", user]),
-//         ]);
-
-
-//         res.status(200).json({
-//             pending: scrapPendingResult,
-//             approved: scrapApprovedResult,
-//             // acknowledged: scrapAcknowledgedResult,
-//             rejected: scrapRejectedResult,
-//         });
-//     } catch (error) {
-//         console.error("Error executing the queries:", error);
-//         res.status(500).json({ error: "There was some error" });
-//     }
-// });
-
-
-
-
 app.get("/api/getStock/:id", (req, res) => {
     db.query("SELECT * FROM admin_stock_view WHERE dept_id = ?", [req.params.id])
         .then((response) => res.send(response))
@@ -410,6 +379,11 @@ app.post("/api/deleteConsumeRequest", deleteConsumeRequest);//ok
 app.get("/api/getTableConsumeData",authenticate, getTableConsumeData); //ok
 
 app.get("/api/getConsumeCardData/:id", authenticate, getConsumeCardData);//ok
+
+
+//Apex related api's
+
+app.post('/api/apexAdd', apexAdd);
 
 
 app.listen(4000, () => console.log("App listening on port 4000"));

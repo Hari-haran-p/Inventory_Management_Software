@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Table from './Table';
 import { useAuth } from '../../../AuthContext';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ScrapTrack from './Track/ScrapTrack';
 import ScrapApprove from './Approve/ScrapApprove';
 import ScrapRequestTable from './Request/ScrapRequest';
@@ -22,11 +22,14 @@ const Scrap = () => {
 
 
     //<<<<------------Top navbar state variables andn function------------------>>>>
-    const [isNavbarVisible, setIsNavbarVisible] = useState(false);
+    const cuurNavState = localStorage.getItem('scrapNavState') == null ? true :  JSON.parse(localStorage.getItem('scrapNavState'));
 
-    const [isArrowRotated, setIsArrowRotated] = useState(false);
+    const [isArrowRotated, setIsArrowRotated] = useState(cuurNavState);
+
+    const [isNavbarVisible, setIsNavbarVisible] = useState(cuurNavState);
 
     const toggleNavbar = () => {
+        localStorage.setItem("scrapNavState", JSON.stringify(!isArrowRotated));
         setIsNavbarVisible((prev) => !prev);
         setIsArrowRotated((prev) => !prev);
     };
@@ -46,7 +49,7 @@ const Scrap = () => {
     const [tableData, setTableData] = useState([]);
 
     async function fetchTableData() {
-        const response = await getRequest("http://localhost:4000/api/getTableScrapData");
+        const response = await getRequest("/api/getTableScrapData");
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setIsLoading(false);
@@ -63,7 +66,7 @@ const Scrap = () => {
     const fetchPendingData = async () => {
         try {
             const response = await getRequest(
-                `http://localhost:4000/api/getScrapCardData/${user.user_id}`
+                `/api/getScrapCardData/${user.user_id}`
             );
             console.log(response);
             setPendingData(response.data);
@@ -81,7 +84,7 @@ const Scrap = () => {
 
     const fetchStockData = async () => {
         try {
-            const response = await getRequest(`http://localhost:4000/api/getAdminScrapStockData/${user.dept_code}`);
+            const response = await getRequest(`/api/getAdminScrapStockData/${user.dept_code}`);
             if (response && response.status == 200) {
                 if (response.data.Data == "No Data") {
                     setNoRequestData(true);
@@ -108,7 +111,7 @@ const Scrap = () => {
     const [noData, setNoData] = useState(true);
 
     async function fetchScrapData() {
-        const response = await getRequest("http://localhost:4000/api/getScrap");
+        const response = await getRequest("/api/getScrap");
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setNoData(true);
@@ -124,10 +127,41 @@ const Scrap = () => {
 
     const navigate = useNavigate();
 
+    const location = useLocation();
+
+    const initalPageLoad = async () => {
+        const loc = location.pathname.split("/");
+        console.log(loc);
+        if (loc.length <= 2) {
+            setShowTrackScrap(false)
+            setShowScrapTable(true)
+            setShowScrapApprove(false)
+            setShowScrap(false)
+        } else if (loc.length > 2 && loc[2] == "track") {
+            setShowTrackScrap(true)
+            setShowScrapTable(false)
+            setShowScrapApprove(false)
+            setShowScrap(false)
+        } else if (loc.length > 2 && loc[2] == "approve") {
+            setShowTrackScrap(false)
+            setShowScrapTable(false)
+            setShowScrapApprove(true)
+            setShowScrap(false)
+        } else if (loc.length > 2 && loc[2] == "request") {
+            setShowScrap(true)
+            setShowTrackScrap(false)
+            setShowScrapTable(false)
+            setShowScrapApprove(false)
+        } else {
+            navigate("/404");
+        }
+    }
+
     useEffect(() => {
         if (!Cookies.get("token")) {
             navigate("/");
         } else {
+            initalPageLoad();
             getUser();
             fetchStockData();
             fetchTableData();
@@ -149,6 +183,7 @@ const Scrap = () => {
         setMessage(null);
         setError(null);
     };
+
 
     useEffect(() => {
         setTimeout(clearMessage, 6000);
@@ -191,49 +226,33 @@ const Scrap = () => {
                                     <div className="flex flex-wrap gap-5 z-50 items-center justify-between navTransfer">
                                         <div
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapTable == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4 `}
-                                            onClick={() => {
-                                                setShowTrackScrap(false)
-                                                setShowScrapTable(true)
-                                                setShowScrapApprove(false)
-                                                setShowScrap(false)
-                                            }}
                                         >
-                                            Home
+                                            <a href='/scrap'>
+                                                Home
+                                            </a>
                                         </div>
                                         <div
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackScrap == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                                            onClick={() => {
-                                                setShowTrackScrap(true)
-                                                setShowScrapTable(false)
-                                                setShowScrapApprove(false)
-                                                setShowScrap(false)
-                                            }}
                                         >
-                                            Track Your Request
+                                            <a href='/scrap/track'>
+                                                Track Your Request
+                                            </a>
                                         </div>
                                         {user.role == "slsincharge" &&
                                             <div
                                                 className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrapApprove == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                                                onClick={() => {
-                                                    setShowTrackScrap(false)
-                                                    setShowScrapTable(false)
-                                                    setShowScrapApprove(true)
-                                                    setShowScrap(false)
-                                                }}
                                             >
-                                                Approval Request
+                                                <a href='/scrap/approve'>
+                                                    Approval Request
+                                                </a>
                                             </div>
                                         }
                                         <div
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showScrap == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                                            onClick={() => {
-                                                setShowScrap(true)
-                                                setShowTrackScrap(false)
-                                                setShowScrapTable(false)
-                                                setShowScrapApprove(false)
-                                            }}
                                         >
-                                            Scrap
+                                            <a href='/scrap/request'>
+                                                Scrap
+                                            </a>
                                         </div>
                                     </div>
                                 )}

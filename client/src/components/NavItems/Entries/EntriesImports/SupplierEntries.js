@@ -55,26 +55,10 @@ export default function SupplierEntries() {
             <span class="block sm:inline">{error}</span>
           </div>
         ) : null}
-        <div className="bg-gray-100 h-full w-full  px-14 animate1 py-5 flex flex-row-reverse  items-center justify-center rounded-lg">
-          <div className=" w-full md:w-1/2 ">
-            <div className="bg-white w-full md:w-10/12 shadow-[rgba(13,_38,_76,_0.19)_0px_9px_20px]  rounded-2xl ">
-              <SupplierImport setMessage={setMessage} setError={setError} />
+        <div className="bg-gray-100 h-full w-full px-5 lg:px-14 animate-fadeIn py-5 rounded-lg">
               <SupplierPopUp setMessage={setMessage} setError={setError} />
-            </div>
-          </div>
-          <div className=" h-full w-1/2 items-center hidden md:flex">
-            <div className=" flex flex-col text-2xl font-medium gap-12">
-              <span>S</span>
-              <span>u</span>
-              <span>P</span>
-              <span>P</span>
-              <span>L</span>
-              <span>I</span>
-              <span>E</span>
-              <span>R</span>
-            </div>
-            <img src="/images/supplierentry.png" />
-          </div>
+
+              <SupplierImport setMessage={setMessage} setError={setError} />
         </div>
       </div>
     </>

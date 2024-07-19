@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../../../AuthContext";
+import { Link } from "react-router-dom";
 
 const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplier }) => {
 
@@ -27,7 +28,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
 
   const [item, setItem] = useState([]);
   async function fetchItems() {
-    const response = await getRequest("http://localhost:4000/api/getItems");
+    const response = await getRequest("/api/getItems");
     setItem(response.data);
   }
 
@@ -40,7 +41,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
         data.dept_id = user.dept_code;
         console.log("came here", data);
         const response = await axios.post(
-          "http://localhost:4000/api/stockAdd",
+          "/api/stockAdd",
           { ...data, user_dept_id: user.dept_code }
         );
 
@@ -77,15 +78,12 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
   });
 
   return (
-    <div className="w-full h-3/5 flex flex-col items-center justify-center" >
-      <div class="flex mt-5">
-        <span class=" text-black font-medium text-2xl whitespace-nowrap">
-          Stock Entry
-        </span>
-      </div>
-      <form className="overflow-x-auto overflow-y-auto w-full" onSubmit={HandleSubmit} >
-        <div className="flex flex-wrap gap-5 items-center justify-center">
-          <div class="w">
+    <div className="flex flex-col " >
+      <form className="w-full" onSubmit={HandleSubmit} >
+        <div className="text-lg font-semibold pb-1 text-gray-600 pt-5">Basic details:</div>
+        <hr />
+        <div className="flex flex-wrap gap-5 px-5 pt-3 w-full">
+          <div class="">
             <span class="text-lg pb-1 text-gray-600 ">Apex No</span>
             <input
               type="text"
@@ -95,7 +93,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-72 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
             />
@@ -108,7 +106,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96
+              className="text-md block px-3 py-2 rounded-lg w-72 sm:w-96
                 bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               autoComplete="off"
@@ -119,9 +117,11 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               <option value="YES">Yes</option>
               <option value="NO">No</option>
             </select>
-
           </div>
-
+        </div>
+        <div className="text-lg font-semibold pb-1 text-gray-600 pt-5" >Item details:</div>
+        <hr />
+        <div className="flex flex-wrap gap-5 px-5 pt-3">
           <div className="">
             <span class="px-1 text-lg text-gray-600">Item Type</span>
             <select
@@ -130,7 +130,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96
+              className="text-md block px-3 py-2 rounded-lg w-72 sm:w-96
                 bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               autoComplete="off"
@@ -168,7 +168,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-72 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               autoComplete="off"
@@ -183,7 +183,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-72 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               autoComplete="off"
@@ -198,11 +198,15 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-72 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
             />
           </div>
+        </div>
+        <div className="text-lg font-semibold pb-1 text-gray-600 pt-5" >Price details:</div>
+        <hr />
+        <div className="flex flex-wrap gap-5 px-5 pt-3">
           <div class="">
             <span class="px-1 text-lg text-gray-600">Quantity</span>
             <input
@@ -212,7 +216,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-72 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
             />
@@ -226,7 +230,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96 text-gray-500
+              className="text-md block px-3 py-2 rounded-lg w-72 sm:w-96 text-gray-500
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
             />
@@ -239,7 +243,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               onChange={(e) =>
                 setData({ ...data, [e.target.name]: e.target.value })
               }
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96
+              className="text-md block px-3 py-2 rounded-lg w-72 sm:w-96
                 bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               autoComplete="off"
@@ -252,13 +256,16 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               })}
             </select>
           </div>
-
+        </div>
+        <div className="text-lg font-semibold pb-1 text-gray-600 pt-5" >Vendor details:</div>
+        <hr />
+        <div className="flex flex-wrap gap-5 px-5 pt-3">
           <div class="">
             <span class="px-1 text-lg text-gray-600">Manufacturer</span>
             <select
               name="manufacturerId"
               value={data.manufacturerId}
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96
+              className="text-md block px-3 py-2 rounded-lg w-72 sm:w-96
                 bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               onChange={(e) =>
@@ -279,7 +286,7 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
             <select
               name="supplierId"
               value={data.supplierId}
-              className="text-md block px-3 py-2 rounded-lg  w-52 sm:w-96
+              className="text-md block px-3 py-2 rounded-lg  w-72 sm:w-96
                 bg-white border-2 border-gray-300 placeholder-gray-600 h-10 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
               required
               onChange={(e) =>
@@ -295,7 +302,17 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               })}
             </select>
           </div>
-          <div class="">
+        </div>
+        <div className="px-5 pt-3">
+          <Link to="/entries/manufacturer" className="text-blue-700 underline">Manufacturer not listed ?? click here to add.</Link>
+        </div>
+        <div className="px-5 pt-3">
+          <Link to="/entries/supplier" className="text-blue-700 underline">Supplier not listed ?? click here to add.</Link>
+        </div>
+        <div className="text-lg font-semibold pb-1 text-gray-600 pt-5">Reason:</div>
+        <hr />
+        <div className="flex flex-wrap w-full px-5 pt-3">
+          <div class="w-full">
             <span class="px-1 text-lg text-gray-600">Apex Reason</span>
             <textarea
               type="number"
@@ -305,19 +322,18 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
               }
               value={data.apex_reason}
               required
-              className="text-md block px-3 py-2 rounded-lg w-52 sm:w-96
+              className="text-md block px-3 py-2 rounded-lg w-72 lg:w-11/12
                 bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
             />
           </div>
+          {/* </div> */}
         </div>
-        <center>
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-10 rounded mb-10 mt-10"
-            type="submit"
-          >
-            Submit
-          </button>
-        </center>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-10 rounded mb-10 mt-10"
+          type="submit"
+        >
+          Submit
+        </button>
       </form>
 
     </div>

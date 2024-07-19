@@ -13,13 +13,9 @@ import Entries from "./components/NavItems/Entries/Entries";
 import Master from "./components/NavItems/Master";
 import Supplier from "./components/NavItems/Supplier";
 import { React, useState, useEffect, Suspense } from "react";
-
 import Dashboard from "./components/NavItems/Dashboard/Dashboard";
 import Error404 from "./components/ErrorPages/Error404";
-
 import LoginPage from "./components/LoginPage";
-// import RegisterPage from "./components/RegisterPage";
-// import PrivateRoute from "./PrivateRoute";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Cookies from "js-cookie";
 import Navbar from "./components/Navbar";
@@ -32,10 +28,10 @@ import Excel from "./components/CommonPages/Excel";
 import Scrap from "./components/NavItems/Scrap/Scrap";
 import { Hover } from "./components/Hover.js";
 import ManufacturerPopUp from "./components/NavItems/Entries/Popups/ManufacturerPopUp.js";
-import SupplierPopUp from "./components/NavItems/Entries/Popups/SupplierPopUp.js";
 import SupplierEntries from "./components/NavItems/Entries/EntriesImports/SupplierEntries.js";
 import StockEntries from "./components/NavItems/Entries/EntriesImports/StockEntries.js";
 import Consume from "./components/NavItems/Consume/Consume.js";
+import ApexEntries from "./components/NavItems/Entries/EntriesImports/ApexEntries.js";
 
 
 function App() {
@@ -85,6 +81,8 @@ function App() {
     return element;
   }
 
+
+
   return (
     <>
       {isLoading ? (
@@ -110,7 +108,7 @@ function App() {
               </div>
             }
             <div
-              className={`h-screen flex-1 ${navUsed() ? showNav ? (open ? "ml-64" : "ml-20") : "" : ""
+              className={`h-screen flex-1 ${navUsed() ? showNav ? (open ? "ml-64" : window.innerWidth < 800 ? "": "ml-20") : "" : ""
                 } 
         duration-300`}
             >
@@ -119,6 +117,10 @@ function App() {
                 <Routes>
                   <Route
                     path="/*"
+                    element={<Error404 />}
+                  />
+                  <Route
+                    path="/404"
                     element={<Error404 />}
                   />
                   <Route
@@ -148,7 +150,7 @@ function App() {
                     element={<Vendors />}
                   />
                   <Route
-                    path="/transfer"
+                    path="/transfer/*"
                     element={<Transfer />}
                   />
                   <Route
@@ -163,11 +165,11 @@ function App() {
                     }
                   />
                   <Route
-                    path="/scrap"
+                    path="/scrap/*"
                     element={<Scrap />}
                   />
                   <Route
-                    path="/consume"
+                    path="/consume/*"
                     element={<Consume />}
                   />
                   <Route
@@ -185,6 +187,10 @@ function App() {
                   <Route
                     path="/entries/stock"
                     element={<StockEntries />}
+                  />
+                  <Route
+                    path="/entries/apex"
+                    element={<ApexEntries />}
                   />
                   <Route
                     path="/unauthorized"

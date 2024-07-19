@@ -19,7 +19,7 @@ const Navbar = ({ location, open, setOpen, user, loc }) => {
       <div
         key={45}
         className={`${open ? "w-64" : "w-20"
-          } h-full w-1/6 fixed left-0 right-0 navbar duration-300`}
+          } h-full w-1/6 fixed left-0 right-0 z-50 navbar duration-300`}
         style={{ backgroundColor: "#0f6af2" }}
       >
         <img

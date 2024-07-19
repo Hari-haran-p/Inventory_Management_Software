@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Table from './Table';
 import { useAuth } from '../../../AuthContext';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { json, useLocation, useNavigate } from 'react-router-dom';
 import ConsumeTrack from './Track/ConsumeTrack';
 import ConsumeApprove from './Approve/ScrapApprove';
 import ConsumeRequestTable from './Request/ConsumeRequest';
@@ -21,11 +21,14 @@ const Consume = () => {
 
 
     //<<<<------------Top navbar state variables------------------>>>>
-    const [isArrowRotated, setIsArrowRotated] = useState(false);
+    const cuurNavState = localStorage.getItem('consumeNavState') == null ? true :  JSON.parse(localStorage.getItem('consumeNavState'));
 
-    const [isNavbarVisible, setIsNavbarVisible] = useState(false);
+    const [isArrowRotated, setIsArrowRotated] = useState(cuurNavState);
+
+    const [isNavbarVisible, setIsNavbarVisible] = useState(cuurNavState);
 
     const toggleNavbar = () => {
+        localStorage.setItem("consumeNavState", JSON.stringify(!isArrowRotated));
         setIsNavbarVisible((prev) => !prev);
         setIsArrowRotated((prev) => !prev);
     };
@@ -46,7 +49,7 @@ const Consume = () => {
     const [tableData, setTableData] = useState([]);
 
     async function fetchTableData() {
-        const response = await getRequest("http://localhost:4000/api/getTableConsumeData");
+        const response = await getRequest("/api/getTableConsumeData");
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setIsLoading(false);
@@ -63,7 +66,7 @@ const Consume = () => {
     const fetchPendingData = async () => {
         try {
             const response = await getRequest(
-                `http://localhost:4000/api/getConsumeCardData/${user.user_id}`
+                `/api/getConsumeCardData/${user.user_id}`
             );
             setPendingData(response.data);
         } catch (error) {
@@ -79,7 +82,7 @@ const Consume = () => {
 
     const fetchRequestTableData = async () => {
         try {
-            const response = await getRequest(`http://localhost:4000/api/getRequestTableData/${user.dept_code}`);
+            const response = await getRequest(`/api/getRequestTableData/${user.dept_code}`);
             if (response && response.status == 200) {
                 if (response.data.Data == "No Data") {
                     setNoRequestData(true);
@@ -103,7 +106,7 @@ const Consume = () => {
     const [noData, setNoData] = useState(true);
 
     async function fetchConsumeData() {
-        const response = await getRequest("http://localhost:4000/api/getConsume");
+        const response = await getRequest("/api/getConsume");
         if (response && response.status == 200) {
             if (response.data.Data == "No Data") {
                 setNoData(true);
@@ -118,11 +121,40 @@ const Consume = () => {
     }
 
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const initialPageLoad = async () => {
+        const loc = location.pathname.split("/");
+        if (loc.length <= 2) {
+            setShowTrackConsume(false)
+            setShowConsumeTable(true)
+            setShowConsumeApprove(false)
+            setShowConsume(false)
+        } else if (loc.length > 2 && loc[2] == "track") {
+            setShowTrackConsume(true)
+            setShowConsumeTable(false)
+            setShowConsumeApprove(false)
+            setShowConsume(false)
+        } else if (loc.length > 2 && loc[2] == "approve") {
+            setShowTrackConsume(false)
+            setShowConsumeTable(false)
+            setShowConsumeApprove(true)
+            setShowConsume(false)
+        } else if (loc.length > 2 && loc[2] == "request") {
+            setShowConsume(true)
+            setShowTrackConsume(false)
+            setShowConsumeTable(false)
+            setShowConsumeApprove(false)
+        } else {
+            navigate("/404");
+        }
+    }
 
     useEffect(() => {
         if (!Cookies.get("token")) {
             navigate("/");
         } else {
+            initialPageLoad();
             getUser();
             fetchRequestTableData();
             fetchTableData();
@@ -132,7 +164,7 @@ const Consume = () => {
         }
     }, [Cookies.get("token")])
 
-    const stopIsLoading =()=>{
+    const stopIsLoading = () => {
         if ((user.role == "slsincharge" ?
             tableData.length > 0 && consumeData.length > 0 && requestTabledata.length > 0 :
             tableData.length > 0 && requestTabledata.length > 0)) {
@@ -190,49 +222,33 @@ const Consume = () => {
                                     <div className="flex flex-wrap gap-5 z-50 items-center justify-between navTransfer">
                                         <div
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showConsumeTable == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4 `}
-                                            onClick={() => {
-                                                setShowTrackConsume(false)
-                                                setShowConsumeTable(true)
-                                                setShowConsumeApprove(false)
-                                                setShowConsume(false)
-                                            }}
                                         >
-                                            Home
+                                            <a href='/consume'>
+                                                Home
+                                            </a>
                                         </div>
                                         <div
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackConsume == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                                            onClick={() => {
-                                                setShowTrackConsume(true)
-                                                setShowConsumeTable(false)
-                                                setShowConsumeApprove(false)
-                                                setShowConsume(false)
-                                            }}
                                         >
-                                            Track Your Request
+                                            <a href='/consume/track'>
+                                                Track Your Request
+                                            </a>
                                         </div>
                                         {user.role == "slsincharge" &&
                                             <div
                                                 className={`cursor-pointer font-bold text-black whitespace-nowrap ${showConsumeApprove == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                                                onClick={() => {
-                                                    setShowTrackConsume(false)
-                                                    setShowConsumeTable(false)
-                                                    setShowConsumeApprove(true)
-                                                    setShowConsume(false)
-                                                }}
                                             >
-                                                Approval Request
+                                                <a href='/consume/approve'>
+                                                    Approval Request
+                                                </a>
                                             </div>
                                         }
                                         <div
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showConsume == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
-                                            onClick={() => {
-                                                setShowConsume(true)
-                                                setShowTrackConsume(false)
-                                                setShowConsumeTable(false)
-                                                setShowConsumeApprove(false)
-                                            }}
                                         >
-                                            Consume
+                                            <a href='/consume/request'>
+                                                Consume
+                                            </a>
                                         </div>
                                     </div>
                                 )}
@@ -269,7 +285,6 @@ const Consume = () => {
                 fetchTableData={fetchTableData}
                 noData={noData}
             />
-
 
             <ConsumeRequestTable
                 user={user}

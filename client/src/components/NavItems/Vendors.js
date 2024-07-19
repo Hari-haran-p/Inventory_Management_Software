@@ -19,13 +19,13 @@ function Vendors({ open }) {
 
   async function fetchManufacturer() {
     const response = await getRequest(
-      "http://localhost:4000/api/getManufacturer"
+      "/api/getManufacturer"
     ).catch((error) => console.log(error));
     setManufacturer(response.data);
   }
   async function fetchSupplier() {
     const response = await getRequest(
-      "http://localhost:4000/api/getSupplier"
+      "/api/getSupplier"
     ).catch((error) => console.log(error));
     setSupplier(response.data);
   }
@@ -261,7 +261,7 @@ function Vendors({ open }) {
       ) : (
         <div className="overflow-x-hidden h-auto w-auto flex flex-col items-center justify-center">
           <div className={` flex-1 duration-300  h-auto w-full`}>
-            <h1 className="text-2xl font-semibold pt-12 pl-20 animate1">
+            <h1 className="text-2xl font-semibold pt-12 pl-20 animate-fadeIn">
               Vendors
             </h1>
             <div
@@ -277,12 +277,12 @@ function Vendors({ open }) {
               } gap-change  flex-col lg:flex-row items-center justify-center h-auto lg:flex-nowrap duration-500 lg:w-10/12 w-full mt-10 `}
           >
             <div className="border-2 duration-500 rounded-lg  lg:w-5/12 w-full">
-              <h1 className="text-center text-2xl font-bold animate1 whitespace-nowrap text-blue-600 py-3">
+              <h1 className="text-center text-2xl font-bold  whitespace-nowrap text-blue-600 py-3">
                 Manufacturer
               </h1>
               <div className="input-field">
                 <div className="flex flex-wrap justify-center my-5">
-                  <div className="h-auto animate1">
+                  <div className="h-auto ">
                     <input
                       name="inputQuery"
                       type="text"
@@ -306,7 +306,7 @@ function Vendors({ open }) {
               </div>
 
               <div
-                class="  animate2 overflow-y-auto rounded-2xl overflow-x-auto border-gray-700  duration-500"
+                class="   overflow-y-auto rounded-2xl overflow-x-auto border-gray-700  duration-500"
                 style={{ maxWidth: "100%", maxHeight: "40vh" }}
               >
                 <div class=" align-middle inline-block min-w-full">
@@ -404,12 +404,12 @@ function Vendors({ open }) {
             </div>
 
             <div className="border-2  rounded-md duration-500 lg:w-7/12 w-full">
-              <h1 className="text-center text-2xl font-bold animate1 whitespace-nowrap  text-blue-600  py-3">
+              <h1 className="text-center text-2xl font-bold  whitespace-nowrap  text-blue-600  py-3">
                 Supplier
               </h1>
               <div className="input-field">
                 <div className="flex justify-center my-5">
-                  <div className="h-auto animate1">
+                  <div className="h-auto ">
                     <input
                       name="inputQuery"
                       type="text"
@@ -437,7 +437,7 @@ function Vendors({ open }) {
               <th scope="col" class=""></th>
 
               <div
-                class="animate2 overflow-hidden overflow-y-auto overflow-x-auto border-gray-700 rounded-2xl duration-500"
+                class=" overflow-hidden overflow-y-auto overflow-x-auto border-gray-700 rounded-2xl duration-500"
                 style={{
                   maxWidth: "100%",
                   maxHeight: "40vh",
