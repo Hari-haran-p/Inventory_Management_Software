@@ -22,7 +22,7 @@ const Scrap = () => {
 
 
     //<<<<------------Top navbar state variables andn function------------------>>>>
-    const cuurNavState = localStorage.getItem('scrapNavState') == null ? true :  JSON.parse(localStorage.getItem('scrapNavState'));
+    const cuurNavState =  window.innerWidth < 800 ? false : localStorage.getItem('scrapNavState') == null ? true :  JSON.parse(localStorage.getItem('scrapNavState'));
 
     const [isArrowRotated, setIsArrowRotated] = useState(cuurNavState);
 
@@ -235,7 +235,7 @@ const Scrap = () => {
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackScrap == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                         >
                                             <a href='/scrap/track'>
-                                                Track Your Request
+                                                Track
                                             </a>
                                         </div>
                                         {user.role == "slsincharge" &&

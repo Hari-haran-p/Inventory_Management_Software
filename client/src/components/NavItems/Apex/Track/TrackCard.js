@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../../../AuthContext";
+import { Link, Navigate } from "react-router-dom";
 
 const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData, fetchOverallTranferedData }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const {BackendUrl} = useAuth();
+  const { BackendUrl } = useAuth();
 
   const handleCancel = async (e) => {
 
@@ -177,14 +178,16 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
                 </div>
               </div>
             }
-            {data.status == "INITIATED" ? (
-              <button
-                onClick={handleCancel}
-                class="border border-red-500 h-10 bg-red-500 text-white rounded-md px-4 py-2  transition duration-500 ease select-none hover:bg-red-600 focus:outline-none focus:shadow-outline"
-              >
-                Cancel
-              </button>
-            ) : null}
+            <div className="flex gap-5 flex-wrap">
+              {data.status == "INITIATED" ? (
+                <button
+                  onClick={handleCancel}
+                  class="border border-red-500 h-10 bg-red-500 text-white rounded-md px-4 py-2  transition duration-500 ease select-none hover:bg-red-600 focus:outline-none focus:shadow-outline"
+                >
+                  Cancel
+                </button>
+              ) : null}
+            </div>
             {data.status == "CANCELLED" ? (
               <button
                 onClick={handleDelete}
@@ -192,7 +195,6 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
               >
                 Delete
               </button>
-
             ) : null}
             <div className="flex flex-wrap items-center justify-between">
               <div className={`text-lg border-2 ${data.status == 'INITIATED' ? "border-indigo-500 rounded-md p-1  text-indigo-700 bg-indigo-100" : data.status == 'CANCELLED' ? "border-red-500  text-red-700 rounded-md p-1 bg-red-100" : data.status == 'APPROVED' ? "border-orange-500  text-orange-700 rounded-md p-1 bg-orange-100" : data.status == 'STOCKED' ? "border-green-500 text-green-700  rounded-md p-1 bg-green-100" : data.status == "REJECTED" ? "border-red-500 text-red-700 rounded-md p-1 bg-red-100" : data.status == "FORWARDED" ? "border-2 border-purple-600 text-purple-800  rounded-md p-1 bg-purple-100 " : ""} `}>Status :
@@ -200,9 +202,6 @@ const TrackCard = ({ data, onClose, user, setMessage, setError, fetchPendingData
                   {" "} {data.status}
                 </span>
               </div>
-              {/* <div>
-                {data.status == "STORESAPPROVED" && <div><button onClick={() => handleAcknowledge()} className="text-lg font-bold border-2 border-sky-500 text-sky-700  rounded-md p-1 bg-sky-100 hover:bg-sky-500 hover:text-white">Acknowledge</button></div>}
-              </div> */}
             </div>
           </div>
 

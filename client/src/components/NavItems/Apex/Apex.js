@@ -3,6 +3,8 @@ import { useAuth } from '../../../AuthContext';
 import Table from './Table';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TrackApex from './Track/TrackApex';
+import ApexAdd from './AddItems/ApexAdd';
+import ApexItemView from './AddItems/ApexItemView';
 
 
 function Apex() {
@@ -20,7 +22,7 @@ function Apex() {
     const [error, setError] = useState(null);
 
     // <<<<------------Top nave bar erlated state variables and functions---------->>>>
-    const cuurNavState = localStorage.getItem('apexNavState') == null ? true : JSON.parse(localStorage.getItem('apexNavState'));
+    const cuurNavState =  window.innerWidth < 800 ? false : localStorage.getItem('apexNavState') == null ? true : JSON.parse(localStorage.getItem('apexNavState'));
 
     const [isArrowRotated, setIsArrowRotated] = useState(cuurNavState);
 
@@ -65,7 +67,10 @@ function Apex() {
         }
     };
 
-    console.log(pendingData);
+    //<<<<--------------ApexAddItems Related variables and functions------------>>>>
+    const [showApexAdd, setShowApexAdd] = useState(false);
+    
+    const [showApexItemView, setShowApexItemView] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -79,10 +84,21 @@ function Apex() {
         } else if (loc.length > 2 && loc[2] === 'track') {
             setShowApexTable(false);
             setShowTrackApex(true)
-        } else {
+        }else if(loc.length == 4 && loc[2] == 'items' ){
+            setShowApexItemView(true);
+            setShowApexAdd(false);
+            setShowApexTable(false);
+            setShowTrackApex(false);
+        }else if(loc.length == 3 && loc[2] == 'items'){
+            setShowApexAdd(true);
+            setShowApexTable(false);
+            setShowTrackApex(false);
+        }
+        else {
             navigate("/404");
         }
     }
+
 
 
     useEffect(() => {
@@ -140,25 +156,25 @@ function Apex() {
                                                 className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackApex == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                             >
                                                 <a href="/apex/track">
-                                                    Track Your Request
+                                                    Track
                                                 </a>
                                             </div>
 
                                             <div
-                                                className={`cursor-pointer font-bold text-black whitespace-nowrap ${false == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
+                                                className={`cursor-pointer font-bold text-black whitespace-nowrap ${showApexAdd || showApexItemView == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                             >
-                                                <a href="/apex/approve">
-                                                    Approval Request
+                                                <a href="/apex/items">
+                                                    Add Items
                                                 </a>
                                             </div>
-                                            <div
+                                            {/* <div
                                                 className={`cursor-pointer font-bold text-black whitespace-nowrap ${false == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                             >
                                                 <a href="/apex/request">
                                                     Request Transfer
                                                 </a>
-                                            </div>
-                                            {user.role == "slsincharge" &&
+                                            </div> */}
+                                            {/* {user.role == "slsincharge" &&
                                                 <button
                                                     className={`cursor-pointer font-bold text-black whitespace-nowrap ${false == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                                 >
@@ -166,7 +182,7 @@ function Apex() {
                                                         <span>Bulk Transfer</span>
                                                     </a>
                                                 </button>
-                                            }
+                                            } */}
                                         </div>
                                     )}
                                 </div>
@@ -189,6 +205,14 @@ function Apex() {
                         pendingData={pendingData}
 
                     />
+                    <ApexAdd
+                        isVisible={showApexAdd}
+                    />
+
+                    <ApexItemView
+                        isVisible={showApexItemView}
+                    />
+
                 </div>
             )}
         </>
