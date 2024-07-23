@@ -2,7 +2,6 @@ const { response } = require('express');
 const db = require('./database/db.js');
 
 const apexAdd = async function (req, res, next) {
-    console.log("Triggerd");
     try {
         const { apexNo, facId, facName, deptId, materialNature, apexType, apexBy, budget, advance, outcome, requestFor, detailReason, materialPurpose, userId } = req.body;
         console.log(apexNo, facId, facName, deptId, materialNature, apexType, apexBy, budget, advance, outcome, requestFor, detailReason, materialPurpose, userId);
@@ -52,9 +51,71 @@ const getApexCardData = async function (req, res, next) {
     }
 }
 
+const getApexItems = async function (req, res, next) {
+
+    try {
+        await db.query("SELECT * FROM apexitems WHERE apextable_id = ?", [id]).then((response) => {
+            res.status(200).json({ Data: response })
+        }).catch((error) => {
+            res.status(500).json({ error: "There was some error" });
+        })
+
+    } catch (error) {
+
+    }
+}
+
+
+const getApexItemsByUser = async function (req, res, next) {
+    const uid = req.params.uid
+    try {
+        await db.query("SELECT * FROM apexview WHERE faculty_id = ?", [uid]).then((response) => {
+            res.status(200).json({ Data: response })
+        }).catch((error) => {
+            res.status(500).json({ error: "There was some error" });
+        })
+
+    } catch (error) {
+
+    }
+}
+
+const getApexItemsById = async function (req, res, next) {
+    const id = req.params.id
+    try {
+        await db.query("SELECT * FROM apexitemsview WHERE apextable_id = ?", [id]).then((response) => {
+            console.log(response);
+            res.status(200).json({ Data: response })
+        }).catch((error) => {
+            res.status(500).json({ error: "There was some error" });
+        })
+
+    } catch (error) {
+
+    }
+}
+
+const getApexById = async function (req, res, next) {
+    const id = req.params.id;
+    try {
+        await db.query("SELECT * FROM apexview WHERE id = ?", [id]).then((response) => {
+            res.status(200).json({ Data: response })
+        }).catch((error) => {
+            res.status(500).json({ error: "There was some error" });
+        })
+
+    } catch (error) {
+
+    }
+}
+
 
 module.exports = {
     apexAdd: apexAdd,
     getApexTableData: getApexTableData,
     getApexCardData: getApexCardData,
+    getApexItems: getApexItems,
+    getApexItemsByUser: getApexItemsByUser,
+    getApexItemsById: getApexItemsById,
+    getApexById: getApexById
 }

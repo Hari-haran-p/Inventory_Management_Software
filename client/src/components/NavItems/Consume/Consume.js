@@ -21,7 +21,7 @@ const Consume = () => {
 
 
     //<<<<------------Top navbar state variables------------------>>>>
-    const cuurNavState = localStorage.getItem('consumeNavState') == null ? true :  JSON.parse(localStorage.getItem('consumeNavState'));
+    const cuurNavState = window.innerWidth < 800 ? false : localStorage.getItem('consumeNavState') == null ? true :  JSON.parse(localStorage.getItem('consumeNavState'));
 
     const [isArrowRotated, setIsArrowRotated] = useState(cuurNavState);
 
@@ -231,7 +231,7 @@ const Consume = () => {
                                             className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackConsume == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                                         >
                                             <a href='/consume/track'>
-                                                Track Your Request
+                                                Track
                                             </a>
                                         </div>
                                         {user.role == "slsincharge" &&

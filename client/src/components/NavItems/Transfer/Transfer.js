@@ -36,7 +36,7 @@ const Transfer = () => {
 
 
   // <<<<------------Top nave bar erlated state variables and functions---------->>>>
-  const cuurNavState = localStorage.getItem('transferNavState') == null ? true :  JSON.parse(localStorage.getItem('transferNavState'));
+  const cuurNavState =  window.innerWidth < 800 ? false : localStorage.getItem('transferNavState') == null ? true :  JSON.parse(localStorage.getItem('transferNavState'));
 
   const [isArrowRotated, setIsArrowRotated] = useState(cuurNavState);
 
@@ -267,7 +267,7 @@ const Transfer = () => {
                         className={`cursor-pointer font-bold text-black whitespace-nowrap ${showTrackTransfer == true ? ' border-blue-700 border-b-4' : ''} hover:border-blue-700 hover:border-b-4`}
                       >
                         <a href="/transfer/track">
-                          Track Your Request
+                          Track
                         </a>
                       </div>
 
@@ -346,8 +346,6 @@ const Transfer = () => {
             fetchOverallTranferedData={fetchOverallTranferedData}
 
           />
-
-
 
           <TransferImport
             isVisible={showTransferImport}
