@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState([]);
   const navigate = useNavigate();
 
-  const BackendUrl ="http://localhost:4000";
+  const BackendUrl ="";
 
   async function getUser() {
     return new Promise(async (resolve, reject) => {
