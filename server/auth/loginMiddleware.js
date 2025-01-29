@@ -1,7 +1,7 @@
 const { OAuth2Client } = require("google-auth-library");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
-const dotenv = require('dotenv').config();
+const dotenv = require("dotenv").config();
 const key = process.env.JWT_KEY;
 const mysql = require("mysql");
 const db = require("../database/db.js");
@@ -37,9 +37,8 @@ const createToken = (result) => {
     );
     return token;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-
 };
 
 const createSession = function (req, res, next) {
@@ -58,7 +57,7 @@ const createSession = function (req, res, next) {
       }
     })
     .catch((error) => {
-      return res.status(400).json({ error: "There was some error" })
+      return res.status(400).json({ error: "There was some error" });
     });
 };
 
@@ -73,7 +72,7 @@ const authenticate = function (req, res, next) {
   } catch (error) {
     return res.status(401).send("Session Expired");
   }
-}
+};
 
 const credentialLogin = async function (req, res, next) {
   try {
@@ -81,22 +80,30 @@ const credentialLogin = async function (req, res, next) {
     const password = req.body.password;
 
     const result1 = await new Promise((resolve, reject) => {
-      db.query("SELECT * FROM users WHERE username = ? AND password = ?", [username, password]).then((result) => {
-        resolve(result);
-      }).catch((err) => {
-        reject(err);
-        throw new Error("Some Error");
-      })
-    })
+      console.log("lkcc");
+
+      db.query("SELECT * FROM users WHERE username = ? AND password = ?", [
+        username,
+        password,
+      ])
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          reject(err);
+          console.log(err);  
+          throw new Error("Some Error");
+        });
+    });
     if (result1.length != 1) {
-      return res.status(401).json({ "data": "User Not Found" });
+      return res.status(401).json({ data: "User Not Found" });
     }
-    res.locals.payload = {email : result1[0].email}
+    res.locals.payload = { email: result1[0].email };
     next();
   } catch (error) {
     return res.status(400).json({ error: "Unauthorised Access" });
   }
-}
+};
 
 const getUser = function (req, res, next) {
   const token = req.body.token;
@@ -113,5 +120,5 @@ module.exports = {
   createSession: createSession,
   getUser: getUser,
   authenticate: authenticate,
-  credentialLogin: credentialLogin
+  credentialLogin: credentialLogin,
 };

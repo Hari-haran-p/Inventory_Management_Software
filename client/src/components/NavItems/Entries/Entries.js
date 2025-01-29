@@ -82,7 +82,7 @@ function Entries() {
                 </div>
               </div>
             </div> */}
-            <div
+            {/* <div
               style={{ width: "400px" }}
               className="entry-card shadow-2xl bg-white rounded-3xl text-2xl text-black flex flex-col justify-center p-4 py-10 items-center"
             >
@@ -110,7 +110,7 @@ function Entries() {
                   </Link>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div
               style={{ width: "400px" }}
               className="entry-card shadow-2xl bg-white rounded-3xl text-2xl text-black flex flex-col justify-center p-4 py-10 items-center"

@@ -3,16 +3,25 @@ const dotenv = require("dotenv").config();
 
 // Create a connection pool
 const pool = mysql.createPool({
-  host: '10.30.10.12',
-  user: 'root',
-  password: 'password',
-  database: 'LAB',
-  port: 3306
-  // host: 'localhost',
+  // host: '10.30.10.12',
   // user: 'root',
-  // password: '',
-  // database: 'LAB',
+  // password: 'password',
+  // database: 'spl_lab',
   // port: 3306
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'spl_lab',
+  port: 3306
+});
+
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error("Connection failed:", err.message);
+  } else {
+    console.log("Connection success");
+    connection.release(); // Release the connection back to the pool
+  }
 });
 
 module.exports = {

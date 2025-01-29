@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, useLocation, useNavigate, } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Vendors from "./components/NavItems/Vendors";
 import Entries from "./components/NavItems/Entries/Entries";
 import Master from "./components/NavItems/Master";
@@ -25,22 +25,20 @@ import StockEntries from "./components/NavItems/Entries/EntriesImports/StockEntr
 import Consume from "./components/NavItems/Consume/Consume.js";
 import ApexEntries from "./components/NavItems/Entries/EntriesImports/ApexEntries.js";
 import Apex from "./components/NavItems/Apex/Apex.js";
-
+import ItemLifeCycle from "./components/NavItems/ItemLifeCycle/ItemLifeCycle.js";
 
 function App() {
-
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [showNav, setShowNav] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
-
   useEffect(() => {
     if (window.innerWidth < 800) {
       setShowNav(false);
     }
-    if (!Cookies.get('token')) {
+    if (!Cookies.get("token")) {
       navigate("/");
     } else {
       getUser().then(() => setIsLoading(false));
@@ -51,11 +49,22 @@ function App() {
     if (location.pathname == "/") {
       setIsLoading(false);
     }
-  })
+  });
 
   const { user, getUser } = useAuth();
 
-  const loc = ["dashboard", "master", "vendors", "apex", "transfer", "stores", "scrap", "entries", "consume"]
+  const loc = [
+    "dashboard",
+    "master",
+    "vendors",
+    "apex",
+    "transfer",
+    "stores",
+    "scrap",
+    "entries",
+    "consume",
+    "lifecycle"
+  ];
 
   function navUsed() {
     return loc.includes(location.pathname.split("/")[1]);
@@ -66,14 +75,12 @@ function App() {
     console.log(userRole, "   ", allowedRole);
     useEffect(() => {
       if (userRole != allowedRole) {
-        navigate("/unauthorized")
+        navigate("/unauthorized");
       }
-    }, [allowedRole, userRole])
+    }, [allowedRole, userRole]);
 
     return element;
   }
-
-
 
   return (
     <>
@@ -81,11 +88,11 @@ function App() {
         <div className="flex flex-col justify-center items-center h-full duration-800 ">
           <span className="loader animate-bounce duration-800"></span>
           Loading
-        </div >
+        </div>
       ) : (
         <>
           <div className="relative h-full w-full">
-            {showNav &&
+            {showNav && (
               <Navbar
                 location={location.pathname}
                 loc={loc}
@@ -93,62 +100,52 @@ function App() {
                 setOpen={setOpen}
                 user={user}
               />
-            }
-            {window.innerWidth < 800 &&
-              <div className="absolute top-0 right-0 mr-4 mt-4" onClick={() => { setShowNav((prev) => !prev); }}>
-                <i class={`bi ${showNav ? "bi-x-circle-fill" : "bi-list"} z-1000`}></i>
+            )}
+            {window.innerWidth < 800 && (
+              <div
+                className="absolute top-0 right-0 mr-4 mt-4"
+                onClick={() => {
+                  setShowNav((prev) => !prev);
+                }}
+              >
+                <i
+                  class={`bi ${
+                    showNav ? "bi-x-circle-fill" : "bi-list"
+                  } z-1000`}
+                ></i>
               </div>
-            }
+            )}
             <div
-              className={`h-screen flex-1 ${navUsed() ? showNav ? (open ? "ml-64" : window.innerWidth < 800 ? "" : "ml-20") : "" : ""
-                } 
+              className={`h-screen flex-1 ${
+                navUsed()
+                  ? showNav
+                    ? open
+                      ? "ml-64"
+                      : window.innerWidth < 800
+                      ? ""
+                      : "ml-20"
+                    : ""
+                  : ""
+              }
         duration-300`}
             >
               <GoogleOAuthProvider clientId="494572126295-g8ok8a5g0kvr3ceodj12h5orod5oe38v.apps.googleusercontent.com">
-
                 <Routes>
-                  <Route
-                    path="/*"
-                    element={<Error404 />}
-                  />
-                  <Route
-                    path="/404"
-                    element={<Error404 />}
-                  />
-                  <Route
-                    path="/"
-                    element={<LoginPage />}
-                  />
+                  <Route path="/*" element={<Error404 />} />
+                  <Route path="/404" element={<Error404 />} />
+                  <Route path="/" element={<LoginPage />} />
                   <Route
                     path="/dashboard"
-                    element={<Dashboard open={open}
-                      setOpen={setOpen} />}
+                    element={<Dashboard open={open} setOpen={setOpen} />}
                   />
 
-                  <Route
-                    path="/master"
-                    element={<Master />}
-                  />
-                  <Route
-                    path="/report"
-                    element={<Report />}
-                  />
-                  <Route
-                    path="/supplier"
-                    element={<Supplier />}
-                  />
-                  <Route
-                    path="/vendors"
-                    element={<Vendors />}
-                  />
-                  <Route
-                    path="/apex/*"
-                    element={<Apex />}
-                  />
-                  <Route
-                    path="/transfer/*"
-                    element={<Transfer />}
-                  />
+                  <Route path="/master" element={<Master />} />
+                  <Route path="/report" element={<Report />} />
+                  <Route path="/supplier" element={<Supplier />} />
+                  <Route path="/vendors" element={<Vendors />} />
+                  <Route path="/lifecycle" element={<ItemLifeCycle />} />
+                  <Route path="/apex/*" element={<Apex />} />
+                  <Route path="/transfer/*" element={<Transfer />} />
                   <Route
                     path="/stores"
                     element={
@@ -160,18 +157,9 @@ function App() {
                       />
                     }
                   />
-                  <Route
-                    path="/scrap/*"
-                    element={<Scrap />}
-                  />
-                  <Route
-                    path="/consume/*"
-                    element={<Consume />}
-                  />
-                  <Route
-                    path="/entries"
-                    element={<Entries />}
-                  />
+                  <Route path="/scrap/*" element={<Scrap />} />
+                  <Route path="/consume/*" element={<Consume />} />
+                  <Route path="/entries" element={<Entries />} />
                   <Route
                     path="/entries/manufacturer"
                     element={<ManufacturerPopUp />}
@@ -180,28 +168,12 @@ function App() {
                     path="/entries/supplier"
                     element={<SupplierEntries />}
                   />
-                  <Route
-                    path="/entries/stock"
-                    element={<StockEntries />}
-                  />
-                  <Route
-                    path="/entries/apex"
-                    element={<ApexEntries />}
-                  />
-                  <Route
-                    path="/unauthorized"
-                    element={<Unauthorized />}
-                  />
-                  <Route
-                    path="/excel"
-                    element={<Excel />}
-                  />
-                  <Route
-                    path="/d"
-                    element={<Hover />}
-                  />
+                  <Route path="/entries/stock" element={<StockEntries />} />
+                  <Route path="/entries/apex" element={<ApexEntries />} />
+                  <Route path="/unauthorized" element={<Unauthorized />} />
+                  <Route path="/excel" element={<Excel />} />
+                  <Route path="/d" element={<Hover />} />
                 </Routes>
-
               </GoogleOAuthProvider>
             </div>
           </div>

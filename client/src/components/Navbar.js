@@ -116,6 +116,23 @@ const Navbar = ({ location, open, setOpen, user, loc }) => {
                 </li>
               </a>
             </li>
+            <li title="Lifecycle">
+              <a onClick={setNavState} href="/lifecycle" key="2">
+                <li
+                  className={`flex gap-x-4 mb-4 cursor-pointer ${location.split("/")[1] === "lifecycle".toLocaleLowerCase() ? "bg-white bg-opacity-40" : ""}  rounded-full hover:bg-white hover:bg-opacity-40 pl-5 pt-1 pr-2 pb-2`}
+                >
+                  <i
+                    className={`bi bi-clock-history ${!open && "text-2xl text-center"
+                      } duration-300 `}
+                  ></i>
+                  <span
+                    className={` duration-300 ${!open && "hidden"}`}
+                  >
+                    Lifecycle
+                  </span>
+                </li>
+              </a>
+            </li>
             {user.role == "slsincharge" &&
               <li title="Stores">
                 <a onClick={setNavState} href="/stores" key="2">
@@ -135,7 +152,7 @@ const Navbar = ({ location, open, setOpen, user, loc }) => {
                 </a>
               </li>
             }
-            <li title="Apex">
+            {/* <li title="Apex">
               <a onClick={setNavState} href="/apex" key="8">
                 <li
                   className={`flex gap-x-4 mb-4 cursor-pointer ${location.split("/")[1] === "apex".toLocaleLowerCase() ? "bg-white bg-opacity-40" : ""}  rounded-full hover:bg-white hover:bg-opacity-40 pl-5 pt-1 pr-2 pb-2`}
@@ -151,7 +168,7 @@ const Navbar = ({ location, open, setOpen, user, loc }) => {
                   </span>
                 </li>
               </a>
-            </li>
+            </li> */}
             <li title="Transfer">
               <a onClick={setNavState} href="/transfer" key="2">
                 <li

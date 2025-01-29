@@ -103,7 +103,7 @@ const itemAdd = async function (req, res, next) {
 }
 
 const stockAdd = async function (req, res, next) {
-    console.log("called");
+    console.log("called da");
     try {
         const apex_no = req.body.apexno.toUpperCase();
         const consumable = req.body.consumable.toUpperCase();

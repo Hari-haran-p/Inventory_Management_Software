@@ -25,14 +25,13 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
 
   const { user, getRequest, BackendUrl } = useAuth();
 
-  const [item, setItem] = useState([]);
-  async function fetchItems() {
-    const response = await getRequest(`${BackendUrl}/api/getItems`);
-    setItem(response.data);
-  }
+  // const [item, setItem] = useState([]);
+  // async function fetchItems() {
+  //   const response = await getRequest(`${BackendUrl}/api/getItems`);
+  //   setItem(response.data);
+  // }
 
   const HandleSubmit = async (e) => {
-    console.log("i amm called");
     if (window.confirm("Are you sure want to add stock ?")) {
       try {
         e.preventDefault();
@@ -43,14 +42,15 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
           `${BackendUrl}/api/stockAdd`,
           { ...data, user_dept_id: user.dept_code }
         );
-
+        console.log({res : response});
+        
         if (response && response.status == 201) {
           setMessage(response.data.Data);
           setData(formdata);
         }
 
       } catch (error) {
-        console.log(error);
+        console.log({error : error});
         if (error && error.response.status == 400) {
           setError(error.response.data.Data);
           setData(formdata);
@@ -61,20 +61,20 @@ const StockPopUp = ({ setMessage, setError, quantityUnits, manufacturer, supplie
     }
   };
 
-  const uniqueItemNamesArray = [];
-  const uniqueItemNamesSet = new Set();
+  // const uniqueItemNamesArray = [];
+  // const uniqueItemNamesSet = new Set();
 
-  item.forEach((item) => {
-    const itemName = item.item_name;
-    if (!uniqueItemNamesSet.has(itemName)) {
-      uniqueItemNamesSet.add(itemName);
-      uniqueItemNamesArray.push({ itemname: itemName });
-    }
-  });
+  // item.forEach((item) => {
+  //   const itemName = item.item_name;
+  //   if (!uniqueItemNamesSet.has(itemName)) {
+  //     uniqueItemNamesSet.add(itemName);
+  //     uniqueItemNamesArray.push({ itemname: itemName });
+  //   }
+  // });
 
-  useEffect(() => {
-    fetchItems();
-  });
+  // useEffect(() => {
+  //   fetchItems();
+  // });
 
   return (
     <div className="flex flex-col " >
