@@ -7,7 +7,6 @@ import { useAuth } from '../../AuthContext';
 
 function Cards() {
 
-
   const [TotalStockValueData, setTotalStockValueData] = useState();
   const [TotalScrapValueData, setTotalScrapValueData] = useState();
   const [TotalInventoryValueData, setTotalInventoryValueData] = useState();
@@ -153,7 +152,7 @@ function Cards() {
       <StockPopup isVisible={StockData} onClose={() => setStockData(false)} data={getStockDatas} />
       <InventoryPopup isVisible={InventoryData} onClose={() => setInventoryData(false)} data={getInventoryDatas} />
       <ScarpPopup isVisible={scrapData} onClose={() => setScrapData(false)} data={getScrapDatas} />
-
+        
     </>
   )
 }

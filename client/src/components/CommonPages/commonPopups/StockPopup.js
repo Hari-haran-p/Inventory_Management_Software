@@ -84,8 +84,6 @@ function StockPopup({ isVisible, onClose, data }) {
                       </tr>
                     ))}
 
-
-
                   </tbody>
                 </table>
               </div>

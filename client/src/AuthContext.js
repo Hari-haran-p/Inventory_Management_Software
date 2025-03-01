@@ -103,8 +103,7 @@ export function AuthProvider({ children }) {
       }
     }
   };
-
-
+  
   const value = {
     isLoggedIn,
     login,

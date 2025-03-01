@@ -20,7 +20,6 @@ function Dashboard({ open, setOpen }) {
   const [labitem, setLabitem] = useState([]);
   const [labsStock, setLabsStock] = useState([]);
 
-
   const fetchInventory = async () => {
     try {
       const response = await getRequest(`${BackendUrl}/api/getInventory`);

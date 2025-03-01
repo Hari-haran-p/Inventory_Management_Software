@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const dotenv = require("dotenv").config();
 
 // Create a connection pool
@@ -10,9 +10,9 @@ const pool = mysql.createPool({
   // port: 3306
   host: 'localhost',
   user: 'root',
-  password: '',
-  database: 'spl_lab',
-  port: 3306
+  password: 'example',
+  database: 'db',
+  port: 3307
 });
 
 pool.getConnection((err, connection) => {
